@@ -34,7 +34,10 @@
 \RequirePackage{titlesec}
 \RequirePackage{tikz}
 % TODO Fix this here.....V
-\newcommand{\sharedmedia}{C:/Users/1117384/Documents/Work/Utilities/Latex}
+% \newcommand{\sharedmedia}{C:/Users/1117384/Documents/Work/Utilities/Latex}
+%\newcommand{\sharedmedia}{/Users/vanquish/Work/Utilities/Latex}
+\newcommand{\sharedmedia}{core/}
+\newcommand{\listacronyms}{\input{\sharedmedia/Acronyms/acronyms.tex}}
 % NOTE - FileExists must have correct file extension
 %\newcommand{\topsublogo}{}
 %\newcommand{\botsublogo}{}
@@ -271,7 +274,7 @@
 %  leave space around whole list
 \setlist{noitemsep} %
 
-\def\arraystretch{1.5}%  1 is the default, change whatever you need
+%\def\arraystretch{1.5}%  1 is the default, change whatever you need
 %\setlength\tabcolsep{0.1cm}
 
 
@@ -753,7 +756,7 @@
 		\textsc{CAGE Code}                  & 15090                                                               \\
 	\end{tabular}
 	\vfill
-	\def\arraystretch{1.5}%  1 is the default, change whatever you need
+    %\def\arraystretch{1.5}%  1 is the default, change whatever you need
 \end{minipage}
 
 \vspace{0.25cm}

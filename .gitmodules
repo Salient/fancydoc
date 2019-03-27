@@ -1,0 +1,8 @@
+[submodule "Logos"]
+	path = Logos
+	url = https://github.com/salient/docudrama
+	branch = Logos
+[submodule "Acronyms"]
+	path = Acronyms
+	url = https://github.com/salient/docudrama
+	branch = Acronyms
