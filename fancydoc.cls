@@ -26,7 +26,7 @@
 \ProcessOptions\relax
 
 
-
+\RequirePackage[dvipsnames,table]{xcolor}
 \RequirePackage[printonlyused]{acronym}
 \RequirePackage{multicol}
 \RequirePackage{hyperref}
@@ -289,7 +289,9 @@
 \RequirePackage{fancyhdr}
 \renewcommand{\headrulewidth}{1pt}
 
-
+\RequirePackage{pdfpages}
+\RequirePackage[title, titletoc,toc,page]{appendix}
+%\RequirePackage{lastpage}
 \RequirePackage{pageslts}
 
 \newcommand{\topfooterleft}{\textsc{For \textbf{\contractname} \projectdesignation\xspace Only}}
@@ -406,7 +408,6 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \RequirePackage{etoolbox}
-\RequirePackage[title, titletoc,toc,page]{appendix}
 
 %\setrefcountdefault{-2}
 \newcounter{appage}
@@ -484,7 +485,6 @@
 
 \newcommand{\tbr}[1]{\marginnote{\textbf{\small\color{orange}~~TBR:\\} #1}}
 
-\RequirePackage{xcolor}
 \newcommand{\cfbox}[2]{%
 	\colorlet{currentcolor}{.}%
 	{\color{#1}%
@@ -683,7 +683,7 @@
 \renewcommand{\titlepage}{
 \thispagestyle{firststyle}\vspace*{-1cm}
 %\begin{center}
-\noindent	\Large\textsc{\doctype}
+\noindent	\Large\textsc{\doctype}\smallskip
 %		\small~\\
 %	\\[0.25cm]
 
@@ -691,7 +691,7 @@
 %	~\\[0.15cm]
 %\noindent	\Large\textsc{\contractname System (BMNS)}
 %\begin{minipage}{0.75\linewidth}
-\noindent\Large {\textsc{\textbf{\titlelong}}}
+\noindent\Large {\textsc{\textbf{\titlelong}}}\smallskip
 %	{	\Large \textsc{\contractname}}
 %	{\Large\textsc{some purpose here}},\\
 

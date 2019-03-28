@@ -6,3 +6,7 @@
 	path = Acronyms
 	url = https://github.com/salient/docudrama
 	branch = Acronyms
+[submodule "Utilities"]
+	path = Utilities
+	url = https://github.com/salient/docudrama
+	branch = Utilities
