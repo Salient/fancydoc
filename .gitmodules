@@ -10,3 +10,7 @@
 	path = Utilities
 	url = https://github.com/salient/docudrama
 	branch = Utilities
+[submodule "Markings"]
+	path = Markings
+	url = https://github.com/salient/docudrama
+	branch = Markings
