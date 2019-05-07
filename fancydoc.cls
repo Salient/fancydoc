@@ -38,6 +38,8 @@
 %\newcommand{\sharedmedia}{/Users/vanquish/Work/Utilities/Latex}
 \newcommand{\sharedmedia}{core/}
 \newcommand{\listacronyms}{\input{\sharedmedia/Acronyms/acronyms.tex}}
+\RequirePackage{multicol} % Required to list acronyms nicely
+
 % NOTE - FileExists must have correct file extension
 %\newcommand{\topsublogo}{}
 %\newcommand{\botsublogo}{}
