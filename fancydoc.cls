@@ -195,6 +195,9 @@
 % % Table of Contents Entries
 % Make Entries in the ToC in Small Caps
 \renewcommand\cftsecfont{\scshape}
+\renewcommand{\cftsecpresnum}{\bfseries Section }
+\renewcommand{\cftsecaftersnumb}{ \bfseries\hfill}
+
 %\renewcommand\cftsubsecfont{\scshape}
 
 % Document Section Title Formatting
