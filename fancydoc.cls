@@ -226,6 +226,7 @@
 
 \hypersetup{colorlinks, linktoc=all, linkcolor={red!20!black}, citecolor={red!50!black}, urlcolor={red!80!black}, pdftitle=\titlelong, pdfauthor=James Heller, pdfsubject=\doctype, pdfkeywords=}
 
+%\setlength{\abovecaptionskip}{0pt}
 
 
 \RequirePackage[left=1in,right=1in,top=2.5cm, bottom=2.5cm, marginparsep=7pt]{geometry}
@@ -495,7 +496,7 @@
 	{\color{#1}%
 		\fbox{\color{currentcolor}#2}}%
 }
-\newcommand{\notetodo}[1]{
+\newcommand{\todo}[1]{
 	\noindent
 	\cfbox{red}{\parbox{\dimexpr\linewidth-2\fboxsep-2\fboxrule}{TODO: #1}}
 }
