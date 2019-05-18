@@ -10,21 +10,33 @@
 % https://tex.stackexchange.com/questions/416260/define-global-commands-in-aux-file
 % https://tex.stackexchange.com/questions/4736/what-is-the-difference-between-fragile-and-robust-commands
 
-% !TeX root = EICD_Rev_Draft.tex
 
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesClass{fancydoc}[2019/01/31 Make Overly Nice Documents]
-
 % Based on article class mostly
 \LoadClass{article}
+
+
+%     Can't really do much interesting stuff before \ProcessOptions\relax, have to use 
+%     primitive commands
+
+% Code snips option
+\newif\if@codesnips\@codesnipsfalse
+
+% ---------------------------------------------------------------------------------------
+
+% Handle Options
 
 \DeclareOption{specification}{\OptionNotUsed}
 \DeclareOption{statement}{\OptionNotUsed}
 \DeclareOption{showovers}{\overfullrule=2cm}
+\DeclareOption{codesnips}{\@codesnipstrue}
 
 \DeclareOption*{\PassOptionsToClass{\CurrentOption}{article}}
 \ProcessOptions\relax
 
+% ---------------------------------------------------------------------------------------
+% Pull in packages we know we need
 
 \RequirePackage[dvipsnames,table]{xcolor}
 \RequirePackage[printonlyused]{acronym}
@@ -40,10 +52,34 @@
 \newcommand{\listacronyms}{\input{\sharedmedia/Acronyms/acronyms.tex}}
 \RequirePackage{multicol} % Required to list acronyms nicely
 
+
+
+
+% ---------------------------------------------------------------------------------------
+% Handle conditionals
+
+\if@codesnips
+\RequirePackage{minted}
+\setminted[vhdl]{fontsize=\scriptsize, linenos}
+\renewcommand{\listoflistingscaption}{Configurable Logic Code Excerpts}
+\newcommand{\codesref}{Code Excerpt }
+\renewcommand{\listingscaption}{\ac{CDL} \codesref}
+	\newcommand{\coderef}[1]{\hyperref[#1]{\codesref \ref*{#1}}}
+	\newcommand{\codereff}[1]{\hyperref[{#1}]{\codesref \ref*{#1}, page \pageref*{#1}}}
+\fi
+
+
+
+
+
+
+% ---------------------------------------------------------------------------------------
+% Configure logos for document header
+
 % NOTE - FileExists must have correct file extension
 %\newcommand{\topsublogo}{}
 %\newcommand{\botsublogo}{}
-\newcommand{\@headerlogo}
+\newcommand{\@headerlogo} % Empty lines required between definitions below, or it thinks the next one is part of the definition of the prior
 
 \newcommand{\@toplogo}
 
@@ -63,8 +99,6 @@
 	}
 }
 
-
-
 \newcommand{\settoplogo}[1]{
 	\IfFileExists{#1}{ % Yes?
 		\renewcommand{\@toplogo}{\includegraphics[height=1.5in, width=0.49\linewidth,keepaspectratio]{#1}}
@@ -74,9 +108,6 @@
 		%		. Set it using settoplogo{path to bottom logo file}, or disable by using option `notoplogo' in class options.
 	}}
 
-
-
-
 \newcommand{\setbotlogo}[1]{
 
 	\IfFileExists{#1}{
@@ -85,7 +116,6 @@
 		\ClassWarning{fancydoc}{Warning, Bottom logo not defined. Set it using slash setbotlogo{path to bottom logo file}, or disable by using option `nobotlogo' in class options.}
 	}
 }
-
 
 \newcommand{\placetoplogo}{\@toplogo}
 \newcommand{\placebotlogo}{\@botlogo}
@@ -224,7 +254,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-\hypersetup{colorlinks, linktoc=all, linkcolor={red!20!black}, citecolor={red!50!black}, urlcolor={red!80!black}, pdftitle=\titlelong, pdfauthor=James Heller, pdfsubject=\doctype, pdfkeywords=}
+\hypersetup{colorlinks, linktoc=all, linkcolor={blue!70!black}, citecolor={red!50!black}, urlcolor={red!80!black}, pdftitle=\titlelong, pdfauthor=James Heller, pdfsubject=\doctype, pdfkeywords=}
 
 %\setlength{\abovecaptionskip}{0pt}
 
@@ -791,6 +821,8 @@
 
 }
 
+\providecommand{\codelistings}{}
+
 \newcommand{\metapages}{
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	%%%% 		Table of Contents
@@ -815,7 +847,13 @@
 	\listoftables
 
 	\listoffigures
-
+	
+	% Optional inclusion of code snip list
+	\if@codesnips
+	\listingscaption
+    \fi
+    
+    
 	\vfill
 
 	\section*{Revision History}
