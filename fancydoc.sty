@@ -1,14 +1,24 @@
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesPackage{fancydoc}[2019/02/26 Custom Commands, Shortcuts, Utilities]
 
+
+
+\newif\if@sdrllist\@sdrllistfalse
+\DeclareOption{sdrllist}{\@sdrllisttrue}
+
+\ProcessOptions\relax
+
+
+
 \RequirePackage{calc}
 %\usepackage{tikz}
 %\usepackage[most]{tcolorbox}
 \usepackage{pgfplots}
 \pgfplotsset{compat=1.16}
 
-% Special formatting/boxes
 
+
+% Special formatting/boxes
 
 \newsavebox{\fmbox}
 \newenvironment{fmpage}[1]
@@ -45,11 +55,14 @@
 
 
 % Put signature lines, etc. here
-\usepackage[pdftex]{eforms}
+
+% the eforms package is apparently not in every \latex distribution.
+% It's not in tex live (mac)
+% should look into some other options
+%\usepackage[pdftex]{eforms}
 
 
-
-
+% --------- Graphics Functions
 
 \newif\ifblackandwhitecycle
 \gdef\patternnumber{0}
@@ -252,12 +265,7 @@
 
 
 
-\setcounter{tocdepth}{4}
-%\setcounter{secttocdepth}{4}
-%
-%\setlength{\stcindent}{24pt}
-%\renewcommand{\stcfont}{\small\rm}
-%\renewcommand{\stcSSfont}{\small\bf}
+% ---------- Utility Code
 
 %%% This is good stuff
 % https://tex.stackexchange.com/questions/416260/define-global-commands-in-aux-file
@@ -270,6 +278,7 @@
 	??%
 	\fi
 }
+
 \newcommand{\defVal}[2]{%
 	\ifcsname useVal@#1@defined\endcsname
 	\PackageError{useVal}{Value "#1" already defined}{}
@@ -282,6 +291,22 @@
 }
 
 \makeatother
+
+
+
+
+
+% % % % % % % % % % % % % % % % % % % % % % % %
+% % % Custom Framework Commands...	
+% % % % % % % % % % % % % % % % % % % % % % % %
+
+% \reqitem{requirement title}{desired label for requirement}{something}
+% \subreqitem{subreq title}{expected time due}
+
+% Only bother loading if we are going to use it
+
+	\if@sdrllist
+
 
 \newwrite\tempfile
 \immediate\openout\tempfile=sdrl-table.tex
@@ -349,11 +374,4 @@
 	\subrecsdrl{\Alph{subreqitem}}{#1}{#2}
 }
 \setcounter{rqsdepth}{2}
-
-% % % % % % % % % % % % % % % % % % % % % % % %
-% % % Custom Framework Commands...	
-% % % % % % % % % % % % % % % % % % % % % % % %
-
-% \reqitem{requirement title}{desired label for requirement}{something}
-% \subreqitem{subreq title}{expected time due}
-
+\fi

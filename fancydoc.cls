@@ -239,6 +239,16 @@
 %\titleformat*{\subparagraph}{\bfseries\scshape}
 % \titleformat{\paragraph}[hang]{\bfseries}{}{0pt}{\uline}
 
+
+
+%\setcounter{tocdepth}{4}
+%\setcounter{secttocdepth}{4}
+%
+%\setlength{\stcindent}{24pt}
+%\renewcommand{\stcfont}{\small\rm}
+%\renewcommand{\stcSSfont}{\small\bf}
+
+
 %\titleformat{\paragraph}
 %{\scshape\bfseries}
 %{\theparagraph}
