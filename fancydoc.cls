@@ -855,12 +855,12 @@
 
 	%\newpage
 	\listoftables
-
+	\listoflistings
 	\listoffigures
 	
 	% Optional inclusion of code snip list
 	\if@codesnips
-	\listingscaption
+	\listoflistings
     \fi
     
     
