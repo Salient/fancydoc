@@ -16,13 +16,22 @@
 % Based on article class mostly
 \LoadClass{article}
 
+% Setup conditional logic before processing Options
+\RequirePackage{etoolbox}
 
+% These default to false
+\newtoggle{hidetoplogo}
+\newtoggle{hidebotlogo}
+\newtoggle{hideheaderlogo}
+\newtoggle{codesnips}
 %     Can't really do much interesting stuff before \ProcessOptions\relax, have to use 
 %     primitive commands
 
 % Code snips option
 \newif\if@codesnips\@codesnipsfalse
-
+\newif\if@tlogo\@tlogotrue
+\newif\if@blogo\@blogotrue
+\newif\if@hlogo\@hlogotrue
 % ---------------------------------------------------------------------------------------
 
 % Handle Options
@@ -30,7 +39,10 @@
 \DeclareOption{specification}{\OptionNotUsed}
 \DeclareOption{statement}{\OptionNotUsed}
 \DeclareOption{showovers}{\overfullrule=2cm}
-\DeclareOption{codesnips}{\@codesnipstrue}
+\DeclareOption{codesnips}{\toggletrue{codesnips}}
+\DeclareOption{notop}{\toggletrue{hidetoplogo}}
+\DeclareOption{nobot}{\toggletrue{hidebotlogo}}
+\DeclareOption{nohead}{\toggletrue{hideheaderlogo}}
 
 \DeclareOption*{\PassOptionsToClass{\CurrentOption}{article}}
 \ProcessOptions\relax
@@ -58,73 +70,81 @@
 % ---------------------------------------------------------------------------------------
 % Handle conditionals
 
-\if@codesnips
+\iftoggle{codesnips}{
 \RequirePackage{minted}
 \setminted[vhdl]{fontsize=\scriptsize, linenos}
-\renewcommand{\listoflistingscaption}{Configurable Logic Code Excerpts}
+\renewcommand{\listoflistingscaption}{Logic Code Excerpts}
 \newcommand{\codesref}{Code Excerpt }
 \renewcommand{\listingscaption}{\ac{CDL} \codesref}
-	\newcommand{\coderef}[1]{\hyperref[#1]{\codesref \ref*{#1}}}
-	\newcommand{\codereff}[1]{\hyperref[{#1}]{\codesref \ref*{#1}, page \pageref*{#1}}}
-\fi
-
-
-
-
-
+\newcommand{\coderef}[1]{\hyperref[#1]{\codesref \ref*{#1}}}
+\newcommand{\codereff}[1]{\hyperref[{#1}]{\codesref \ref*{#1}, page \pageref*{#1}}}
+}
 
 % ---------------------------------------------------------------------------------------
 % Configure logos for document header
 
 % NOTE - FileExists must have correct file extension
-%\newcommand{\topsublogo}{}
-%\newcommand{\botsublogo}{}
-\newcommand{\@headerlogo} % Empty lines required between definitions below, or it thinks the next one is part of the definition of the prior
 
-\newcommand{\@toplogo}
-
+\newcommand{\@toplogo}{\ClassError{Top logo never defined. You must call {\textbackslash}settoplogo{path/to/logo}, or disable by using option `notoplogo' in class options.}}
+	
 \newcommand{\@botlogo}
+%{\ClassError{Bottom logo never defined. You must call {\textbackslash}setbotlogo{path/to/logo}, or disable by using option `nobotplogo' in class options.}}
+	
+\newcommand{\@headerlogo}{\ClassError{Header logo never defined. You must call {\textbackslash}setheaderlogo{path/to/logo}, or disable by using option `noheadlogo' in class options.}} 	
 
 \newcommand{\setheaderlogo}[1]{
-	%\providecommand{\@headerlogo}
+    \if@hlogo
 	\IfFileExists{#1}{
-%		\renewcommand{\@headerlogo}{\includegraphics[width=2in,keepaspectratio]{#1}}
-
+%	\renewcommand{\@headerlogo}{\includegraphics[width=1.25in,keepaspectratio]{#1}}
 % Redefine header rule to include logo at the end
-\renewcommand{\headrule}{\hrule\@height\headrulewidth\@width\headwidth\vspace{-0.325cm}\raggedleft\includegraphics[height=0.35cm,keepaspectratio]{#1}\hspace*{1px}\vskip-\headrulewidth}
-}{
-		{Header Logo Error!}
-		\ClassWarning{fancydoc}{Warning, header logo set to #1; file does not exist!}
+\renewcommand{\headrule}{\hrule\@height\headrulewidth\@width\headwidth\vspace{-0.4cm}
+	\raggedleft\includegraphics[height=0.35cm,keepaspectratio]{#1}\hspace*{1px}\vskip-\headrulewidth}
+\renewcommand{\@headerlogo}{#1}
+    }{
+		\ClassError{fancydoc}{Header logo set to #1, but that file does not exist!}
 		%	. Set it using settoplogo{path to header logo file}, or disable by using option `noheadlogo' in class options.
-	}
-}
+    }\fi}
 
 \newcommand{\settoplogo}[1]{
+	\if@tlogo
 	\IfFileExists{#1}{ % Yes?
-		\renewcommand{\@toplogo}{\includegraphics[height=1.5in, width=0.49\linewidth,keepaspectratio]{#1}}
+		\renewcommand{\@toplogo}{#1}
+%		\includegraphics[height=1.75in, width=\linewidth,keepaspectratio]{#1}
 	}{ % Else
-		[TOP SUB LOGO HERE]
-		\ClassWarning{fancydoc}{Warning, top logo set to #1, does not exist!}
+		\ClassError{fancydoc}{Top logo set to #1, but that file does not exist!}
 		%		. Set it using settoplogo{path to bottom logo file}, or disable by using option `notoplogo' in class options.
-	}}
+	}\fi}
 
 \newcommand{\setbotlogo}[1]{
-
+	\if@blogo
 	\IfFileExists{#1}{
-		\renewcommand{\@botlogo}{\includegraphics[height=1.5in,width=0.49\linewidth,keepaspectratio]{#1}}}
-	{[BOT SUB LOGO HERE]
-		\ClassWarning{fancydoc}{Warning, Bottom logo not defined. Set it using slash setbotlogo{path to bottom logo file}, or disable by using option `nobotlogo' in class options.}
-	}
-}
+		\renewcommand{\@botlogo}{#1}
+%		\includegraphics[height=1.75in,width=\linewidth,keepaspectratio]{#1}}
+    }{
+		\ClassError{fancydoc}{Bottom logo set to #1, but that file does not exist!}
+	}\fi}
 
 \newcommand{\placetoplogo}{\@toplogo}
 \newcommand{\placebotlogo}{\@botlogo}
-\newcommand{\placeheaderlogo}{
-	\begin{tikzpicture}[overlay]
-	\node {\@headerlogo};
-	\end{tikzpicture}}
+\newcommand{\placeheaderlogo}{\@headerlogo
+%	\begin{tikzpicture}[overlay]
+%	\node[anchor=east, yshift=-0.2cm]  {\@headerlogo};
+%	\end{tikzpicture}
+}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%% 		Define Marking Options
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+% Should be a better way to set these flags, and the marking definitions, from inside the main document.
+
+% Main file that markings should be defined in. May should be maybe part of core?
 
 % Select the appropriate Marking Template (Must already exist....)
+\input{markings}
 
 % Should set the following
 %		Logos (top, bottom)
@@ -143,42 +163,52 @@
 
 
 % Title/Descriptions
-\newcommand{\doctype}{\textbf{Document Type [doctype]}\xspace}
-\newcommand{\titlelong}{\textbf{ [titlelong] (DOCUMENT SUBJECT)}}
+\providecommand{\doctype}{\textbf{Document Type [doctype]}\xspace}
+\providecommand{\titlelong}{\textbf{ [titlelong] (DOCUMENT SUBJECT)}}
 
 % Special Identifiers
-\newcommand{\supplierlong}{\textbf{L3 F}uzing and \textbf{O}rdnance \textbf{S}ystems}
-\newcommand{\supplier}{L3-FOS}
+\providecommand{\supplierlong}{\textbf{L3 F}uzing and \textbf{O}rdnance \textbf{S}ystems}
+\providecommand{\supplier}{L3-FOS}
 
 
-\newcommand{\headingcenter}{\textbf{CENTER HEADING [headingcenter]}}
-\newcommand{\titleshort}{\textbf{[SHORT TITLE] - [titleshort]}}
+\providecommand{\headingcenter}{\textbf{CENTER HEADING [headingcenter]}}
+\providecommand{\titleshort}{\textbf{[SHORT TITLE] - [titleshort]}}
 
-\newcommand{\projectdesignation}{\textbf{[projectdesignation] (Program/effort/etc.)}}
-\newcommand{\contractname}{\textbf{[Contract Title/Desc.] - [contractname]}}
-\newcommand{\contract}{\textbf{[Contract Number] - [contract]}}
+\providecommand{\projectdesignation}{\textbf{[projectdesignation] (Program/effort/etc.)}}
+\providecommand{\contractname}{\textbf{[Contract Title/Desc.] - [contractname]}}
+\providecommand{\contract}{\textbf{[Contract Number] - [contract]}}
 
-% \newcommand{\sharedmedia}{C:/Users/1117384/Documents/Work/Utilities/Latex}
-\input{markings}
+% \providecommand{\sharedmedia}{C:/Users/1117384/Documents/Work/Utilities/Latex}
+
 
 
 % Use if draft or preview option is enabled
 %\usepackage{blindtext}  % Generate test viewing text
 
 
-%\newcommand{\distwarning}{\textbf{[Please set the Distribution Warning text.]}}
-%\newcommand{\itarwarning}{\textbf{[Please set the ITAR Warning text.]}}
-%\newcommand{\raypropwarning}{\textbf{[Please set the Proprietary Warning text.]}}
-%\newcommand{\fouowarning}{\textbf{[Please set the FOUO Warning text.]}}
-%\newcommand{\destructwarning}{\textbf{[Please set the Destruction Warning text.]}}
-%\newcommand{\copywarning}{\textbf{[Please set the Copyright Warning text.]}}
+\providecommand{\distwarning}{\textbf{\color{red}[Please set the Distribution Warning text.]}}
+\providecommand{\itarwarning}{\textbf{\color{red}[Please set the ITAR Warning text.]}}
+\providecommand{\raypropwarning}{\textbf{\color{red}[Please set the Proprietary Warning text.]}}
+\providecommand{\fouowarning}{\textbf{\color{red}[Please set the FOUO Warning text.]}}
+\providecommand{\destructwarning}{\textbf{\color{red}[Please set the Destruction Warning text.]}}
+\providecommand{\copywarning}{\textbf{\color{red}[Please set the Copyright Warning text.]}}
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%% 		Define Marking Options
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%% Provide default marking definitions in case they aren't provided or set by the markings file
+%\providecommand{\distwarning}{\color{red} Warning! Distribution statement not defined. Create command '\textbf{$\backslash$distwarning}' with desired text. Maybe put it in markings.tex, hmmm?}
+%\providecommand{\itarwarning}{\color{red} Warning! Distribution statement not defined. Create command '\textbf{$\backslash$itarwarning}' with desired text. Maybe put it in markings.tex, hmmm?}
+%\providecommand{\raypropwarning}{\color{red} Warning! Distribution statement not defined. Create command '\textbf{$\backslash$raypropwarning}' with desired text. Maybe put it in markings.tex, hmmm?}
+%\providecommand{\fouowarning}{\color{red} Warning! Distribution statement not defined. Create command '\textbf{$\backslash$fouowarning}' with desired text. Maybe put it in markings.tex, hmmm?}
+%\providecommand{\copywarning}{\color{red} Warning! Distribution statement not defined. Create command '\textbf{$\backslash$copywarning}' with desired text. Maybe put it in markings.tex, hmmm?}
+%\providecommand{\destructwarning}{\color{red} Warning! Distribution statement not defined. Create command '\textbf{$\backslash$destructwarning}' with desired text. Maybe put it in markings.tex, hmmm?}
 
-\RequirePackage{etoolbox}
+%%=================== End Marking Options ==========================================
+
+
+
+
+
 
 \newtoggle{markingHazOp}
 \newtoggle{markingDistribution}
@@ -187,6 +217,7 @@
 \newtoggle{markingDestroy}
 \newtoggle{markingCopyright}
 \newtoggle{markingFOUO}
+\newtoggle{programWarning}
 \newtoggle{markingSafetyCritical}
 
 % There may be a space required between these?
@@ -206,7 +237,6 @@
 
 \togglefalse{markingFOUO}
 
-%=================== End Marking Options ==========================================
 
 
 
@@ -222,11 +252,28 @@
 \setcounter{secnumdepth}{5}
 \setlength{\headheight}{17pt}
 
+
+% Define custom colors to show in TOC
+%\definecolor{sectcolor}{rgb}{0.6,0.3,0}
+%\definecolor{secpcolor}{rgb}{0.3,0,0.6}
+
+
 % % Table of Contents Entries
 % Make Entries in the ToC in Small Caps
-\renewcommand\cftsecfont{\scshape}
+\renewcommand{\cftsecfont}{\scshape}
+%\renewcommand{\cftsecaftersnumb}{\bfseries\hfill\color{sectcolor}}
+\renewcommand{\cftsecaftersnumb}{\bfseries\hfill}
+
+\renewcommand{\cftsecleader}{}
+
+% Since we are modifying Section Titles, we have to adjust where the title text starts
+% Only matters if left justifying text
+
+\settowidth{\cftsecnumwidth}{Section XX}
+%\renewcommand{\cftsecpresnum}{\color{secpcolor}\bfseries Section }
 \renewcommand{\cftsecpresnum}{\bfseries Section }
-\renewcommand{\cftsecaftersnumb}{ \bfseries\hfill}
+
+
 
 %\renewcommand\cftsubsecfont{\scshape}
 
@@ -264,12 +311,12 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-\hypersetup{colorlinks, linktoc=all, linkcolor={blue!70!black}, citecolor={red!50!black}, urlcolor={red!80!black}, pdftitle=\titlelong, pdfauthor=James Heller, pdfsubject=\doctype, pdfkeywords=}
+\hypersetup{colorlinks, linktoc=all, linkcolor={blue!20!black}, citecolor={red!50!black}, urlcolor={red!80!black}, pdftitle=\titlelong, pdfauthor=James Heller, pdfsubject=\doctype, pdfkeywords=}
 
 %\setlength{\abovecaptionskip}{0pt}
 
 
-\RequirePackage[left=1in,right=1in,top=2.5cm, bottom=2.5cm, marginparsep=7pt]{geometry}
+\RequirePackage[left=1.5in,right=1.5in,top=1.25in, bottom=1.25in, marginparsep=7pt]{geometry}
 
 \newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
 
@@ -324,6 +371,13 @@
 %\setlength\tabcolsep{0.1cm}
 
 
+
+% Spacing around wrapfigs
+%\setlength{\intextsep}{4pt}
+%\setlength{\columnsep}{0pt}%
+
+
+
 %=================== End Special Look and Feel ======================================
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -353,8 +407,7 @@
 \fancypagestyle{firststyle} {
 
 	\fancyhead[R]{
-%{\placeheaderlogo}
-%\cornermark
+%\placeheaderlogo
 	}
 
 	%	\fancyhead[L]{{\textsc{\docnumber}}\newline\newline}
@@ -397,10 +450,7 @@
 	\fancyhead[L]{\cornermark\raggedright\small\rightmark}
 	\fancyhead[C]{{\textsc{\small\headingcenter}}}
 	%	\expandafter\fancyhead[R]{\includegraphics[scale=0.4]{\headerlogo}}
-	\fancyhead[R]{
-%		\cornermark
-%		\placeheaderlogo
-	}
+	\fancyhead[R]{}
 	%	
 	\fancyfoot[L]{
 		\scriptsize
@@ -453,7 +503,7 @@
 %%%% 		General Dynamic Referencing
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\RequirePackage{etoolbox}
+
 
 %\setrefcountdefault{-2}
 \newcounter{appage}
@@ -493,10 +543,9 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \newcommand{\fouofig}[1]{
-	\tikzstyle{background grid}=[draw, black!50,step=.5cm]
-	\begin{tikzpicture}%[show background grid]
-		[red]
-		\node [anchor=north east, inner sep=0pt,below left] at (0,0) {#1};
+%	\tikzstyle{background grid}=[draw, black!50,step=.5cm]
+	\begin{tikzpicture}[red] %[show background grid]
+		\node [anchor=north east, inner sep=0pt]  {#1};
 		\node (t1)[anchor=south] at (current bounding box.north west) {\scriptsize \textbf{(FOUO)}};
 		\node (t2)[anchor=north] at (current bounding box.south east) {\scriptsize \textbf{(FOUO)}};
 		%	\node (c1) at (current bounding box.north east) {};
@@ -727,9 +776,13 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 \renewcommand{\titlepage}{
-\thispagestyle{firststyle}\vspace*{-1cm}
+\thispagestyle{firststyle}\vspace*{-1.25cm}
 %\begin{center}
-\noindent	\Large\textsc{\doctype}\smallskip
+
+\noindent\Large\textsc{\textbf{\fontfamily{qhv}\selectfont\titlelong}}
+
+\noindent\Large\textsc{\doctype}\smallskip
+
 %		\small~\\
 %	\\[0.25cm]
 
@@ -737,32 +790,60 @@
 %	~\\[0.15cm]
 %\noindent	\Large\textsc{\contractname System (BMNS)}
 %\begin{minipage}{0.75\linewidth}
-\noindent\Large {\textsc{\textbf{\titlelong}}}\smallskip
+
+%\smallskip
 %	{	\Large \textsc{\contractname}}
 %	{\Large\textsc{some purpose here}},\\
 
 %		\end{minipage}
-%\\[0.25cm]
+%\\[0.15cm]~
+
+\vspace*{0.25cm}
 \noindent\hrule
 \vfill
 \small~\\[0.15cm]
 \normalsize
 %\end{center}
-\begin{minipage}{0.5\textwidth}
-	%	\begin{center}
-%	\vspace{0.25cm}
-	%	\expandafter\includegraphics[height=1.5in, width=0.49\linewidth,keepaspectratio]{\top0logo}
-	%	\expandafter\includegraphics[height=1.5in, width=0.49\linewidth,keepaspectratio]{\botlogo}
+%	\vspace{1cm}
+	
+\begin{minipage}{0.45\textwidth}
+	% Place top logo, unless disabled
+\nottoggle{hidetoplogo}{\includegraphics[width=\linewidth]{\placetoplogo}}
 
-	\vspace{1cm}
-	\placetoplogo\placebotlogo
+	% Place bottom logo, unless disabled
+\nottoggle{hidebotlogo}{\includegraphics[width=0.5\linewidth]{\placebotlogo}}
 
+%\resizebox{1\linewidth}{!}{
+%	\centering	
+%	
+%%\begin{tikzpicture} %[remember picture, overlay]
+%%%		\begin{center}
+%%	    \vspace{0.25cm}
+%%%		\expandafter\includegraphics[height=1.5in, width=0.49\linewidth,keepaspectratio]{\placetoplogo}
+%%%		\expandafter\includegraphics[height=1.5in, width=0.49\linewidth,keepaspectratio]{\placebotlogo}
+%%
+%%
+%%\node () {OOOhh};
+%%\if@tlogo
+%%% do the top logo 
+%%\node () {Look what you made me do};
+%%\node[anchor = north west] at (current bounding box.north west)(top){\includegraphics[width=\linewidth]{\placetoplogo}};
+%%\fi
+%%
+%%\if@blogo
+%%% do the bot logo 
+%%\node () {Look what you just made me do};
+%%\node[below= of top, xshift = 0.4in,yshift=0.4in] (bot){\includegraphics[width=\linewidth]{\placebotlogo}};
+%%\fi
+%%
+%%\draw (current bounding box.north east) -- (current bounding box.north west) -- (current bounding box.south west) -- (current bounding box.south east) -- cycle;
+%%\end{tikzpicture}
+%}
 
-
-	%	\end{center}
-\end{minipage}\hfill
+\end{minipage}
+\hfill
 \begin{minipage}{0.49\textwidth}
-	\center
+	\centering
 	%	\textsc{
 	%		\textbf{
 	%			{\large Record {\fontfamily{cmr}\selectfont\textnumero}:}
@@ -775,27 +856,21 @@
 	%		\small \vspace{0.5cm}
 	%		\vfill
 	\def\arraystretch{1}%  1 is the default, change whatever you need
-	\begin{tabular}{r @{ : } >{\raggedright\arraybackslash}p{1.27in}}
-		\textsc{
-			{
-				{\large Document {\fontfamily{cmr}\selectfont\textnumero}}}}
-		%				$\textnumero$ 
-		                                    & \large
-		%			\underline{\docnumber}
-		{\bf\docnumber\newline}                                                                                        \\
-
+	\begin{tabular}{r @{ : } >{\raggedright\arraybackslash}p{1.3in}}
+		\textsc{\large Document {\fontfamily{cmr}\selectfont\textnumero}}
+                                            & \docnumber  \newline                                            \\
 		\textsc{{\newline}Current Revision} & \revision                                                           \\
 		\textsc{Total Pages}                & \pageref{LastPage}                                                  \\
-		\textsc{Status}                     & \textsc{\documentstatus}                                            \\
+		\textsc{Status}                     & \documentstatus   \newline                                         \\
 		\textsc{Release Date}               & \released                                                              \\
-		\textsc{Prepared By}                & James Heller\newline {Fuzing, Initiator Safety}                     \\
-		\textsc{Classification}             & UNCLASSIFIED\iftoggle{markingFOUO}{, FOUO \\} \\
-\iftoggle{markingDistribution}{		\textsc{Distribution}               & \distribution                                                       \\}
-		\textsc{\projectdesignation}        & \textsc{\contractname}                                                       \\
+		\textsc{Prepared By}                & James Heller\newline {Fuzing, Initiator Safety}\newline                    \\
+		\textsc{Classification}             & UNCLASSIFIED\iftoggle{markingFOUO}{, FOUO \\}		\\
+		\iftoggle{markingDistribution}{\textsc{Distribution}&\distribution\\} 
+\newline{\scshape\projectdesignation}        & \textsc{\contractname}                                                       \\
 		\textsc{Contract \#}                & \textsc{\contract}
 		{\newline}                                                                                                \\
 
-		\textsc{Originating Facility}       & \textsc{Raytheon Missile\newline~Systems Company}                   \\
+		\textsc{Originating Facility}       & Raytheon Missile\newline~Systems Company                   \\
 		\textsc{Located}                    &
 		1151 E. Hermans Rd\newline
 		Tucson, AZ 85756                                                                                          \\
@@ -804,9 +879,10 @@
 	\vfill
     %\def\arraystretch{1.5}%  1 is the default, change whatever you need
 \end{minipage}
-
-\vspace{0.25cm}
+%
+%\vspace{0.25cm}
 \vfill
+
 \footnotesize
 
 \noindent
@@ -826,8 +902,10 @@
 \noindent\iftoggle{markingDestroy}{\destructwarning}
 
 
-\noindent\iftoggle{markingCopyright}{\copywarning}
+\noindent\iftoggle{programWarning}{\programwarning}
 
+
+\noindent\iftoggle{markingCopyright}{\copywarning}
 
 }
 
