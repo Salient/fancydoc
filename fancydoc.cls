@@ -254,15 +254,15 @@
 
 
 % Define custom colors to show in TOC
-%\definecolor{sectcolor}{rgb}{0.6,0.3,0}
-%\definecolor{secpcolor}{rgb}{0.3,0,0.6}
+\definecolor{sectcolor}{rgb}{0,0,0.2}
+\definecolor{secpcolor}{rgb}{0,0,0.2}
 
 
 % % Table of Contents Entries
 % Make Entries in the ToC in Small Caps
 \renewcommand{\cftsecfont}{\scshape}
-%\renewcommand{\cftsecaftersnumb}{\bfseries\hfill\color{sectcolor}}
-\renewcommand{\cftsecaftersnumb}{\bfseries\hfill}
+\renewcommand{\cftsecaftersnumb}{\bfseries\hfill\color{sectcolor}}
+%\renewcommand{\cftsecaftersnumb}{\bfseries\hfill}
 
 \renewcommand{\cftsecleader}{}
 
@@ -270,8 +270,8 @@
 % Only matters if left justifying text
 
 \settowidth{\cftsecnumwidth}{Section XX}
-%\renewcommand{\cftsecpresnum}{\color{secpcolor}\bfseries Section }
-\renewcommand{\cftsecpresnum}{\bfseries Section }
+\renewcommand{\cftsecpresnum}{\color{secpcolor}\bfseries Section }
+%\renewcommand{\cftsecpresnum}{\bfseries Section }
 
 
 

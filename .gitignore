@@ -1,0 +1,15 @@
+*.nav
+*.snm
+*.aux
+*.lof
+*.log
+*.lol
+*.lot
+*.out
+*.synctex*
+*.toc
+*.pygtex
+*.pygstyle
+.DS_STORE
+*.fdb_latexmk
+*.fls
