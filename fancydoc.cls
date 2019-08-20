@@ -1,3 +1,4 @@
+
 % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
 % % Humble beginnings of some elaborate document layout and reference
 % % system for use in professional environment writing specifications
@@ -11,6 +12,9 @@
 % https://tex.stackexchange.com/questions/4736/what-is-the-difference-between-fragile-and-robust-commands
 
 
+%\pdfcompresslevel=0
+%\pdfobjcompresslevel=0
+
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesClass{fancydoc}[2019/01/31 Make Overly Nice Documents]
 % Based on article class mostly
@@ -19,19 +23,21 @@
 % Setup conditional logic before processing Options
 \RequirePackage{etoolbox}
 
-% These default to false
+% New toggles default to false
 \newtoggle{hidetoplogo}
 \newtoggle{hidebotlogo}
 \newtoggle{hideheaderlogo}
 \newtoggle{codesnips}
+\newtoggle{dull}
 %     Can't really do much interesting stuff before \ProcessOptions\relax, have to use 
 %     primitive commands
 
 % Code snips option
-\newif\if@codesnips\@codesnipsfalse
-\newif\if@tlogo\@tlogotrue
-\newif\if@blogo\@blogotrue
-\newif\if@hlogo\@hlogotrue
+%\newif\if@codesnips\@codesnipsfalse
+%\newif\if@tlogo\@tlogotrue
+%\newif\if@blogo\@blogotrue
+%\newif\if@hlogo\@hlogotrue
+%\newif\if@dull\@dullfalse
 % ---------------------------------------------------------------------------------------
 
 % Handle Options
@@ -43,6 +49,7 @@
 \DeclareOption{notop}{\toggletrue{hidetoplogo}}
 \DeclareOption{nobot}{\toggletrue{hidebotlogo}}
 \DeclareOption{nohead}{\toggletrue{hideheaderlogo}}
+\DeclareOption{dull}{\toggletrue{dull}}
 
 \DeclareOption*{\PassOptionsToClass{\CurrentOption}{article}}
 \ProcessOptions\relax
@@ -57,6 +64,10 @@
 \RequirePackage{xspace}
 \RequirePackage{titlesec}
 \RequirePackage{tikz}
+\usepackage{pgfplots} \pgfplotsset{compat=newest}
+\RequirePackage{subfiles}
+\RequirePackage{core/fancydoc}
+
 % TODO Fix this here.....V
 % \newcommand{\sharedmedia}{C:/Users/1117384/Documents/Work/Utilities/Latex}
 %\newcommand{\sharedmedia}{/Users/vanquish/Work/Utilities/Latex}
@@ -80,6 +91,13 @@
 \newcommand{\codereff}[1]{\hyperref[{#1}]{\codesref \ref*{#1}, page \pageref*{#1}}}
 }
 
+
+\newcommand{\formatting}{\color{red}}
+\iftoggle{dull}{
+	\renewcommand{\formatting}{\color{black}}
+}
+
+
 % ---------------------------------------------------------------------------------------
 % Configure logos for document header
 
@@ -87,13 +105,12 @@
 
 \newcommand{\@toplogo}{\ClassError{Top logo never defined. You must call {\textbackslash}settoplogo{path/to/logo}, or disable by using option `notoplogo' in class options.}}
 	
-\newcommand{\@botlogo}
-%{\ClassError{Bottom logo never defined. You must call {\textbackslash}setbotlogo{path/to/logo}, or disable by using option `nobotplogo' in class options.}}
+\newcommand{\@botlogo}{\ClassError{Bottom logo never defined. You must call {\textbackslash}setbotlogo{path/to/logo}, or disable by using option `nobotlogo' in class options.}}
 	
 \newcommand{\@headerlogo}{\ClassError{Header logo never defined. You must call {\textbackslash}setheaderlogo{path/to/logo}, or disable by using option `noheadlogo' in class options.}} 	
 
 \newcommand{\setheaderlogo}[1]{
-    \if@hlogo
+    \nottoggle{hideheaderlogo}{
 	\IfFileExists{#1}{
 %	\renewcommand{\@headerlogo}{\includegraphics[width=1.25in,keepaspectratio]{#1}}
 % Redefine header rule to include logo at the end
@@ -103,26 +120,32 @@
     }{
 		\ClassError{fancydoc}{Header logo set to #1, but that file does not exist!}
 		%	. Set it using settoplogo{path to header logo file}, or disable by using option `noheadlogo' in class options.
-    }\fi}
+    }
+}
+
+}
 
 \newcommand{\settoplogo}[1]{
-	\if@tlogo
+\nottoggle{hidetoplogo}{
 	\IfFileExists{#1}{ % Yes?
 		\renewcommand{\@toplogo}{#1}
 %		\includegraphics[height=1.75in, width=\linewidth,keepaspectratio]{#1}
 	}{ % Else
 		\ClassError{fancydoc}{Top logo set to #1, but that file does not exist!}
 		%		. Set it using settoplogo{path to bottom logo file}, or disable by using option `notoplogo' in class options.
-	}\fi}
+	}}}
 
 \newcommand{\setbotlogo}[1]{
-	\if@blogo
-	\IfFileExists{#1}{
-		\renewcommand{\@botlogo}{#1}
+     \nottoggle{hidebotlogo}{
+    	\IfFileExists{#1}{
+	    	\renewcommand{\@botlogo}{#1}
 %		\includegraphics[height=1.75in,width=\linewidth,keepaspectratio]{#1}}
-    }{
+      }{
 		\ClassError{fancydoc}{Bottom logo set to #1, but that file does not exist!}
-	}\fi}
+	}
+  }{}
+}
+
 
 \newcommand{\placetoplogo}{\@toplogo}
 \newcommand{\placebotlogo}{\@botlogo}
@@ -219,6 +242,7 @@
 \newtoggle{markingFOUO}
 \newtoggle{programWarning}
 \newtoggle{markingSafetyCritical}
+\newtoggle{customBumper}
 
 % There may be a space required between these?
 \togglefalse{markingHazOp}
@@ -237,6 +261,8 @@
 
 \togglefalse{markingFOUO}
 
+\togglefalse{customBumper}
+
 
 
 
@@ -253,6 +279,7 @@
 \setlength{\headheight}{17pt}
 
 
+
 % Define custom colors to show in TOC
 \definecolor{sectcolor}{rgb}{0,0,0.2}
 \definecolor{secpcolor}{rgb}{0,0,0.2}
@@ -260,16 +287,17 @@
 
 % % Table of Contents Entries
 % Make Entries in the ToC in Small Caps
-\renewcommand{\cftsecfont}{\scshape}
-\renewcommand{\cftsecaftersnumb}{\bfseries\hfill\color{sectcolor}}
+\renewcommand{\cftsecfont}{\scshape\sffamily\larger}
+\renewcommand{\cftsecaftersnumb}{\\Topic: \larger\bfseries\sffamily\color{sectcolor}}
 %\renewcommand{\cftsecaftersnumb}{\bfseries\hfill}
 
-\renewcommand{\cftsecleader}{}
+\renewcommand{\cftsecleader}{\hfill}
 
 % Since we are modifying Section Titles, we have to adjust where the title text starts
 % Only matters if left justifying text
 
 \settowidth{\cftsecnumwidth}{Section XX}
+\settowidth{\cftsecnumwidth}{}
 \renewcommand{\cftsecpresnum}{\color{secpcolor}\bfseries Section }
 %\renewcommand{\cftsecpresnum}{\bfseries Section }
 
@@ -279,8 +307,8 @@
 
 % Document Section Title Formatting
 
-\titleformat*{\section}{\Large\bfseries\scshape}
-\titleformat*{\subsection}{\large\bfseries\scshape}
+\titleformat*{\section}{\Large\bfseries\sffamily\scshape}
+\titleformat*{\subsection}{\large\bfseries\sffamily\scshape}
 %\titleformat*{\subsubsection}{\bfseries\scshape}
 %\titleformat*{\paragraph}{\bfseries\scshape}
 %\titleformat*{\subparagraph}{\bfseries\scshape}
@@ -305,6 +333,8 @@
 %=================== End Section Level Title Styling, Document and TOC ============
 
 
+%\newlength{\charwidth}
+%\setlength{\charwidth}{\widthof{\S}}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%% 		Special Look and Feel 
@@ -316,7 +346,7 @@
 %\setlength{\abovecaptionskip}{0pt}
 
 
-\RequirePackage[left=1.5in,right=1.5in,top=1.25in, bottom=1.25in, marginparsep=7pt]{geometry}
+\RequirePackage[left=1.25in,right=1.25in,top=1.25in, bottom=1.25in, marginparsep=7pt]{geometry}
 
 \newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
 
@@ -355,14 +385,13 @@
 
 %\SetWatermarkLightness{0.92}
 
-\RequirePackage{enumitem}
+\RequirePackage{enumitem}[itemsep = 1cm]
 % Adjust indents/margins of lists. Provided by [enumitem]
 \newlength\listindent
-\setlength\listindent{0.56in}
-
-\setlist[enumerate]{leftmargin=\listindent}
-\setlist[itemize]{leftmargin=\listindent}
-\setlist[description]{leftmargin=\listindent}
+\setlength\listindent{\parindent}
+\setlist[enumerate]{leftmargin=\listindent, label=\emph{\alph*})}
+\setlist[itemize]{leftmargin=\listindent, rightmargin=\parindent, itemsep=0.2cm}
+\setlist[description]{leftmargin=\listindent, labelwidth=0.45in, labelindent=\parindent}
 
 %  leave space around whole list
 \setlist{noitemsep} %
@@ -396,8 +425,8 @@
 
 \newcommand{\topfooterleft}{\textsc{For \textbf{\contractname} \projectdesignation\xspace Only}}
 \newcommand{\cornermark}{
-	\tikz[remember picture, overlay, anchor=east]\node at (current page.north west)
-	[xshift=0.5cm, yshift=-1.75cm, rotate=90]{\scriptsize \docnumber (\revision)};
+	\tikz[remember picture, overlay, anchor=west]\node at (current page.135)
+	[xshift=0.65cm, yshift=-2.75cm, rotate=90]{\scriptsize \docnumber, Rev. (\revision)};
 %\marginnote{\rotatebox{90}{\raisebox{0.5in}{\qquad\scriptsize\textbf{\docnumber (\revision)}}}}
 }
 
@@ -427,7 +456,7 @@
 	}
 
 	\fancyfoot[R]{
-		\iftoggle{markingSafetyCritical}{\scriptsize\textbf{\color{red}\textsc{Safety Critical Item}}}
+		\iftoggle{markingSafetyCritical}{\scriptsize\textbf{\formatting\textsc{Safety Critical Item}}}
 		~\vspace{0.15cm}\\
 		\scriptsize\textbf{UNCLASSIFIED}
 		\iftoggle{markingFOUO}{\textbf{ // ~FOUO}}
@@ -464,7 +493,7 @@
 
 
 	\fancyfoot[C]{
-		\iftoggle{markingSafetyCritical}{\scriptsize\textbf{\color{red}\textsc{Safety Critical Item}}}
+		\iftoggle{markingSafetyCritical}{\scriptsize\textbf{\formatting\textsc{Safety Critical Item}}}
 		~\vspace{0.15cm}\\
 		\iftoggle{markingProprietary}{\scriptsize\color{black}\textsc{Raytheon Proprietary}\\[0.2cm]}~
 		\iftoggle{markingHazOp}{ \small\color{red}\textbf{PROCEDURE CONTAINS HAZARDOUS OPERATIONS}}
@@ -562,11 +591,11 @@
 % Classification Markings
 
 \newcommand{\fouofigleft}{
-	{\raggedright \scriptsize\textbf{\color{red}(FOUO)}\\}
+	{\raggedright \scriptsize\textbf{\formatting(FOUO)}\\}
 }
 \newcommand{\fouofigright}{
 	\begin{minipage}{\linewidth}
-		\vspace{0.3em}	\raggedleft\scriptsize\textbf{\color{red}(FOUO)}
+		\vspace{0.3em}	\raggedleft\scriptsize\textbf{\formatting(FOUO)}
 	\end{minipage}%\vspace{-0.25cm}
 }
 
@@ -574,7 +603,8 @@
 
 % Add NOTE marker in margin
 \RequirePackage{marginnote}
-\newcommand{\fouo}{{\marginnote{\textbf{\small\color{red}(FOUO)}}}}
+
+\newcommand{\fouo}{{\marginnote{\textbf{\small\formatting(FOUO)}}}}
 
 \newcommand{\note}[1]{~\\\marginnote{\textbf{NOTE:}}\noindent{#1}\\}
 
@@ -781,7 +811,7 @@
 
 \noindent\Large\textsc{\textbf{\fontfamily{qhv}\selectfont\titlelong}}
 
-\noindent\Large\textsc{\doctype}\smallskip
+\noindent\Large\textsc{\fontfamily{qhv}\selectfont\doctype}\smallskip
 
 %		\small~\\
 %	\\[0.25cm]
@@ -806,13 +836,11 @@
 %\end{center}
 %	\vspace{1cm}
 	
-\begin{minipage}{0.45\textwidth}
+\begin{minipage}{0.45\linewidth}
 	% Place top logo, unless disabled
-\nottoggle{hidetoplogo}{\includegraphics[width=\linewidth]{\placetoplogo}}
-
+\nottoggle{hidetoplogo}{\includegraphics[width=\linewidth]{\placetoplogo}}{}
 	% Place bottom logo, unless disabled
-\nottoggle{hidebotlogo}{\includegraphics[width=0.5\linewidth]{\placebotlogo}}
-
+\nottoggle{hidebotlogo}{\includegraphics[width=\linewidth]{\placebotlogo}}{}
 %\resizebox{1\linewidth}{!}{
 %	\centering	
 %	
@@ -839,11 +867,10 @@
 %%\draw (current bounding box.north east) -- (current bounding box.north west) -- (current bounding box.south west) -- (current bounding box.south east) -- cycle;
 %%\end{tikzpicture}
 %}
-
 \end{minipage}
 \hfill
-\begin{minipage}{0.49\textwidth}
-	\centering
+\begin{minipage}{0.5\linewidth}
+%	\centering
 	%	\textsc{
 	%		\textbf{
 	%			{\large Record {\fontfamily{cmr}\selectfont\textnumero}:}
@@ -946,14 +973,14 @@
 
 	\section*{Revision History}
 	\begin{center}
-		\begin{tabular}{ c | c | p{4.2in} }
+		\begin{tabularx}{\linewidth}{ c | c | X }
 			\textbf{Revision} & \textbf{Effective Date} & \textbf{Description of Change} \\ \hline
 			\textbf{-}        & \today                  & Initial Release -- \tbd        \\
 			%			\textbf{A}		  & August 30, 2017	& Added section ``Review of Facts Known To-Date'', Appendix ``L-3 Reflow Oven Profile'', and associated figures. \\
 			%			\textbf{B} & August 31, 2017 & Updated Developments, call with L-3 and TTM. \\
 			%			\textbf{C} & September 12, 2017 & Added Fault Tree and supporting evidence for each branch. \\
 			% \textbf{D} & & \\ \hline
-		\end{tabular}
+		\end{tabularx}
 	\end{center}
 
 	\newpage
