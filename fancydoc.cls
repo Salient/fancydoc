@@ -28,17 +28,7 @@
 \newtoggle{hidebotlogo}
 \newtoggle{hideheaderlogo}
 \newtoggle{codesnips}
-\newtoggle{dull}
-%     Can't really do much interesting stuff before \ProcessOptions\relax, have to use 
-%     primitive commands
-
-% Code snips option
-%\newif\if@codesnips\@codesnipsfalse
-%\newif\if@tlogo\@tlogotrue
-%\newif\if@blogo\@blogotrue
-%\newif\if@hlogo\@hlogotrue
-%\newif\if@dull\@dullfalse
-% ---------------------------------------------------------------------------------------
+\newtoggle{stark}
 
 % Handle Options
 
@@ -49,7 +39,7 @@
 \DeclareOption{notop}{\toggletrue{hidetoplogo}}
 \DeclareOption{nobot}{\toggletrue{hidebotlogo}}
 \DeclareOption{nohead}{\toggletrue{hideheaderlogo}}
-\DeclareOption{dull}{\toggletrue{dull}}
+\DeclareOption{stark}{\toggletrue{stark}}
 
 \DeclareOption*{\PassOptionsToClass{\CurrentOption}{article}}
 \ProcessOptions\relax
@@ -92,9 +82,9 @@
 }
 
 
-\newcommand{\formatting}{\color{red}}
-\iftoggle{dull}{
-	\renewcommand{\formatting}{\color{black}}
+\newcommand{\formatting}{\color{black}}
+\iftoggle{stark}{
+	\renewcommand{\formatting}{\color{red}}
 }
 
 
@@ -167,7 +157,7 @@
 % Main file that markings should be defined in. May should be maybe part of core?
 
 % Select the appropriate Marking Template (Must already exist....)
-\input{markings}
+\input{\sharedmedia/Markings/mixed}
 
 % Should set the following
 %		Logos (top, bottom)
@@ -960,15 +950,9 @@
 
 	%\newpage
 	\listoftables
-	\listoflistings
+    \iftoggle{codesnips}{\listoflistings}
 	\listoffigures
 	
-	% Optional inclusion of code snip list
-	\if@codesnips
-	\listoflistings
-    \fi
-    
-    
 	\vfill
 
 	\section*{Revision History}
