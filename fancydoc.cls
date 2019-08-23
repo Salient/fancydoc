@@ -17,8 +17,7 @@
 
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesClass{fancydoc}[2019/01/31 Make Overly Nice Documents]
-% Based on article class mostly
-\LoadClass{article}
+
 
 % Setup conditional logic before processing Options
 \RequirePackage{etoolbox}
@@ -29,15 +28,8 @@
 \newtoggle{hideheaderlogo}
 \newtoggle{codesnips}
 \newtoggle{dull}
-%     Can't really do much interesting stuff before \ProcessOptions\relax, have to use 
-%     primitive commands
+\newtoggle{watermark}
 
-% Code snips option
-%\newif\if@codesnips\@codesnipsfalse
-%\newif\if@tlogo\@tlogotrue
-%\newif\if@blogo\@blogotrue
-%\newif\if@hlogo\@hlogotrue
-%\newif\if@dull\@dullfalse
 % ---------------------------------------------------------------------------------------
 
 % Handle Options
@@ -49,10 +41,12 @@
 \DeclareOption{notop}{\toggletrue{hidetoplogo}}
 \DeclareOption{nobot}{\toggletrue{hidebotlogo}}
 \DeclareOption{nohead}{\toggletrue{hideheaderlogo}}
+\DeclareOption{mark}{\toggletrue{watermark}}
 \DeclareOption{dull}{\toggletrue{dull}}
-
 \DeclareOption*{\PassOptionsToClass{\CurrentOption}{article}}
 \ProcessOptions\relax
+% Based on article class mostly
+\LoadClass{article}
 
 % ---------------------------------------------------------------------------------------
 % Pull in packages we know we need
@@ -97,6 +91,19 @@
 	\renewcommand{\formatting}{\color{black}}
 }
 
+\iftoggle{watermark}{
+\RequirePackage{draftwatermark}
+%\SetWatermarkText{BIO-HAZARD}
+%\SetWatermarkScale{4}
+%\SetWatermarkAngle{} 
+%\SetWatermarkColor{}
+%\SetWatermarkFontSize{}
+%\SetWatermarkScale{}
+%\SetWatermarkHorCenter{}
+%\SetWatermarkVerCenter{}
+
+\SetWatermarkLightness{0.92} % Higher is lighter
+}
 
 % ---------------------------------------------------------------------------------------
 % Configure logos for document header
@@ -374,16 +381,12 @@
 % Default to margin notes on left margin
 \reversemarginpar
 
-
-
 % Footnote grouping / save environments
 %\RequirePackage{footnote}
 %\makesavenoteenv{tabular}
 %\makesavenoteenv{table}
 %\RequirePackage{tablefootnote}
 \RequirePackage{threeparttable}
-
-%\SetWatermarkLightness{0.92}
 
 \RequirePackage{enumitem}[itemsep = 1cm]
 % Adjust indents/margins of lists. Provided by [enumitem]
@@ -620,6 +623,16 @@
 	\cfbox{red}{\parbox{\dimexpr\linewidth-2\fboxsep-2\fboxrule}{TODO: #1}}
 }
 
+\colorlet{shadecolor}{gray!8}
+\newenvironment{starkpoints}{
+\begin{snugshade}
+	\begin{leftbar}
+		\bigskip
+		\begin{itemize}[rightmargin=\parindent]
+}{
+\end{itemize}
+\end{leftbar}
+\end{snugshade}}
 
 
 %=================== End Particular Annotations ===================================
