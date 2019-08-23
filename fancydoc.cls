@@ -2,7 +2,7 @@
 % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
 % % Humble beginnings of some elaborate document layout and reference
 % % system for use in professional environment writing specifications
-% % and statements of work, etc. 
+% % and statements of work, etc.
 % %
 % % Copyright 2019, James Heller
 % % All rights reserved.
@@ -17,8 +17,7 @@
 
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesClass{fancydoc}[2019/01/31 Make Overly Nice Documents]
-% Based on article class mostly
-\LoadClass{article}
+
 
 % Setup conditional logic before processing Options
 \RequirePackage{etoolbox}
@@ -29,7 +28,10 @@
 \newtoggle{hideheaderlogo}
 \newtoggle{codesnips}
 \newtoggle{stark}
+\newtoggle{watermark}
 
+
+% ---------------------------------------------------------------------------------------
 % Handle Options
 
 \DeclareOption{specification}{\OptionNotUsed}
@@ -39,10 +41,13 @@
 \DeclareOption{notop}{\toggletrue{hidetoplogo}}
 \DeclareOption{nobot}{\toggletrue{hidebotlogo}}
 \DeclareOption{nohead}{\toggletrue{hideheaderlogo}}
+\DeclareOption{mark}{\toggletrue{watermark}}
 \DeclareOption{stark}{\toggletrue{stark}}
 
 \DeclareOption*{\PassOptionsToClass{\CurrentOption}{article}}
 \ProcessOptions\relax
+% Based on article class mostly
+\LoadClass{article}
 
 % ---------------------------------------------------------------------------------------
 % Pull in packages we know we need
@@ -87,6 +92,19 @@
 	\renewcommand{\formatting}{\color{red}}
 }
 
+\iftoggle{watermark}{
+\RequirePackage{draftwatermark}
+%\SetWatermarkText{BIO-HAZARD}
+%\SetWatermarkScale{4}
+%\SetWatermarkAngle{}
+%\SetWatermarkColor{}
+%\SetWatermarkFontSize{}
+%\SetWatermarkScale{}
+%\SetWatermarkHorCenter{}
+%\SetWatermarkVerCenter{}
+
+\SetWatermarkLightness{0.92} % Higher is lighter
+}
 
 % ---------------------------------------------------------------------------------------
 % Configure logos for document header
@@ -94,10 +112,10 @@
 % NOTE - FileExists must have correct file extension
 
 \newcommand{\@toplogo}{\ClassError{Top logo never defined. You must call {\textbackslash}settoplogo{path/to/logo}, or disable by using option `notoplogo' in class options.}}
-	
+
 \newcommand{\@botlogo}{\ClassError{Bottom logo never defined. You must call {\textbackslash}setbotlogo{path/to/logo}, or disable by using option `nobotlogo' in class options.}}
-	
-\newcommand{\@headerlogo}{\ClassError{Header logo never defined. You must call {\textbackslash}setheaderlogo{path/to/logo}, or disable by using option `noheadlogo' in class options.}} 	
+
+\newcommand{\@headerlogo}{\ClassError{Header logo never defined. You must call {\textbackslash}setheaderlogo{path/to/logo}, or disable by using option `noheadlogo' in class options.}}
 
 \newcommand{\setheaderlogo}[1]{
     \nottoggle{hideheaderlogo}{
@@ -327,7 +345,7 @@
 %\setlength{\charwidth}{\widthof{\S}}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%% 		Special Look and Feel 
+%%%% 		Special Look and Feel
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
@@ -364,16 +382,12 @@
 % Default to margin notes on left margin
 \reversemarginpar
 
-
-
 % Footnote grouping / save environments
 %\RequirePackage{footnote}
 %\makesavenoteenv{tabular}
 %\makesavenoteenv{table}
 %\RequirePackage{tablefootnote}
 \RequirePackage{threeparttable}
-
-%\SetWatermarkLightness{0.92}
 
 \RequirePackage{enumitem}[itemsep = 1cm]
 % Adjust indents/margins of lists. Provided by [enumitem]
@@ -463,14 +477,14 @@
 	%\fancyfoot[C]{\vspace{0.1cm}\HRule \\[0.1cm] \scriptsize
 	%	FOR U.S./JAPAN SM-3 BLK IIA PROJECT ONLY\\
 	%	UNCLASSIFIED // FOR OFFICIAL USE ONLY\\
-	%	{\color{red}\colorbox{yellow}{\textbf{NOT RELEASABLE TO JAPAN}}}}	
+	%	{\color{red}\colorbox{yellow}{\textbf{NOT RELEASABLE TO JAPAN}}}}
 
 
 	\fancyhead[L]{\cornermark\raggedright\small\rightmark}
 	\fancyhead[C]{{\textsc{\small\headingcenter}}}
 	%	\expandafter\fancyhead[R]{\includegraphics[scale=0.4]{\headerlogo}}
 	\fancyhead[R]{}
-	%	
+	%
 	\fancyfoot[L]{
 		\scriptsize
 		\topfooterleft
@@ -488,7 +502,7 @@
 		\iftoggle{markingProprietary}{\scriptsize\color{black}\textsc{Raytheon Proprietary}\\[0.2cm]}~
 		\iftoggle{markingHazOp}{ \small\color{red}\textbf{PROCEDURE CONTAINS HAZARDOUS OPERATIONS}}
 	}
-	%	
+	%
 	\fancyfoot[R]{
 		\thepage\ of \pageref{LastPage}\vspace{0.15cm}\\
 		\scriptsize\textbf{UNCLASSIFIED}
@@ -501,7 +515,7 @@
 		%		\iflabelexists{endOf\thesection}
 		%	{\setcounter{lappage}{\getpagerefnumber{endOf\thesection}-\arabic{sappage}}}
 		%					  {\setcounter{lappage}{\getpagerefnumber{LastPage}-\arabic{sappage}+1}}
-		%		\setcounter{lappage}{\getpagerefnumber{endOf\thesection}-\arabic{sappage}}			  
+		%		\setcounter{lappage}{\getpagerefnumber{endOf\thesection}-\arabic{sappage}}
 		\setcounter{appage}{\theCurrentPage-\arabic{sappage}+1}
 		%		\newcommand{\tempddd}{endOf\thesection}
 		%		I chooose YOU \tempddd
@@ -610,6 +624,16 @@
 	\cfbox{red}{\parbox{\dimexpr\linewidth-2\fboxsep-2\fboxrule}{TODO: #1}}
 }
 
+\colorlet{shadecolor}{gray!8}
+\newenvironment{starkpoints}{
+\begin{snugshade}
+	\begin{leftbar}
+		\bigskip
+		\begin{itemize}[rightmargin=\parindent]
+}{
+\end{itemize}
+\end{leftbar}
+\end{snugshade}}
 
 
 %=================== End Particular Annotations ===================================
@@ -674,10 +698,10 @@
 
 % stiles used
 \tikzset{mynode/.style={draw=black,solid,circle,fill=white,inner sep=2pt, thick, text=black}}
-%draw=black to get a black circle, fill=white so it actually has a   
+%draw=black to get a black circle, fill=white so it actually has a
 %background and text=black to not get that rendered in the specified color
 \tikzset{arrow line/.style={dashed, line width= 2.5pt, color=#1}}
-%color is given as a paramter so one can put these two styles in the  
+%color is given as a paramter so one can put these two styles in the
 %preamble and easily use throughout the document, line width as it was to small on my images on a page
 
 %\begin{figure}[tbph]
@@ -687,9 +711,9 @@
 %				\includegraphics[width=1\columnwidth]{path/to/image_a}
 %				\par\end{center}%
 %		\end{minipage}
-%		
-%		
-%		
+%
+%
+%
 %	}\hfill{}\subfloat[description of figure a]{\noindent \centering%
 %		\begin{minipage}[b][5cm][c]{0.4\columnwidth}%
 %			\noindent \begin{center}
@@ -702,7 +726,7 @@
 %				% \draw[help lines,xstep=.05,ystep=.05] (0,0) grid (1,1);
 %				% \foreach \x in {0,1,...,9} { \node [anchor=north] at (\x/10,0) {0.\x}; }
 %				% \foreach \y in {0,1,...,9} { \node [anchor=east] at (0,\y/10) {0.\y};}
-%				
+%
 %				% uncomment until line above
 %				\draw[arrow line=1c1] (0.8,0.8) -- +(0.275,0)node[mynode,anchor=west] {\Large 1};
 %				%1c1 is the code for the color, you can enter 1c2 here, too
@@ -713,12 +737,12 @@
 %				\end{tikzpicture}
 %				\par\end{center}%
 %		\end{minipage}
-%		
+%
 %	}\hspace{5mm}
-%	
+%
 %	\protect\caption{outside caption}
-%	
-%	
+%
+%
 %\end{figure}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -778,8 +802,8 @@
 
 \newcommand{\connfont}{\fontfamily{NotoSans-TLF}\selectfont}
 
-	
-	
+
+
 %\newcommand{\ittysig}[1]{{\signalfont{\scriptsize #1}}}5
 %=================== End Font Configuration =======================================
 
@@ -825,15 +849,15 @@
 \normalsize
 %\end{center}
 %	\vspace{1cm}
-	
+
 \begin{minipage}{0.45\linewidth}
 	% Place top logo, unless disabled
 \nottoggle{hidetoplogo}{\includegraphics[width=\linewidth]{\placetoplogo}}{}
 	% Place bottom logo, unless disabled
 \nottoggle{hidebotlogo}{\includegraphics[width=\linewidth]{\placebotlogo}}{}
 %\resizebox{1\linewidth}{!}{
-%	\centering	
-%	
+%	\centering
+%
 %%\begin{tikzpicture} %[remember picture, overlay]
 %%%		\begin{center}
 %%	    \vspace{0.25cm}
@@ -843,13 +867,13 @@
 %%
 %%\node () {OOOhh};
 %%\if@tlogo
-%%% do the top logo 
+%%% do the top logo
 %%\node () {Look what you made me do};
 %%\node[anchor = north west] at (current bounding box.north west)(top){\includegraphics[width=\linewidth]{\placetoplogo}};
 %%\fi
 %%
 %%\if@blogo
-%%% do the bot logo 
+%%% do the bot logo
 %%\node () {Look what you just made me do};
 %%\node[below= of top, xshift = 0.4in,yshift=0.4in] (bot){\includegraphics[width=\linewidth]{\placebotlogo}};
 %%\fi
@@ -882,7 +906,7 @@
 		\textsc{Release Date}               & \released                                                              \\
 		\textsc{Prepared By}                & James Heller\newline {Fuzing, Initiator Safety}\newline                    \\
 		\textsc{Classification}             & UNCLASSIFIED\iftoggle{markingFOUO}{, FOUO \\}		\\
-		\iftoggle{markingDistribution}{\textsc{Distribution}&\distribution\\} 
+		\iftoggle{markingDistribution}{\textsc{Distribution}&\distribution\\}
 \newline{\scshape\projectdesignation}        & \textsc{\contractname}                                                       \\
 		\textsc{Contract \#}                & \textsc{\contract}
 		{\newline}                                                                                                \\
@@ -952,7 +976,7 @@
 	\listoftables
     \iftoggle{codesnips}{\listoflistings}
 	\listoffigures
-	
+
 	\vfill
 
 	\section*{Revision History}
