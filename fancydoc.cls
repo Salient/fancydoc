@@ -60,7 +60,12 @@
 \RequirePackage{tikz}
 \usepackage{pgfplots} \pgfplotsset{compat=newest}
 \RequirePackage{subfiles}
-\RequirePackage{core/fancydoc}
+
+% Following packages support minimal functions.
+\RequirePackage{framed} % Required only for starkpoints env.
+
+
+%\RequirePackage{core/fancydoc}
 
 % TODO Fix this here.....V
 % \newcommand{\sharedmedia}{C:/Users/1117384/Documents/Work/Utilities/Latex}
@@ -554,6 +559,7 @@
 
 
 \AtBeginEnvironment{appendices}{
+	\appendixpagenumbering
 	\preto{\section}{
 		\newcounter{endOf\thesection}
 		\setcounter{endOf\thesection}{\theCurrentPage}
@@ -573,6 +579,9 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%% 		Particular Annotations
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newlength{\charwidth}
+\setlength{\charwidth}{\widthof{\S}}
+
 
 \newcommand{\fouofig}[1]{
 %	\tikzstyle{background grid}=[draw, black!50,step=.5cm]
@@ -949,7 +958,7 @@
 
 }
 
-\providecommand{\codelistings}{}
+%\providecommand{\codelistings}{}
 
 \newcommand{\metapages}{
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
