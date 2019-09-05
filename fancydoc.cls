@@ -2,7 +2,7 @@
 % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
 % % Humble beginnings of some elaborate document layout and reference
 % % system for use in professional environment writing specifications
-% % and statements of work, etc. 
+% % and statements of work, etc.
 % %
 % % Copyright 2019, James Heller
 % % All rights reserved.
@@ -27,11 +27,11 @@
 \newtoggle{hidebotlogo}
 \newtoggle{hideheaderlogo}
 \newtoggle{codesnips}
-\newtoggle{dull}
+\newtoggle{stark}
 \newtoggle{watermark}
 
-% ---------------------------------------------------------------------------------------
 
+% ---------------------------------------------------------------------------------------
 % Handle Options
 
 \DeclareOption{specification}{\OptionNotUsed}
@@ -42,7 +42,8 @@
 \DeclareOption{nobot}{\toggletrue{hidebotlogo}}
 \DeclareOption{nohead}{\toggletrue{hideheaderlogo}}
 \DeclareOption{mark}{\toggletrue{watermark}}
-\DeclareOption{dull}{\toggletrue{dull}}
+\DeclareOption{stark}{\toggletrue{stark}}
+
 \DeclareOption*{\PassOptionsToClass{\CurrentOption}{article}}
 \ProcessOptions\relax
 % Based on article class mostly
@@ -60,17 +61,12 @@
 \RequirePackage{tikz}
 \usepackage{pgfplots} \pgfplotsset{compat=newest}
 \RequirePackage{subfiles}
-
-% Following packages support minimal functions.
-\RequirePackage{framed} % Required only for starkpoints env.
-
-
-%\RequirePackage{core/fancydoc}
+\RequirePackage{core/fancydoc}
 
 % TODO Fix this here.....V
 % \newcommand{\sharedmedia}{C:/Users/1117384/Documents/Work/Utilities/Latex}
 %\newcommand{\sharedmedia}{/Users/vanquish/Work/Utilities/Latex}
-\newcommand{\sharedmedia}{core/}
+\newcommand{\sharedmedia}{core}
 \newcommand{\listacronyms}{\input{\sharedmedia/Acronyms/acronyms.tex}}
 \RequirePackage{multicol} % Required to list acronyms nicely
 
@@ -91,16 +87,16 @@
 }
 
 
-\newcommand{\formatting}{\color{red}}
-\iftoggle{dull}{
-	\renewcommand{\formatting}{\color{black}}
+\newcommand{\formatting}{\color{black}}
+\iftoggle{stark}{
+	\renewcommand{\formatting}{\color{red}}
 }
 
 \iftoggle{watermark}{
 \RequirePackage{draftwatermark}
 %\SetWatermarkText{BIO-HAZARD}
 %\SetWatermarkScale{4}
-%\SetWatermarkAngle{} 
+%\SetWatermarkAngle{}
 %\SetWatermarkColor{}
 %\SetWatermarkFontSize{}
 %\SetWatermarkScale{}
@@ -115,52 +111,37 @@
 
 % NOTE - FileExists must have correct file extension
 
+\newlength{\maxlogoheight}
+\setlength{\maxlogoheight}{1.75in}
+\iftoggle{hidebotlogo}{\setlength{\maxlogoheight}{3.5in}}{}
+
 \newcommand{\@toplogo}{\ClassError{Top logo never defined. You must call {\textbackslash}settoplogo{path/to/logo}, or disable by using option `notoplogo' in class options.}}
-	
+
 \newcommand{\@botlogo}{\ClassError{Bottom logo never defined. You must call {\textbackslash}setbotlogo{path/to/logo}, or disable by using option `nobotlogo' in class options.}}
-	
-\newcommand{\@headerlogo}{\ClassError{Header logo never defined. You must call {\textbackslash}setheaderlogo{path/to/logo}, or disable by using option `noheadlogo' in class options.}} 	
+
+\newcommand{\@headerlogo}{\ClassError{Header logo never defined. You must call {\textbackslash}setheaderlogo{path/to/logo}, or disable by using option `noheadlogo' in class options.}}
 
 \newcommand{\setheaderlogo}[1]{
-    \nottoggle{hideheaderlogo}{
 	\IfFileExists{#1}{
 %	\renewcommand{\@headerlogo}{\includegraphics[width=1.25in,keepaspectratio]{#1}}
 % Redefine header rule to include logo at the end
 \renewcommand{\headrule}{\hrule\@height\headrulewidth\@width\headwidth\vspace{-0.4cm}
 	\raggedleft\includegraphics[height=0.35cm,keepaspectratio]{#1}\hspace*{1px}\vskip-\headrulewidth}
 \renewcommand{\@headerlogo}{#1}
-    }{
-		\ClassError{fancydoc}{Header logo set to #1, but that file does not exist!}
-		%	. Set it using settoplogo{path to header logo file}, or disable by using option `noheadlogo' in class options.
-    }
-}
-
-}
+    }{\ClassWarning{fancydoc}{Header logo set to #1, but that file does not exist!}}}
 
 \newcommand{\settoplogo}[1]{
-\nottoggle{hidetoplogo}{
-	\IfFileExists{#1}{ % Yes?
-		\renewcommand{\@toplogo}{#1}
-%		\includegraphics[height=1.75in, width=\linewidth,keepaspectratio]{#1}
-	}{ % Else
-		\ClassError{fancydoc}{Top logo set to #1, but that file does not exist!}
-		%		. Set it using settoplogo{path to bottom logo file}, or disable by using option `notoplogo' in class options.
-	}}}
+	\IfFileExists{#1}{
+		\renewcommand{\@toplogo}{\centering\includegraphics[height=\maxlogoheight,width=\linewidth,keepaspectratio]{#1}}}
+	                 {\ClassWarning{fancydoc}{Top logo set to #1, but that file does not exist!}}}
 
 \newcommand{\setbotlogo}[1]{
-     \nottoggle{hidebotlogo}{
-    	\IfFileExists{#1}{
-	    	\renewcommand{\@botlogo}{#1}
-%		\includegraphics[height=1.75in,width=\linewidth,keepaspectratio]{#1}}
-      }{
-		\ClassError{fancydoc}{Bottom logo set to #1, but that file does not exist!}
-	}
-  }{}
-}
+   	\IfFileExists{#1}{\renewcommand{\@botlogo}{\centering\includegraphics[height=\maxlogoheight,width=\linewidth,keepaspectratio]{#1}}}
+   	                 {\ClassWarning{fancydoc}{Bottom logo set to #1, but that file does not exist!}}}
 
+\newcommand{\placetoplogo}{\nottoggle{hidetoplogo}{\@toplogo}{}}
+\newcommand{\placebotlogo}{\nottoggle{hidebotlogo}{\@botlogo}{}}
 
-\newcommand{\placetoplogo}{\@toplogo}
-\newcommand{\placebotlogo}{\@botlogo}
 \newcommand{\placeheaderlogo}{\@headerlogo
 %	\begin{tikzpicture}[overlay]
 %	\node[anchor=east, yshift=-0.2cm]  {\@headerlogo};
@@ -179,7 +160,7 @@
 % Main file that markings should be defined in. May should be maybe part of core?
 
 % Select the appropriate Marking Template (Must already exist....)
-\input{markings}
+\input{\sharedmedia/Markings/mixed}
 
 % Should set the following
 %		Logos (top, bottom)
@@ -300,7 +281,7 @@
 % % Table of Contents Entries
 % Make Entries in the ToC in Small Caps
 \renewcommand{\cftsecfont}{\scshape\sffamily\larger}
-\renewcommand{\cftsecaftersnumb}{\\Topic: \larger\bfseries\sffamily\color{sectcolor}}
+\renewcommand{\cftsecaftersnumb}{: \bfseries\sffamily\color{sectcolor}}
 %\renewcommand{\cftsecaftersnumb}{\bfseries\hfill}
 
 \renewcommand{\cftsecleader}{\hfill}
@@ -309,7 +290,7 @@
 % Only matters if left justifying text
 
 \settowidth{\cftsecnumwidth}{Section XX}
-\settowidth{\cftsecnumwidth}{}
+%\settowidth{\cftsecnumwidth}{}
 \renewcommand{\cftsecpresnum}{\color{secpcolor}\bfseries Section }
 %\renewcommand{\cftsecpresnum}{\bfseries Section }
 
@@ -349,13 +330,17 @@
 %\setlength{\charwidth}{\widthof{\S}}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%% 		Special Look and Feel 
+%%%% 		Special Look and Feel
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
 \hypersetup{colorlinks, linktoc=all, linkcolor={blue!20!black}, citecolor={red!50!black}, urlcolor={red!80!black}, pdftitle=\titlelong, pdfauthor=James Heller, pdfsubject=\doctype, pdfkeywords=}
 
 %\setlength{\abovecaptionskip}{0pt}
+
+
+% Select look and feel of captions
+\RequirePackage[textfont={footnotesize,sl},labelfont=footnotesize, labelsep=endash]{caption}
 
 
 \RequirePackage[left=1.25in,right=1.25in,top=1.25in, bottom=1.25in, marginparsep=7pt]{geometry}
@@ -397,9 +382,9 @@
 % Adjust indents/margins of lists. Provided by [enumitem]
 \newlength\listindent
 \setlength\listindent{\parindent}
-\setlist[enumerate]{leftmargin=\listindent, label=\emph{\alph*})}
-\setlist[itemize]{leftmargin=\listindent, rightmargin=\parindent, itemsep=0.2cm}
-\setlist[description]{leftmargin=\listindent, labelwidth=0.45in, labelindent=\parindent}
+\setlist[enumerate]{leftmargin=3\listindent, label=\emph{\alph*})}
+\setlist[itemize]{leftmargin=3\listindent, rightmargin=\parindent} %, itemsep=0.2cm}
+\setlist[description]{leftmargin=3\listindent, labelwidth=0.45in, labelindent=\parindent}
 
 %  leave space around whole list
 \setlist{noitemsep} %
@@ -481,14 +466,14 @@
 	%\fancyfoot[C]{\vspace{0.1cm}\HRule \\[0.1cm] \scriptsize
 	%	FOR U.S./JAPAN SM-3 BLK IIA PROJECT ONLY\\
 	%	UNCLASSIFIED // FOR OFFICIAL USE ONLY\\
-	%	{\color{red}\colorbox{yellow}{\textbf{NOT RELEASABLE TO JAPAN}}}}	
+	%	{\color{red}\colorbox{yellow}{\textbf{NOT RELEASABLE TO JAPAN}}}}
 
 
 	\fancyhead[L]{\cornermark\raggedright\small\rightmark}
 	\fancyhead[C]{{\textsc{\small\headingcenter}}}
 	%	\expandafter\fancyhead[R]{\includegraphics[scale=0.4]{\headerlogo}}
 	\fancyhead[R]{}
-	%	
+	%
 	\fancyfoot[L]{
 		\scriptsize
 		\topfooterleft
@@ -506,7 +491,7 @@
 		\iftoggle{markingProprietary}{\scriptsize\color{black}\textsc{Raytheon Proprietary}\\[0.2cm]}~
 		\iftoggle{markingHazOp}{ \small\color{red}\textbf{PROCEDURE CONTAINS HAZARDOUS OPERATIONS}}
 	}
-	%	
+	%
 	\fancyfoot[R]{
 		\thepage\ of \pageref{LastPage}\vspace{0.15cm}\\
 		\scriptsize\textbf{UNCLASSIFIED}
@@ -519,7 +504,7 @@
 		%		\iflabelexists{endOf\thesection}
 		%	{\setcounter{lappage}{\getpagerefnumber{endOf\thesection}-\arabic{sappage}}}
 		%					  {\setcounter{lappage}{\getpagerefnumber{LastPage}-\arabic{sappage}+1}}
-		%		\setcounter{lappage}{\getpagerefnumber{endOf\thesection}-\arabic{sappage}}			  
+		%		\setcounter{lappage}{\getpagerefnumber{endOf\thesection}-\arabic{sappage}}
 		\setcounter{appage}{\theCurrentPage-\arabic{sappage}+1}
 		%		\newcommand{\tempddd}{endOf\thesection}
 		%		I chooose YOU \tempddd
@@ -559,7 +544,10 @@
 
 
 \AtBeginEnvironment{appendices}{
-	\appendixpagenumbering
+	\renewcommand{\cftsecaftersnumb}{\color{secpcolor}\bfseries xx}
+	\renewcommand{\cftsecpresnum}{\color{secpcolor}\bfseries xx!!!!!}
+
+	
 	\preto{\section}{
 		\newcounter{endOf\thesection}
 		\setcounter{endOf\thesection}{\theCurrentPage}
@@ -579,9 +567,6 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%% 		Particular Annotations
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\newlength{\charwidth}
-\setlength{\charwidth}{\widthof{\S}}
-
 
 \newcommand{\fouofig}[1]{
 %	\tikzstyle{background grid}=[draw, black!50,step=.5cm]
@@ -611,6 +596,11 @@
 	\end{minipage}%\vspace{-0.25cm}
 }
 
+\newcommand{\stdquote}[3]{{
+		\smallskip
+\smaller	\textbf{#1 ~~\S#2}	\hfill \parbox{0.7\linewidth}{{\raggedright
+	\fontfamily{lmtt}\selectfont{\begin{flushright}``#3''\end{flushright}}}}
+}}
 
 
 % Add NOTE marker in margin
@@ -706,10 +696,10 @@
 
 % stiles used
 \tikzset{mynode/.style={draw=black,solid,circle,fill=white,inner sep=2pt, thick, text=black}}
-%draw=black to get a black circle, fill=white so it actually has a   
+%draw=black to get a black circle, fill=white so it actually has a
 %background and text=black to not get that rendered in the specified color
 \tikzset{arrow line/.style={dashed, line width= 2.5pt, color=#1}}
-%color is given as a paramter so one can put these two styles in the  
+%color is given as a paramter so one can put these two styles in the
 %preamble and easily use throughout the document, line width as it was to small on my images on a page
 
 %\begin{figure}[tbph]
@@ -719,9 +709,9 @@
 %				\includegraphics[width=1\columnwidth]{path/to/image_a}
 %				\par\end{center}%
 %		\end{minipage}
-%		
-%		
-%		
+%
+%
+%
 %	}\hfill{}\subfloat[description of figure a]{\noindent \centering%
 %		\begin{minipage}[b][5cm][c]{0.4\columnwidth}%
 %			\noindent \begin{center}
@@ -734,7 +724,7 @@
 %				% \draw[help lines,xstep=.05,ystep=.05] (0,0) grid (1,1);
 %				% \foreach \x in {0,1,...,9} { \node [anchor=north] at (\x/10,0) {0.\x}; }
 %				% \foreach \y in {0,1,...,9} { \node [anchor=east] at (0,\y/10) {0.\y};}
-%				
+%
 %				% uncomment until line above
 %				\draw[arrow line=1c1] (0.8,0.8) -- +(0.275,0)node[mynode,anchor=west] {\Large 1};
 %				%1c1 is the code for the color, you can enter 1c2 here, too
@@ -745,12 +735,12 @@
 %				\end{tikzpicture}
 %				\par\end{center}%
 %		\end{minipage}
-%		
+%
 %	}\hspace{5mm}
-%	
+%
 %	\protect\caption{outside caption}
-%	
-%	
+%
+%
 %\end{figure}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -810,8 +800,8 @@
 
 \newcommand{\connfont}{\fontfamily{NotoSans-TLF}\selectfont}
 
-	
-	
+
+
 %\newcommand{\ittysig}[1]{{\signalfont{\scriptsize #1}}}5
 %=================== End Font Configuration =======================================
 
@@ -857,38 +847,15 @@
 \normalsize
 %\end{center}
 %	\vspace{1cm}
-	
+
 \begin{minipage}{0.45\linewidth}
 	% Place top logo, unless disabled
-\nottoggle{hidetoplogo}{\includegraphics[width=\linewidth]{\placetoplogo}}{}
-	% Place bottom logo, unless disabled
-\nottoggle{hidebotlogo}{\includegraphics[width=\linewidth]{\placebotlogo}}{}
-%\resizebox{1\linewidth}{!}{
-%	\centering	
-%	
-%%\begin{tikzpicture} %[remember picture, overlay]
-%%%		\begin{center}
-%%	    \vspace{0.25cm}
-%%%		\expandafter\includegraphics[height=1.5in, width=0.49\linewidth,keepaspectratio]{\placetoplogo}
-%%%		\expandafter\includegraphics[height=1.5in, width=0.49\linewidth,keepaspectratio]{\placebotlogo}
-%%
-%%
-%%\node () {OOOhh};
-%%\if@tlogo
-%%% do the top logo 
-%%\node () {Look what you made me do};
-%%\node[anchor = north west] at (current bounding box.north west)(top){\includegraphics[width=\linewidth]{\placetoplogo}};
-%%\fi
-%%
-%%\if@blogo
-%%% do the bot logo 
-%%\node () {Look what you just made me do};
-%%\node[below= of top, xshift = 0.4in,yshift=0.4in] (bot){\includegraphics[width=\linewidth]{\placebotlogo}};
-%%\fi
-%%
-%%\draw (current bounding box.north east) -- (current bounding box.north west) -- (current bounding box.south west) -- (current bounding box.south east) -- cycle;
-%%\end{tikzpicture}
-%}
+%\nottoggle{hidetoplogo}{\includegraphics[width=\linewidth]
+\begin{center}
+{\placetoplogo}
+{\placebotlogo}
+\end{center}
+
 \end{minipage}
 \hfill
 \begin{minipage}{0.5\linewidth}
@@ -914,7 +881,7 @@
 		\textsc{Release Date}               & \released                                                              \\
 		\textsc{Prepared By}                & James Heller\newline {Fuzing, Initiator Safety}\newline                    \\
 		\textsc{Classification}             & UNCLASSIFIED\iftoggle{markingFOUO}{, FOUO \\}		\\
-		\iftoggle{markingDistribution}{\textsc{Distribution}&\distribution\\} 
+		\iftoggle{markingDistribution}{\textsc{Distribution}&\distribution\\}
 \newline{\scshape\projectdesignation}        & \textsc{\contractname}                                                       \\
 		\textsc{Contract \#}                & \textsc{\contract}
 		{\newline}                                                                                                \\
@@ -958,7 +925,7 @@
 
 }
 
-%\providecommand{\codelistings}{}
+\providecommand{\codelistings}{}
 
 \newcommand{\metapages}{
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -982,15 +949,9 @@
 
 	%\newpage
 	\listoftables
-	\listoflistings
+    \iftoggle{codesnips}{\listoflistings}
 	\listoffigures
-	
-	% Optional inclusion of code snip list
-	\if@codesnips
-	\listoflistings
-    \fi
-    
-    
+
 	\vfill
 
 	\section*{Revision History}
