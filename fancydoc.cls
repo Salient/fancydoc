@@ -362,7 +362,7 @@
 % Frequent Keyword aliases
 \newcommand{\gsw}{SM-3 BLK IIA G-Switch\xspace}
 \newcommand{\eisd}{ESSM EISD\xspace}
-\newcommand{\esad}{ESSM BLK II ESAD\xspace}
+\newcommand{\esad}{\ac{ESAD}\xspace}
 \newcommand{\lfos}{L-3 FOS\xspace}
 
 
@@ -527,13 +527,8 @@
 
 
 
-%\setrefcountdefault{-2}
 \newcounter{appage}
-%\newcounter{lappage}
 \newcounter{sappage}
-%\newcommand{\scratch}{}
-%\newtoggle{footerfirst}
-%\newtoggle{sectionfirst}
 
 \newcommand{\appendixpagenumbering}{
 	\break
@@ -544,8 +539,14 @@
 
 
 \AtBeginEnvironment{appendices}{
-	\renewcommand{\cftsecaftersnumb}{\color{secpcolor}\bfseries xx}
-	\renewcommand{\cftsecpresnum}{\color{secpcolor}\bfseries xx!!!!!}
+	
+	\renewcommand{\appendixtocname}{derp}
+	\settowidth{\cftsecnumwidth}{X}
+	%\settowidth{\cftsecnumwidth}{}
+	\renewcommand{\cftsecpresnum}{~}
+	%\renewcommand{\cftsecpresnum}{\bfseries
+%	\renewcommand{\cftsecaftersnumb}{\color{secpcolor}\bfseries xx}
+%	\renewcommand{\cftsecpresnum}{\color{secpcolor}\bfseries xx!!!!!}
 
 	
 	\preto{\section}{
@@ -555,11 +556,22 @@
 	}
 	\label{LastMainPage}
 }
-%	\setcounter{sappage}{\theCurrentPage}
 
 \AtEndEnvironment{appendices}{
 	\setcounter{sappage}{\theCurrentPage}
 }
+
+
+%------------------ Auto-revision Marking
+
+%\newenvironment{revisionblock}{
+%	
+%	
+%}
+%
+%
+%{enddef}
+
 
 %=================== End General Dynaimc Referencing ==============================
 
@@ -633,6 +645,31 @@
 \end{leftbar}
 \end{snugshade}}
 
+% ----- Revision block/tracking
+\newcounter{revcount}
+\def\revisionlist{}
+\newcommand{\addrevision}[2]{
+	\ifnum\therevcount=0
+	\renewcommand{\revision}{-}
+	\else\edef\revision{\Alph{revcount}}\fi
+	% This is a neat trick. Expand macro -once-
+	\edef\revisionlist{\unexpanded\expandafter{\revisionlist}\revision \unexpanded{&} #1 \unexpanded{&} #2 \unexpanded{\\\hline}}
+	\stepcounter{revcount}
+}
+
+\newcommand{\revisionblock}{   
+\vfill
+	\section*{Revision History}
+	\begin{center}
+		\begin{tabularx}{\linewidth}{ c | c | X }
+			\textbf{Revision} & \textbf{Effective Date} & \textbf{Description of Change} \\ \hline
+\ifnum\therevcount=0 % No revisions specified. Default to rev - with current date.
+- & \today & Initial release \\
+\else\revisionlist\fi
+		\end{tabularx}
+	\end{center}
+\newpage
+}
 
 %=================== End Particular Annotations ===================================
 
@@ -952,19 +989,6 @@
     \iftoggle{codesnips}{\listoflistings}
 	\listoffigures
 
-	\vfill
-
-	\section*{Revision History}
-	\begin{center}
-		\begin{tabularx}{\linewidth}{ c | c | X }
-			\textbf{Revision} & \textbf{Effective Date} & \textbf{Description of Change} \\ \hline
-			\textbf{-}        & \today                  & Initial Release -- \tbd        \\
-			%			\textbf{A}		  & August 30, 2017	& Added section ``Review of Facts Known To-Date'', Appendix ``L-3 Reflow Oven Profile'', and associated figures. \\
-			%			\textbf{B} & August 31, 2017 & Updated Developments, call with L-3 and TTM. \\
-			%			\textbf{C} & September 12, 2017 & Added Fault Tree and supporting evidence for each branch. \\
-			% \textbf{D} & & \\ \hline
-		\end{tabularx}
-	\end{center}
-
+    \revisionblock
 	\newpage
 }
