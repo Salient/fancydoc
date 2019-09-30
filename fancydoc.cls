@@ -150,6 +150,19 @@
 
 
 
+% ---------------------------------------------------------------------------------------
+% Top level/final hook
+%
+% Want to do this automatically before beginning the document, so that if a marking file was set
+% It gets used before the title page is rendered. For some reason, that is done before the document
+% environment hook is run. So, here is where markings are set, or the default markings are set.
+
+\AfterPreamble{
+% Enact definition of document markings
+\definemarkings
+}
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%% 		Define Marking Options
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -159,8 +172,32 @@
 
 % Main file that markings should be defined in. May should be maybe part of core?
 
+\newcommand{\markingfile}{\sharedmedia/Markings/mixed}
+\newcommand{\logMarking}{
+\ClassWarning{fancydoc}{Using default markings found  in \\markingfile. To change, use \\setmarkings{path/to/markingsfile}.}
+}
+
+\newcommand{\setmarkings}[1]{
+\IfFileExists{#1}{
+         \renewcommand{\logMarking}{\PackageWarning{fancydoc}{Markings file #1 found, reading...}} 
+         \renewcommand{\markingfile}{#1}
+     }{
+      % File not found in current directory, or full path given is not valid. Just to be nice, check if they meant in the core/ 
+      \IfFileExists{\sharedmedia/Markings/#1}{
+        \renewcommand{\logMarking}{\PackageWarning{fancydoc}{Markings file #1 found, reading...}} 
+      	\renewcommand{\markingfile}{\sharedmedia/Markings/#1}
+      }{
+        \ClassError{Markings file set to #1, but file does not exist!}
+    }
+  }
+}
+
+\newcommand{\definemarkings}{
+   \logMarking
+   \input{\markingfile}
+}
+
 % Select the appropriate Marking Template (Must already exist....)
-\input{\sharedmedia/Markings/mixed}
 
 % Should set the following
 %		Logos (top, bottom)
@@ -201,14 +238,14 @@
 % Use if draft or preview option is enabled
 %\usepackage{blindtext}  % Generate test viewing text
 
-
+\ClassWarning{bang}{Starting defaults}
 \providecommand{\distwarning}{\textbf{\color{red}[Please set the Distribution Warning text.]}}
 \providecommand{\itarwarning}{\textbf{\color{red}[Please set the ITAR Warning text.]}}
 \providecommand{\raypropwarning}{\textbf{\color{red}[Please set the Proprietary Warning text.]}}
 \providecommand{\fouowarning}{\textbf{\color{red}[Please set the FOUO Warning text.]}}
 \providecommand{\destructwarning}{\textbf{\color{red}[Please set the Destruction Warning text.]}}
 \providecommand{\copywarning}{\textbf{\color{red}[Please set the Copyright Warning text.]}}
-
+\ClassWarning{bang}{End defaults}
 
 %
 %% Provide default marking definitions in case they aren't provided or set by the markings file
@@ -265,8 +302,6 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \RequirePackage[titles]{tocloft}
-
-% TODO - make this selectable by options
 
 \setcounter{secnumdepth}{5}
 \setlength{\headheight}{17pt}
@@ -540,7 +575,6 @@
 
 \AtBeginEnvironment{appendices}{
 	
-	\renewcommand{\appendixtocname}{derp}
 	\settowidth{\cftsecnumwidth}{X}
 	%\settowidth{\cftsecnumwidth}{}
 	\renewcommand{\cftsecpresnum}{~}
@@ -621,6 +655,8 @@
 \newcommand{\fouo}{{\marginnote{\textbf{\small\formatting(FOUO)}}}}
 
 \newcommand{\note}[1]{~\\\marginnote{\textbf{NOTE:}}\noindent{#1}\\}
+
+\newcommand{\marku}{~\\\marginnote{(U)\\}}
 
 \newcommand{\tbr}[1]{\marginnote{\textbf{\small\color{orange}~~TBR:\\} #1}}
 
@@ -910,7 +946,7 @@
 	%		\vfill
 	\def\arraystretch{1}%  1 is the default, change whatever you need
 	\begin{tabular}{r @{ : } >{\raggedright\arraybackslash}p{1.3in}}
-		\textsc{\large Document {\fontfamily{cmr}\selectfont\textnumero}}
+	\large	\textsc{ Document }{\fontfamily{cmr}\selectfont\textnumero}
                                             & \docnumber  \newline                                            \\
 		\textsc{{\newline}Current Revision} & \revision                                                           \\
 		\textsc{Total Pages}                & \pageref{LastPage}                                                  \\
