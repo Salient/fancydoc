@@ -79,7 +79,7 @@
 \iftoggle{codesnips}{
 \RequirePackage{minted}
 \setminted[vhdl]{fontsize=\scriptsize, linenos}
-\renewcommand{\listoflistingscaption}{Logic Code Excerpts}
+\renewcommand{\listoflistingscaption}{\vspace*{1cm}\bfseries\Large\fontfamily{qhv}\selectfont List of HDL Code Excerpts}
 \newcommand{\codesref}{Code Excerpt }
 \renewcommand{\listingscaption}{\ac{CDL} \codesref}
 \newcommand{\coderef}[1]{\hyperref[#1]{\codesref \ref*{#1}}}
@@ -301,7 +301,7 @@
 %%%% 		Section Level Title Styling, Document and TOC
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\RequirePackage[titles]{tocloft}
+\RequirePackage{tocloft}
 
 \setcounter{secnumdepth}{5}
 \setlength{\headheight}{17pt}
@@ -312,27 +312,59 @@
 \definecolor{sectcolor}{rgb}{0,0,0.2}
 \definecolor{secpcolor}{rgb}{0,0,0.2}
 
+\addtocontents{toc}{~\hfill{Page}\par}
+\addtocontents{lof}{~\hfill{Page}\par}
+\addtocontents{lot}{~\hfill{Page}\par}
+\addtocontents{lol}{~\hfill{Page}\par}
+
+\renewcommand{\cftfigpresnum}{\bfseries Figure\ }
+\renewcommand{\cfttabpresnum}{\bfseries Table\ }
+
+%\renewcommand{\cftmarktoc}{\fontfamily{qhv}\selectfont !!}
+\renewcommand{\cfttoctitlefont}{\bfseries\scshape\Large\fontfamily{qhv}\selectfont}
+\renewcommand{\cftlottitlefont}{\vspace*{1cm}\bfseries\scshape\Large\fontfamily{qhv}\selectfont}
+\renewcommand{\cftloftitlefont}{\vspace*{1cm}\bfseries\scshape\Large\fontfamily{qhv}\selectfont}
+
+\renewcommand{\contentsname}{Table of Contents}
+%\renewcommand{\cftaftertoctitle}{%
+%	\\[\baselineskip]\mbox{}\hfill Page}
+%\renewcommand\cfttoctitlefont{\Large\bfseries Table of }
+%\renewcommand\cftaftertoctitle{\hfill\mbox{Page}}
+
+%\renewcommand{\cftXfont}{\bfseries}
+%\renewcommand{\cftXleader}{\bfseries\cftdotfill{\cftXdotsep}}
+%\renewcommand{\cftXpagefont}{\bfseries}
+%\renewcommand{\cftXpresnum}{SOMETHING }
+%\renewcommand{\cftXaftersnum}{:}
+%\renewcommand{\cftXaftersnumb}{\\}
+
+
 
 % % Table of Contents Entries
 % Make Entries in the ToC in Small Caps
-\renewcommand{\cftsecfont}{\scshape\sffamily\larger}
-\renewcommand{\cftsecaftersnumb}{: \bfseries\sffamily\color{sectcolor}}
-%\renewcommand{\cftsecaftersnumb}{\bfseries\hfill}
-
+% Format Sec headers
+\renewcommand{\cftsecfont}{\scshape\sffamily}
 \renewcommand{\cftsecleader}{\hfill}
+\renewcommand{\cftsecpagefont}{\bfseries\sffamily\color{sectcolor}}
+\renewcommand{\cftsecpresnum}{Section }
+\renewcommand{\cftsecaftersnum}{\hspace*{0.2cm}}
+\renewcommand{\cftsecaftersnumb}{\bfseries}
 
+%\settowidth{\cftsecnumwidth}{Section XX}
 % Since we are modifying Section Titles, we have to adjust where the title text starts
 % Only matters if left justifying text
-
-\settowidth{\cftsecnumwidth}{Section XX}
-%\settowidth{\cftsecnumwidth}{}
-\renewcommand{\cftsecpresnum}{\color{secpcolor}\bfseries Section }
-%\renewcommand{\cftsecpresnum}{\bfseries Section }
-
+\newlength{\secheadlen} % a "scratch" length
+\settowidth{\secheadlen}{\bfseries\cftsecpresnum\cftsecaftersnum} % extra space
+\addtolength{\cftsecnumwidth}{\secheadlen} % add the extra space
+\addtolength{\cftsecnumwidth}{0.25cm} % For good measure
 
 
-%\renewcommand\cftsubsecfont{\scshape}
 
+\addtolength{\cftfignumwidth}{1cm} % For good measure
+\addtolength{\cfttabnumwidth}{1cm} % For good measure
+%\renewcommand{\cfttabfont}{\bfseries}
+
+%--------------------------------
 % Document Section Title Formatting
 
 \titleformat*{\section}{\Large\bfseries\sffamily\scshape}
@@ -361,8 +393,8 @@
 %=================== End Section Level Title Styling, Document and TOC ============
 
 
-%\newlength{\charwidth}
-%\setlength{\charwidth}{\widthof{\S}}
+\newlength{\charwidth}
+\setlength{\charwidth}{\widthof{\S}}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%% 		Special Look and Feel
@@ -418,11 +450,11 @@
 \newlength\listindent
 \setlength\listindent{\parindent}
 \setlist[enumerate]{leftmargin=3\listindent, label=\emph{\alph*})}
-\setlist[itemize]{leftmargin=3\listindent, rightmargin=\parindent} %, itemsep=0.2cm}
-\setlist[description]{leftmargin=3\listindent, labelwidth=0.45in, labelindent=\parindent}
+\setlist[itemize]{leftmargin=2\listindent, rightmargin=\parindent} %, itemsep=0.2cm}
+\setlist[description]{leftmargin=1.15in, labelwidth=0.7in, labelindent=\parindent}
 
 %  leave space around whole list
-\setlist{noitemsep} %
+%\setlist{noitemsep} %
 
 %\def\arraystretch{1.5}%  1 is the default, change whatever you need
 %\setlength\tabcolsep{0.1cm}
@@ -437,6 +469,58 @@
 
 %=================== End Special Look and Feel ======================================
 
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%% 		General Dynamic Referencing
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\RequirePackage{pdfpages}
+\RequirePackage[page,titletoc]{appendix}
+%\RequirePackage{lastpage}
+\RequirePackage{pageslts}
+
+
+\newcounter{appage}
+\newcounter{sappage}
+
+\newcommand{\appendixpagenumbering}{
+	\break
+	\pagenumbering{arabic}
+	\renewcommand{\thepage}{\thesection-\arabic{page}}
+	%		\label{endOf\thesection}
+}
+
+\AtBeginEnvironment{appendices}{
+			\newpage
+	\cleardoublepage
+	
+	% Put a correctly formatted title in for the Appendices (if present)
+	\addtocontents{toc}{\protecting{\vspace*{1cm}{\bfseries\scshape\Large\fontfamily{qhv}\selectfont  Appendices}}}
+	\addtocontents{toc}{~\hfill Page\par}
+	% Need this to remove any extra words added for the other sections.
+	% Has to be done like this, because it would be expanded during typesetting of ToC
+	% TODO - take advantage of this to list stuff in appendices correctly.
+	\addtocontents{toc}{\protecting{\renewcommand{\cftsecpresnum}{}}}
+	\addtocontents{toc}{\protecting{\addtolength{\cftsecnumwidth}{-\secheadlen}}}
+	
+	\preto{\section}{
+		\pagestyle{appendices}
+		\newcounter{endOf\thesection}
+		\setcounter{endOf\thesection}{\theCurrentPage}
+		\setcounter{sappage}{\theCurrentPage}
+	}
+	\label{LastMainPage}
+}
+
+\AtEndEnvironment{appendices}{
+	\setcounter{sappage}{\theCurrentPage}
+}
+
+%=================== End General Dynaimc Referencing ==============================
+
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%% 		Header and Footer Styling
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -445,11 +529,6 @@
 % Requires etoolbox package
 \RequirePackage{fancyhdr}
 \renewcommand{\headrulewidth}{1pt}
-
-\RequirePackage{pdfpages}
-\RequirePackage[title, titletoc,toc,page]{appendix}
-%\RequirePackage{lastpage}
-\RequirePackage{pageslts}
 
 \newcommand{\topfooterleft}{\textsc{For \textbf{\contractname} \projectdesignation\xspace Only}}
 \newcommand{\cornermark}{
@@ -554,62 +633,6 @@
 }
 %=================== End Header and Footer Styling ================================
 
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%% 		General Dynamic Referencing
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-
-
-\newcounter{appage}
-\newcounter{sappage}
-
-\newcommand{\appendixpagenumbering}{
-	\break
-	\pagenumbering{arabic}
-	\renewcommand{\thepage}{\thesection-\arabic{page}}
-	%		\label{endOf\thesection}
-}
-
-
-\AtBeginEnvironment{appendices}{
-	
-	\settowidth{\cftsecnumwidth}{X}
-	%\settowidth{\cftsecnumwidth}{}
-	\renewcommand{\cftsecpresnum}{~}
-	%\renewcommand{\cftsecpresnum}{\bfseries
-%	\renewcommand{\cftsecaftersnumb}{\color{secpcolor}\bfseries xx}
-%	\renewcommand{\cftsecpresnum}{\color{secpcolor}\bfseries xx!!!!!}
-
-	
-	\preto{\section}{
-		\newcounter{endOf\thesection}
-		\setcounter{endOf\thesection}{\theCurrentPage}
-		\setcounter{sappage}{\theCurrentPage}
-	}
-	\label{LastMainPage}
-}
-
-\AtEndEnvironment{appendices}{
-	\setcounter{sappage}{\theCurrentPage}
-}
-
-
-%------------------ Auto-revision Marking
-
-%\newenvironment{revisionblock}{
-%	
-%	
-%}
-%
-%
-%{enddef}
-
-
-%=================== End General Dynaimc Referencing ==============================
-
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%% 		Particular Annotations
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -666,6 +689,7 @@
 		\fbox{\color{currentcolor}#2}}%
 }
 \newcommand{\todo}[1]{
+	
 	\noindent
 	\cfbox{red}{\parbox{\dimexpr\linewidth-2\fboxsep-2\fboxrule}{TODO: #1}}
 }
@@ -691,6 +715,7 @@
 	% This is a neat trick. Expand macro -once-
 	\edef\revisionlist{\unexpanded\expandafter{\revisionlist}\revision \unexpanded{&} #1 \unexpanded{&} #2 \unexpanded{\\\hline}}
 	\stepcounter{revcount}
+	\renewcommand{\released}{#1}
 }
 
 \newcommand{\revisionblock}{   
@@ -700,7 +725,7 @@
 		\begin{tabularx}{\linewidth}{ c | c | X }
 			\textbf{Revision} & \textbf{Effective Date} & \textbf{Description of Change} \\ \hline
 \ifnum\therevcount=0 % No revisions specified. Default to rev - with current date.
-- & \today & Initial release \\
+- & \today & Draft Review Copy\\
 \else\revisionlist\fi
 		\end{tabularx}
 	\end{center}
@@ -891,37 +916,21 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 \renewcommand{\titlepage}{
-\thispagestyle{firststyle}\vspace*{-1.25cm}
+\thispagestyle{firststyle}\vspace*{-1cm}
 %\begin{center}
 
-\noindent\Large\textsc{\textbf{\fontfamily{qhv}\selectfont\titlelong}}
-
-\noindent\Large\textsc{\fontfamily{qhv}\selectfont\doctype}\smallskip
-
-%		\small~\\
-%	\\[0.25cm]
-
-%	{	\large\textit{for}}
-%	~\\[0.15cm]
-%\noindent	\Large\textsc{\contractname System (BMNS)}
-%\begin{minipage}{0.75\linewidth}
-
-%\smallskip
-%	{	\Large \textsc{\contractname}}
-%	{\Large\textsc{some purpose here}},\\
-
-%		\end{minipage}
-%\\[0.15cm]~
+\noindent\Large\textsc{\textbf{\titlelong}}
+\noindent\Large\textsc{\doctype}\smallskip
 
 \vspace*{0.25cm}
 \noindent\hrule
 \vfill
-\small~\\[0.15cm]
-\normalsize
+%\small~\\[0.15cm]
+%\normalsize
 %\end{center}
 %	\vspace{1cm}
 
-\begin{minipage}{0.45\linewidth}
+\begin{minipage}{0.40\linewidth}
 	% Place top logo, unless disabled
 %\nottoggle{hidetoplogo}{\includegraphics[width=\linewidth]
 \begin{center}
@@ -932,6 +941,7 @@
 \end{minipage}
 \hfill
 \begin{minipage}{0.5\linewidth}
+	\small
 %	\centering
 	%	\textsc{
 	%		\textbf{
@@ -946,9 +956,9 @@
 	%		\vfill
 	\def\arraystretch{1}%  1 is the default, change whatever you need
 	\begin{tabular}{r @{ : } >{\raggedright\arraybackslash}p{1.3in}}
-	\large	\textsc{ Document }{\fontfamily{cmr}\selectfont\textnumero}
-                                            & \docnumber  \newline                                            \\
-		\textsc{{\newline}Current Revision} & \revision                                                           \\
+	{\large	\textsc{ Document }{\fontfamily{cmr}\selectfont\textnumero}}
+                                            & {\large\docnumber}  \newline                                            \\
+	\smaller	\textsc{{\newline}Current Revision} & \revision                                                           \\
 		\textsc{Total Pages}                & \pageref{LastPage}                                                  \\
 		\textsc{Status}                     & \documentstatus   \newline                                         \\
 		\textsc{Release Date}               & \released                                                              \\
@@ -978,24 +988,17 @@
 
 \noindent\iftoggle{markingDistribution}{\distwarning}
 
-
 \noindent\iftoggle{markingITAR}{\itarwarning}
-
 
 \noindent\iftoggle{markingProprietary}{\raypropwarning}
 
-
 \noindent\iftoggle{markingFOUO}{\fouowarning}
-
 
 \noindent\iftoggle{markingDestroy}{\destructwarning}
 
-
 \noindent\iftoggle{programWarning}{\programwarning}
 
-
 \noindent\iftoggle{markingCopyright}{\copywarning}
-
 }
 
 \providecommand{\codelistings}{}
@@ -1007,6 +1010,9 @@
 
 	\normalsize
 	\newpage
+	% Required to prevent tocloft package dicking with header style
+	% Can alternatively pass tocloft the [titles] option, but then it falls back to latex macros
+	\tocloftpagestyle{fancy}
 	\pagestyle{default}
 
 	\renewcommand{\sectionmark}[1]{\markright{\MakeUppercase{##1}}}
@@ -1022,8 +1028,8 @@
 
 	%\newpage
 	\listoftables
-    \iftoggle{codesnips}{\listoflistings}
 	\listoffigures
+    \iftoggle{codesnips}{\listoflistings}{}
 
     \revisionblock
 	\newpage
