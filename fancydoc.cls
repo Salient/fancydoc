@@ -28,7 +28,8 @@
 \newtoggle{hideheaderlogo}
 \newtoggle{codesnips}
 \newtoggle{stark}
-\newtoggle{watermark}
+\newtoggle{rough}
+
 
 
 % ---------------------------------------------------------------------------------------
@@ -41,7 +42,7 @@
 \DeclareOption{notop}{\toggletrue{hidetoplogo}}
 \DeclareOption{nobot}{\toggletrue{hidebotlogo}}
 \DeclareOption{nohead}{\toggletrue{hideheaderlogo}}
-\DeclareOption{mark}{\toggletrue{watermark}}
+\DeclareOption{rough}{\toggletrue{rough}}
 \DeclareOption{stark}{\toggletrue{stark}}
 
 \DeclareOption*{\PassOptionsToClass{\CurrentOption}{article}}
@@ -90,10 +91,17 @@
 \newcommand{\formatting}{\color{black}}
 \iftoggle{stark}{
 	\renewcommand{\formatting}{\color{red}}
-}
+}{}
 
-\iftoggle{watermark}{
-\RequirePackage{draftwatermark}
+
+
+% -----------
+\iftoggle{rough}{
+
+%\RequirePackage[]{datetime2}
+%\RequirePackage{draftwatermark}
+\RequirePackage{everypage}
+\usetikzlibrary{math}
 %\SetWatermarkText{BIO-HAZARD}
 %\SetWatermarkScale{4}
 %\SetWatermarkAngle{}
@@ -102,9 +110,45 @@
 %\SetWatermarkScale{}
 %\SetWatermarkHorCenter{}
 %\SetWatermarkVerCenter{}
+%\SetWatermarkLightness{0.96} % Higher is lighter
 
-\SetWatermarkLightness{0.92} % Higher is lighter
+%\newcommand{\roughtext}{WORK IN PROGRESS}
+
+\newcommand{\roughtext}{\unselectable{ROUGH DRAFT}}
+
+
+\newcommand{\roughmark}{
+	\tikzset{
+	rough/.style = { scale = 1.5, rotate=40, opacity=0.02,  node distance = 1.5in, font=\LARGE\sffamily}
+%	shadow/.style = {append after command={
+%                   		\pgfextra{\node[at = (\tikzlastnode),below left = of \tikzlastnode, gray, rough]{ROUGH DRAFT};}}}
 }
+    \begin{tikzpicture}[remember picture, overlay]
+        \node[rough,blue] at (current page.north west) (origin) {\roughtext};
+        \tikzmath{
+%            coordinate \c, \e, \w;
+%            \e = (current page.east);
+%            \w = (current page.west);
+            for \x in {1,...,15}{
+                {
+                	 \node[ below = of origin, rough] (origin) {\roughtext};
+                     \node[ left = of origin, rough] (alley) {\roughtext};
+                     \node[ left = of alley, rough] (alley) {\roughtext}; 
+                     \node[ right = of origin, rough] (alley) {\roughtext};
+                     \node[ right = of alley, rough] (alley) {\roughtext}; 
+%                     \node[ below left= of origin, rough] (origin) {\roughsubtext};
+%                     \node[ left = of origin, rough] (alley) {\roughsubtext};
+%                     \node[ left = of alley, rough] (alley) {\roughsubtext}; 
+%                     \node[ right = of origin, rough] (alley) {\roughsubtext};
+%                     \node[ right = of alley, rough] (alley) {\roughsubtext}; 
+                }; 
+            };
+        }
+\end{tikzpicture}
+}
+
+\AddEverypageHook{\roughmark}
+}{}
 
 % ---------------------------------------------------------------------------------------
 % Configure logos for document header
@@ -308,7 +352,7 @@
 % Format Sec headers
 \renewcommand{\cftsecfont}{\scshape\sffamily}
 \renewcommand{\cftsecleader}{\hfill}
-\renewcommand{\cftsecpagefont}{\bfseries\sffamily\color{sectcolor}}
+\renewcommand{\cftsecpagefont}{\larger\bfseries\sffamily\color{sectcolor}}
 \renewcommand{\cftsecpresnum}{Section }
 \renewcommand{\cftsecaftersnum}{\hspace*{0.2cm}}
 \renewcommand{\cftsecaftersnumb}{\bfseries}
@@ -375,7 +419,7 @@
 \RequirePackage[textfont={footnotesize,sl},labelfont=footnotesize, labelsep=endash]{caption}
 
 
-\RequirePackage[left=1.25in,right=1.25in,top=1.25in, bottom=1.25in, marginparsep=7pt]{geometry}
+\RequirePackage[left=1.25in,right=1in,top=1in, bottom=1.25in, marginparsep=7pt]{geometry}
 
 \newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
 
@@ -410,13 +454,11 @@
 %\RequirePackage{tablefootnote}
 \RequirePackage{threeparttable}
 
-\RequirePackage{enumitem}[itemsep = 1cm]
+\RequirePackage{enumitem}[itemsep = 0.08cm, parsep=0in]
 % Adjust indents/margins of lists. Provided by [enumitem]
-\newlength\listindent
-\setlength\listindent{\parindent}
-\setlist[enumerate]{leftmargin=3\listindent, label=\emph{\alph*})}
-\setlist[itemize]{leftmargin=2\listindent, rightmargin=\parindent} %, itemsep=0.2cm}
-\setlist[description]{leftmargin=1.15in, labelwidth=0.7in, labelindent=\parindent}
+\setlist[enumerate]{leftmargin=0.7in, label=\emph{\alph*})}
+\setlist[itemize]{leftmargin=0.7in, rightmargin=0.7in}
+\setlist[description]{leftmargin=0.25in, labelwidth=0.7in, labelindent=\parindent}
 
 %  leave space around whole list
 %\setlist{noitemsep} %
@@ -470,6 +512,7 @@
 	\addtocontents{toc}{\protecting{\addtolength{\cftsecnumwidth}{-\secheadlen}}}
 	
 	\preto{\section}{
+		\clearpage
 		\pagestyle{appendices}
 		\newcounter{endOf\thesection}
 		\setcounter{endOf\thesection}{\theCurrentPage}
@@ -491,6 +534,13 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
+
+
+\RequirePackage{accsupp}
+
+\DeclareRobustCommand\unselectable[1]{
+\BeginAccSupp{method=plain,ActualText={}}#1\EndAccSupp{}}
+
 % Requires etoolbox package
 \RequirePackage{fancyhdr}
 \renewcommand{\headrulewidth}{1pt}
@@ -502,6 +552,8 @@
 %\marginnote{\rotatebox{90}{\raisebox{0.5in}{\qquad\scriptsize\textbf{\docnumber (\revision)}}}}
 }
 
+
+
 \RequirePackage{rotating}
 
 
@@ -512,7 +564,9 @@
 	}
 
 	%	\fancyhead[L]{{\textsc{\docnumber}}\newline\newline}
-	\fancyhead[L]{\cornermark}
+	\fancyhead[L]{\cornermark
+        %\iftoggle{rough}{\roughmark}
+    }
 
 	\fancyfoot[L]{
 		\scriptsize\topfooterleft\vspace{0.1cm}\hrule\vspace{0.1cm}
@@ -548,12 +602,15 @@
 	%	{\color{red}\colorbox{yellow}{\textbf{NOT RELEASABLE TO JAPAN}}}}
 
 
-	\fancyhead[L]{\cornermark\raggedright\small\rightmark}
+	\fancyhead[L]{\cornermark\raggedright\small\rightmark
+        %\iftoggle{rough}{\roughmark}
+    }
 	\fancyhead[C]{{\textsc{\small\headingcenter}}}
 	%	\expandafter\fancyhead[R]{\includegraphics[scale=0.4]{\headerlogo}}
 	\fancyhead[R]{}
 	%
 	\fancyfoot[L]{
+    \unselectable{
 		\scriptsize
 		\topfooterleft
 		\vspace{0.1cm}\hrule\vspace{0.1cm}
@@ -561,6 +618,7 @@
 		\ifboolexpr{ togl{markingDistribution} and togl{markingITAR}}{ \textbf{ // } }{}
 		\ifboolexpr{togl{markingDistribution}}{\textsc{Distribution} \distribution}{}
 		\ifboolexpr{ togl{markingDistribution} or togl{markingITAR}}{{\newline}\textsc{\textbf{See Cover Page}}}{}
+        }
 	}
 
 
@@ -579,6 +637,7 @@
 }
 
 \fancypagestyle{appendices}{
+	\fancyhead[L]{\cornermark\raggedright\small\rightmark}
 	\fancyfoot[R]{
 		%		\iflabelexists{endOf\thesection}
 		%	{\setcounter{lappage}{\getpagerefnumber{endOf\thesection}-\arabic{sappage}}}
@@ -618,6 +677,23 @@
 	\end{tikzpicture}
 }
 
+\newsavebox\foobox
+\def\slantvalue{0}
+\newcommand{\slantboxengine}[2][\slantvalue]{\mbox{%
+		\sbox{\foobox}{#2}%
+		\hskip\wd\foobox
+		\pdfsave
+		\pdfsetmatrix{1 0 #1 1}%
+		\llap{\usebox{\foobox}}%
+		\pdfrestore
+}}
+\newcommand\slantbox[2][\slantvalue]{%
+	\edef\slantvalue{#1}\expandafter\slantboxhelpA#2 \relax\relax}
+\def\slantboxhelpA#1 #2\relax{%
+	\slantboxengine{#1}%
+	\ifx\relax#2\relax\else\ \slantboxhelpA#2\relax\fi
+}
+
 \newcommand{\tbd}{{\color{red}\textbf{TBD}\xspace}}
 
 % Classification Markings
@@ -655,19 +731,24 @@
 \newcommand{\todo}[1]{
 	
 	\noindent
-	\cfbox{red}{\parbox{\dimexpr\linewidth-2\fboxsep-2\fboxrule}{TODO: #1}}
+	\cfbox{red}{~\parbox{\dimexpr\linewidth-2\fboxsep-2\fboxrule}{TODO: #1}}
 }
 
 \colorlet{shadecolor}{gray!8}
 \newenvironment{starkpoints}{
+	
+	\begin{center}
+\begin{minipage}{0.875\linewidth}		
 \begin{snugshade}
 	\begin{leftbar}
-		\bigskip
-		\begin{itemize}[rightmargin=\parindent]
+		\smallskip
+		\begin{itemize}[leftmargin=0.2in, rightmargin=0.2in, topsep=0.1cm]
 }{
 \end{itemize}
 \end{leftbar}
-\end{snugshade}}
+\end{snugshade}\end{minipage}
+\medskip
+\end{center}}
 
 % ----- Revision block/tracking
 \newcounter{revcount}
