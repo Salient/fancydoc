@@ -194,6 +194,19 @@
 
 
 
+% ---------------------------------------------------------------------------------------
+% Top level/final hook
+%
+% Want to do this automatically before beginning the document, so that if a marking file was set
+% It gets used before the title page is rendered. For some reason, that is done before the document
+% environment hook is run. So, here is where markings are set, or the default markings are set.
+
+\AfterPreamble{
+% Enact definition of document markings
+\definemarkings
+}
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%% 		Define Marking Options
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -203,8 +216,32 @@
 
 % Main file that markings should be defined in. May should be maybe part of core?
 
+\newcommand{\markingfile}{\sharedmedia/Markings/mixed}
+\newcommand{\logMarking}{
+\ClassWarning{fancydoc}{Using default markings found  in \\markingfile. To change, use \\setmarkings{path/to/markingsfile}.}
+}
+
+\newcommand{\setmarkings}[1]{
+\IfFileExists{#1}{
+         \renewcommand{\logMarking}{\PackageWarning{fancydoc}{Markings file #1 found, reading...}} 
+         \renewcommand{\markingfile}{#1}
+     }{
+      % File not found in current directory, or full path given is not valid. Just to be nice, check if they meant in the core/ 
+      \IfFileExists{\sharedmedia/Markings/#1}{
+        \renewcommand{\logMarking}{\PackageWarning{fancydoc}{Markings file #1 found, reading...}} 
+      	\renewcommand{\markingfile}{\sharedmedia/Markings/#1}
+      }{
+        \ClassError{Markings file set to #1, but file does not exist!}
+    }
+  }
+}
+
+\newcommand{\definemarkings}{
+   \logMarking
+   \input{\markingfile}
+}
+
 % Select the appropriate Marking Template (Must already exist....)
-\input{\sharedmedia/Markings/mixed}
 
 % Should set the following
 %		Logos (top, bottom)
@@ -245,14 +282,14 @@
 % Use if draft or preview option is enabled
 %\usepackage{blindtext}  % Generate test viewing text
 
-
+\ClassWarning{bang}{Starting defaults}
 \providecommand{\distwarning}{\textbf{\color{red}[Please set the Distribution Warning text.]}}
 \providecommand{\itarwarning}{\textbf{\color{red}[Please set the ITAR Warning text.]}}
 \providecommand{\raypropwarning}{\textbf{\color{red}[Please set the Proprietary Warning text.]}}
 \providecommand{\fouowarning}{\textbf{\color{red}[Please set the FOUO Warning text.]}}
 \providecommand{\destructwarning}{\textbf{\color{red}[Please set the Destruction Warning text.]}}
 \providecommand{\copywarning}{\textbf{\color{red}[Please set the Copyright Warning text.]}}
-
+\ClassWarning{bang}{End defaults}
 
 %
 %% Provide default marking definitions in case they aren't provided or set by the markings file
@@ -310,8 +347,6 @@
 
 \RequirePackage{tocloft}
 
-% TODO - make this selectable by options
-
 \setcounter{secnumdepth}{5}
 \setlength{\headheight}{17pt}
 
@@ -326,6 +361,8 @@
 \addtocontents{lot}{~\hfill{Page}\par}
 \addtocontents{lol}{~\hfill{Page}\par}
 
+\renewcommand{\cftfigpresnum}{\bfseries Figure\ }
+\renewcommand{\cfttabpresnum}{\bfseries Table\ }
 
 %\renewcommand{\cftmarktoc}{\fontfamily{qhv}\selectfont !!}
 \renewcommand{\cfttoctitlefont}{\bfseries\scshape\Large\fontfamily{qhv}\selectfont}
@@ -366,14 +403,12 @@
 \addtolength{\cftsecnumwidth}{0.25cm} % For good measure
 
 
-%\settowidth{\cftsecnumwidth}{}
 
-%\renewcommand{\cftsecpresnum}{\bfseries Section }
+\addtolength{\cftfignumwidth}{1cm} % For good measure
+\addtolength{\cfttabnumwidth}{1cm} % For good measure
+%\renewcommand{\cfttabfont}{\bfseries}
 
-
-
-%\renewcommand\cftsubsecfont{\scshape}
-
+%--------------------------------
 % Document Section Title Formatting
 
 \titleformat*{\section}{\Large\bfseries\sffamily\scshape}
@@ -657,7 +692,6 @@
 }
 %=================== End Header and Footer Styling ================================
 
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%% 		Particular Annotations
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -720,6 +754,8 @@
 \newcommand{\fouo}{{\marginnote{\textbf{\small\formatting(FOUO)}}}}
 
 \newcommand{\note}[1]{~\\\marginnote{\textbf{NOTE:}}\noindent{#1}\\}
+
+\newcommand{\marku}{~\\\marginnote{(U)\\}}
 
 \newcommand{\tbr}[1]{\marginnote{\textbf{\small\color{orange}~~TBR:\\} #1}}
 
@@ -961,37 +997,21 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 \renewcommand{\titlepage}{
-\thispagestyle{firststyle}\vspace*{-1.25cm}
+\thispagestyle{firststyle}\vspace*{-1cm}
 %\begin{center}
 
 \noindent\Large\textsc{\textbf{\titlelong}}
-
 \noindent\Large\textsc{\doctype}\smallskip
-
-%		\small~\\
-%	\\[0.25cm]
-
-%	{	\large\textit{for}}
-%	~\\[0.15cm]
-%\noindent	\Large\textsc{\contractname System (BMNS)}
-%\begin{minipage}{0.75\linewidth}
-
-%\smallskip
-%	{	\Large \textsc{\contractname}}
-%	{\Large\textsc{some purpose here}},\\
-
-%		\end{minipage}
-%\\[0.15cm]~
 
 \vspace*{0.25cm}
 \noindent\hrule
 \vfill
-\small~\\[0.15cm]
-\normalsize
+%\small~\\[0.15cm]
+%\normalsize
 %\end{center}
 %	\vspace{1cm}
 
-\begin{minipage}{0.45\linewidth}
+\begin{minipage}{0.40\linewidth}
 	% Place top logo, unless disabled
 %\nottoggle{hidetoplogo}{\includegraphics[width=\linewidth]
 \begin{center}
@@ -1002,6 +1022,7 @@
 \end{minipage}
 \hfill
 \begin{minipage}{0.5\linewidth}
+	\small
 %	\centering
 	%	\textsc{
 	%		\textbf{
@@ -1016,9 +1037,9 @@
 	%		\vfill
 	\def\arraystretch{1}%  1 is the default, change whatever you need
 	\begin{tabular}{r @{ : } >{\raggedright\arraybackslash}p{1.3in}}
-		\textsc{\large Document {\fontfamily{cmr}\selectfont\textnumero}}
-                                            & \docnumber  \newline                                            \\
-		\textsc{{\newline}Current Revision} & \revision                                                           \\
+	{\large	\textsc{ Document }{\fontfamily{cmr}\selectfont\textnumero}}
+                                            & {\large\docnumber}  \newline                                            \\
+	\smaller	\textsc{{\newline}Current Revision} & \revision                                                           \\
 		\textsc{Total Pages}                & \pageref{LastPage}                                                  \\
 		\textsc{Status}                     & \documentstatus   \newline                                         \\
 		\textsc{Release Date}               & \released                                                              \\
@@ -1048,24 +1069,17 @@
 
 \noindent\iftoggle{markingDistribution}{\distwarning}
 
-
 \noindent\iftoggle{markingITAR}{\itarwarning}
-
 
 \noindent\iftoggle{markingProprietary}{\raypropwarning}
 
-
 \noindent\iftoggle{markingFOUO}{\fouowarning}
-
 
 \noindent\iftoggle{markingDestroy}{\destructwarning}
 
-
 \noindent\iftoggle{programWarning}{\programwarning}
 
-
 \noindent\iftoggle{markingCopyright}{\copywarning}
-
 }
 
 \providecommand{\codelistings}{}
