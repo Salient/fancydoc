@@ -80,7 +80,7 @@
 \iftoggle{codesnips}{
 \RequirePackage{minted}
 \setminted[vhdl]{fontsize=\scriptsize, linenos}
-\renewcommand{\listoflistingscaption}{\vspace*{1cm}\bfseries\Large\fontfamily{qhv}\selectfont List of HDL Code Excerpts}
+\renewcommand{\listoflistingscaption}{\bfseries\Large\fontfamily{qhv}\selectfont List of HDL Code Excerpts}
 \newcommand{\codesref}{Code Excerpt }
 \renewcommand{\listingscaption}{\ac{CDL} \codesref}
 \newcommand{\coderef}[1]{\hyperref[#1]{\codesref \ref*{#1}}}
@@ -282,14 +282,14 @@
 % Use if draft or preview option is enabled
 %\usepackage{blindtext}  % Generate test viewing text
 
-\ClassWarning{bang}{Starting defaults}
+%\ClassWarning{bang}{Starting defaults}
 \providecommand{\distwarning}{\textbf{\color{red}[Please set the Distribution Warning text.]}}
 \providecommand{\itarwarning}{\textbf{\color{red}[Please set the ITAR Warning text.]}}
 \providecommand{\raypropwarning}{\textbf{\color{red}[Please set the Proprietary Warning text.]}}
 \providecommand{\fouowarning}{\textbf{\color{red}[Please set the FOUO Warning text.]}}
 \providecommand{\destructwarning}{\textbf{\color{red}[Please set the Destruction Warning text.]}}
 \providecommand{\copywarning}{\textbf{\color{red}[Please set the Copyright Warning text.]}}
-\ClassWarning{bang}{End defaults}
+%\ClassWarning{bang}{End defaults}
 
 %
 %% Provide default marking definitions in case they aren't provided or set by the markings file
@@ -573,8 +573,7 @@
 
 \RequirePackage{accsupp}
 
-\DeclareRobustCommand\unselectable[1]{
-\BeginAccSupp{method=plain,ActualText={}}#1\EndAccSupp{}}
+\DeclareRobustCommand{\unselectable}[1]{\BeginAccSupp{method=plain,ActualText={}}#1\EndAccSupp{}}
 
 % Requires etoolbox package
 \RequirePackage{fancyhdr}
@@ -599,28 +598,28 @@
 	}
 
 	%	\fancyhead[L]{{\textsc{\docnumber}}\newline\newline}
-	\fancyhead[L]{\cornermark
+	\fancyhead[L]{\unselectable\cornermark
         %\iftoggle{rough}{\roughmark}
     }
 
-	\fancyfoot[L]{
+	\fancyfoot[L]{\unselectable
 		\scriptsize\topfooterleft\vspace{0.1cm}\hrule\vspace{0.1cm}
 		\ifboolexpr{togl{markingITAR}}{\textsc{Export Controlled}}{}
 		\ifboolexpr{ togl{markingDistribution} and togl{markingITAR}}{ \textbf{ // } }{}
 		\ifboolexpr{togl{markingDistribution}}{\textsc{Distribution} \distribution}{}
 	}
 
-	\fancyfoot[C]{
-		~\vspace{0.15cm}\\
+	\fancyfoot[C]{\unselectable
+		.\scriptsize~\vspace{0.1cm}\\
 		\iftoggle{markingProprietary}{\scriptsize\textsc{Raytheon Proprietary}\\[0.2cm]}~
 		\iftoggle{markingHazOp}{ \small\color{red}\textbf{PROCEDURE CONTAINS HAZARDOUS OPERATIONS }}
 	}
 
-	\fancyfoot[R]{
-		\iftoggle{markingSafetyCritical}{\scriptsize\textbf{\formatting\textsc{Safety Critical Item}}}
-		~\vspace{0.15cm}\\
+	\fancyfoot[R]{\unselectable{
+		\iftoggle{markingSafetyCritical}{\formatting\scriptsize\textbf{\textsc{Safety Critical Item}}}
+		~\vspace{0.1cm}\\
 		\scriptsize\textbf{UNCLASSIFIED}
-		\iftoggle{markingFOUO}{\textbf{ // ~FOUO}}
+		\iftoggle{markingFOUO}{\textbf{ // ~FOUO}}}
 	}
 
 	%	\fancyhead[C]{\iftoggle{markingHazOp}{ \small\color{red}\textbf{HAZARDOUS OPERATIONS PROCEDURE}} }
@@ -637,10 +636,10 @@
 	%	{\color{red}\colorbox{yellow}{\textbf{NOT RELEASABLE TO JAPAN}}}}
 
 
-	\fancyhead[L]{\cornermark\raggedright\small\rightmark
+	\fancyhead[L]{\unselectable\cornermark\raggedright\small\rightmark
         %\iftoggle{rough}{\roughmark}
     }
-	\fancyhead[C]{{\textsc{\small\headingcenter}}}
+	\fancyhead[C]{\unselectable{\textsc{\small\headingcenter}}}
 	%	\expandafter\fancyhead[R]{\includegraphics[scale=0.4]{\headerlogo}}
 	\fancyhead[R]{}
 	%
@@ -658,21 +657,25 @@
 
 
 	\fancyfoot[C]{
-		\iftoggle{markingSafetyCritical}{\scriptsize\textbf{\formatting\textsc{Safety Critical Item}}}
-		~\vspace{0.15cm}\\
+	\unselectable{
+		\iftoggle{markingSafetyCritical}{\formatting\scriptsize\textbf{\textsc{Safety Critical Item}}}
+		~\vspace{0.1cm}\\
 		\iftoggle{markingProprietary}{\scriptsize\color{black}\textsc{Raytheon Proprietary}\\[0.2cm]}~
 		\iftoggle{markingHazOp}{ \small\color{red}\textbf{PROCEDURE CONTAINS HAZARDOUS OPERATIONS}}
 	}
+	}
 	%
 	\fancyfoot[R]{
-		\thepage\ of \pageref{LastPage}\vspace{0.15cm}\\
+		\unselectable{
+		\scriptsize{Page \vrule {\thepage\ of \pageref{LastPage}\vspace{0.1cm}}}\\ 
 		\scriptsize\textbf{UNCLASSIFIED}
 		\iftoggle{markingFOUO}{\textbf{ // ~FOUO}}
+	}
 	}
 }
 
 \fancypagestyle{appendices}{
-	\fancyhead[L]{\cornermark\raggedright\small\rightmark}
+	\fancyhead[L]{\unselectable{\cornermark\raggedright\small\rightmark}}
 	\fancyfoot[R]{
 		%		\iflabelexists{endOf\thesection}
 		%	{\setcounter{lappage}{\getpagerefnumber{endOf\thesection}-\arabic{sappage}}}
@@ -682,13 +685,25 @@
 		%		\newcommand{\tempddd}{endOf\thesection}
 		%		I chooose YOU \tempddd
 		%		\setcounter{lappage}{\tempddd}-\arabic{sappage}}
-		(Appendix \thesection, \thesection-\arabic{appage}) \thepage~of \pageref{LastPage}
+	\unselectable{\scriptsize Page \arabic{appage}~of~~\textbf{Appendix \thesection}~~\vrule~~\thepage~of \pageref{LastPage} total  
+					~\vspace{0.1cm}\\
+				\scriptsize\textbf{UNCLASSIFIED}
+		\iftoggle{markingFOUO}{\textbf{ // ~FOUO}}}
 		%			\vspace{0.15cm}\\[0.1cm] \scriptsize
 		%			\textbf{\color{black}UNCLASSIFIED // FOUO} \\
 		%			boom \thepage~\arabic{sappage} \arabic{lappage} \arabic{appage} !!\getpagerefnumber{endofdoc}\\
 		%			section \thesection\\
 		%			I'm looking for endOf\thesection: \arabic{\value{endOf\thesection}}
 	}
+	\fancyfoot[C]{
+	\unselectable{
+		\iftoggle{markingSafetyCritical}{\scriptsize\textbf{\formatting\textsc{Safety Critical Item}}}
+		~\vspace{0.1cm}\\
+		\iftoggle{markingProprietary}{\scriptsize\color{black}\textsc{Raytheon Proprietary}\\[0.2cm]}~
+		\iftoggle{markingHazOp}{ \small\color{red}\textbf{PROCEDURE CONTAINS HAZARDOUS OPERATIONS}}
+	}
+}
+
 }
 %=================== End Header and Footer Styling ================================
 
@@ -1109,7 +1124,9 @@
 
 	%\newpage
 	\listoftables
+	
 	\listoffigures
+	
     \iftoggle{codesnips}{\listoflistings}{}
 
     \revisionblock
