@@ -238,23 +238,12 @@
 % Use if draft or preview option is enabled
 %\usepackage{blindtext}  % Generate test viewing text
 
-\ClassWarning{bang}{Starting defaults}
 \providecommand{\distwarning}{\textbf{\color{red}[Please set the Distribution Warning text.]}}
 \providecommand{\itarwarning}{\textbf{\color{red}[Please set the ITAR Warning text.]}}
 \providecommand{\raypropwarning}{\textbf{\color{red}[Please set the Proprietary Warning text.]}}
 \providecommand{\fouowarning}{\textbf{\color{red}[Please set the FOUO Warning text.]}}
 \providecommand{\destructwarning}{\textbf{\color{red}[Please set the Destruction Warning text.]}}
 \providecommand{\copywarning}{\textbf{\color{red}[Please set the Copyright Warning text.]}}
-\ClassWarning{bang}{End defaults}
-
-%
-%% Provide default marking definitions in case they aren't provided or set by the markings file
-%\providecommand{\distwarning}{\color{red} Warning! Distribution statement not defined. Create command '\textbf{$\backslash$distwarning}' with desired text. Maybe put it in markings.tex, hmmm?}
-%\providecommand{\itarwarning}{\color{red} Warning! Distribution statement not defined. Create command '\textbf{$\backslash$itarwarning}' with desired text. Maybe put it in markings.tex, hmmm?}
-%\providecommand{\raypropwarning}{\color{red} Warning! Distribution statement not defined. Create command '\textbf{$\backslash$raypropwarning}' with desired text. Maybe put it in markings.tex, hmmm?}
-%\providecommand{\fouowarning}{\color{red} Warning! Distribution statement not defined. Create command '\textbf{$\backslash$fouowarning}' with desired text. Maybe put it in markings.tex, hmmm?}
-%\providecommand{\copywarning}{\color{red} Warning! Distribution statement not defined. Create command '\textbf{$\backslash$copywarning}' with desired text. Maybe put it in markings.tex, hmmm?}
-%\providecommand{\destructwarning}{\color{red} Warning! Distribution statement not defined. Create command '\textbf{$\backslash$destructwarning}' with desired text. Maybe put it in markings.tex, hmmm?}
 
 %%=================== End Marking Options ==========================================
 
@@ -574,15 +563,18 @@
 
 
 \AtBeginEnvironment{appendices}{
+	\newpage
+	\cleardoublepage
 	
-	\settowidth{\cftsecnumwidth}{X}
-	%\settowidth{\cftsecnumwidth}{}
-	\renewcommand{\cftsecpresnum}{~}
-	%\renewcommand{\cftsecpresnum}{\bfseries
-%	\renewcommand{\cftsecaftersnumb}{\color{secpcolor}\bfseries xx}
-%	\renewcommand{\cftsecpresnum}{\color{secpcolor}\bfseries xx!!!!!}
+	% Put a correctly formatted title in for the Appendices (if present)
+	\addtocontents{toc}{\protecting{\vspace*{1cm}{\bfseries\scshape\Large\fontfamily{qhv}\selectfont  Appendices}}}
+	\addtocontents{toc}{~\hfill Page\par}
+	% Need this to remove any extra words added for the other sections.
+	% Has to be done like this, because it would be expanded during typesetting of ToC
+	% TODO - take advantage of this to list stuff in appendices correctly.
+	\addtocontents{toc}{\protecting{\renewcommand{\cftsecpresnum}{}}}
+	\addtocontents{toc}{\protecting{\addtolength{\cftsecnumwidth}{-\secheadlen}}}
 
-	
 	\preto{\section}{
 		\newcounter{endOf\thesection}
 		\setcounter{endOf\thesection}{\theCurrentPage}
@@ -656,7 +648,7 @@
 
 \newcommand{\note}[1]{~\\\marginnote{\textbf{NOTE:}}\noindent{#1}\\}
 
-\newcommand{\marku}{~\\\marginnote{(U)\\}}
+\newcommand{\marku}{~\marginnote{\normalfont(U)}}
 
 \newcommand{\tbr}[1]{\marginnote{\textbf{\small\color{orange}~~TBR:\\} #1}}
 
@@ -891,7 +883,8 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 \renewcommand{\titlepage}{
-\thispagestyle{firststyle}\vspace*{-1.25cm}
+\thispagestyle{firststyle}
+\vspace*{-1cm}
 %\begin{center}
 
 \noindent\Large\textsc{\textbf{\fontfamily{qhv}\selectfont\titlelong}}
@@ -904,7 +897,7 @@
 %	{	\large\textit{for}}
 %	~\\[0.15cm]
 %\noindent	\Large\textsc{\contractname System (BMNS)}
-%\begin{minipage}{0.75\linewidth}
+
 
 %\smallskip
 %	{	\Large \textsc{\contractname}}
@@ -920,18 +913,15 @@
 \normalsize
 %\end{center}
 %	\vspace{1cm}
-
 \begin{minipage}{0.45\linewidth}
-	% Place top logo, unless disabled
-%\nottoggle{hidetoplogo}{\includegraphics[width=\linewidth]
 \begin{center}
 {\placetoplogo}
 {\placebotlogo}
 \end{center}
-
 \end{minipage}
+%\fbox{
 \hfill
-\begin{minipage}{0.5\linewidth}
+\begin{minipage}{0.53\linewidth}
 %	\centering
 	%	\textsc{
 	%		\textbf{
@@ -945,29 +935,32 @@
 	%		\small \vspace{0.5cm}
 	%		\vfill
 	\def\arraystretch{1}%  1 is the default, change whatever you need
-	\begin{tabular}{r @{ : } >{\raggedright\arraybackslash}p{1.3in}}
+%	\fbox{
+	\begin{tabular}{r @{ : } >{\raggedright\arraybackslash}p{1.3in} l}
 	\large	\textsc{ Document }{\fontfamily{cmr}\selectfont\textnumero}
-                                            & \docnumber  \newline                                            \\
-		\textsc{{\newline}Current Revision} & \revision                                                           \\
-		\textsc{Total Pages}                & \pageref{LastPage}                                                  \\
-		\textsc{Status}                     & \documentstatus   \newline                                         \\
-		\textsc{Release Date}               & \released                                                              \\
-		\textsc{Prepared By}                & James Heller\newline {Fuzing, Initiator Safety}\newline                    \\
+                                            & \docnumber  \newline              & (U)                              \\
+		\textsc{{\newline}Current Revision} & \revision                         & (U)                                  \\
+		\textsc{Total Pages}                & \pageref{LastPage}                     &                              \\
+		\textsc{Status}                     & \documentstatus   \newline                  & (U)                       \\
+		\textsc{Release Date}               & \released                                        & (U)                      \\
+		\textsc{Prepared By}                & James Heller\newline {Fuzing, Initiator Safety}\newline                   & (U) \\
 		\textsc{Classification}             & UNCLASSIFIED\iftoggle{markingFOUO}{, FOUO \\}		\\
 		\iftoggle{markingDistribution}{\textsc{Distribution}&\distribution\\}
-\newline{\scshape\projectdesignation}        & \textsc{\contractname}                                                       \\
+\newline{\scshape\projectdesignation}        & \textsc{\contractname}                        & (U)                               \\
 		\textsc{Contract \#}                & \textsc{\contract}
-		{\newline}                                                                                                \\
+		{\newline}                                              & (U)                                                  \\
 
-		\textsc{Originating Facility}       & Raytheon Missile\newline~Systems Company                   \\
+		\textsc{Originating Facility}       & Raytheon Missile\newline~Systems Company                   & (U)\\
 		\textsc{Located}                    &
 		1151 E. Hermans Rd\newline
-		Tucson, AZ 85756                                                                                          \\
-		\textsc{CAGE Code}                  & 15090                                                               \\
+		Tucson, AZ 85756                                                                                      & (U)    \\
+		\textsc{CAGE Code}                  & 15090                                                              & \\
 	\end{tabular}
+%}
 	\vfill
     %\def\arraystretch{1.5}%  1 is the default, change whatever you need
 \end{minipage}
+%}
 %
 %\vspace{0.25cm}
 \vfill
@@ -995,7 +988,6 @@
 
 
 \noindent\iftoggle{markingCopyright}{\copywarning}
-
 }
 
 \providecommand{\codelistings}{}
