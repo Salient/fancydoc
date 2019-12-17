@@ -28,7 +28,8 @@
 \newtoggle{hideheaderlogo}
 \newtoggle{codesnips}
 \newtoggle{stark}
-\newtoggle{watermark}
+\newtoggle{rough}
+
 
 
 % ---------------------------------------------------------------------------------------
@@ -41,7 +42,7 @@
 \DeclareOption{notop}{\toggletrue{hidetoplogo}}
 \DeclareOption{nobot}{\toggletrue{hidebotlogo}}
 \DeclareOption{nohead}{\toggletrue{hideheaderlogo}}
-\DeclareOption{mark}{\toggletrue{watermark}}
+\DeclareOption{rough}{\toggletrue{rough}}
 \DeclareOption{stark}{\toggletrue{stark}}
 
 \DeclareOption*{\PassOptionsToClass{\CurrentOption}{article}}
@@ -90,10 +91,13 @@
 \newcommand{\formatting}{\color{black}}
 \iftoggle{stark}{
 	\renewcommand{\formatting}{\color{red}}
-}
+}{}
 
-\iftoggle{watermark}{
-\RequirePackage{draftwatermark}
+% -----------
+\iftoggle{rough}{
+
+\RequirePackage{everypage}
+\usetikzlibrary{math}
 %\SetWatermarkText{BIO-HAZARD}
 %\SetWatermarkScale{4}
 %\SetWatermarkAngle{}
@@ -102,9 +106,45 @@
 %\SetWatermarkScale{}
 %\SetWatermarkHorCenter{}
 %\SetWatermarkVerCenter{}
+%\SetWatermarkLightness{0.96} % Higher is lighter
 
-\SetWatermarkLightness{0.92} % Higher is lighter
+%\newcommand{\roughtext}{WORK IN PROGRESS}
+
+\newcommand{\roughtext}{\unselectable{ROUGH DRAFT}}
+
+
+\newcommand{\roughmark}{
+	\tikzset{
+	rough/.style = { scale = 1.5, rotate=40, opacity=0.02,  node distance = 1.5in, font=\LARGE\sffamily}
+%	shadow/.style = {append after command={
+%                   		\pgfextra{\node[at = (\tikzlastnode),below left = of \tikzlastnode, gray, rough]{ROUGH DRAFT};}}}
 }
+    \begin{tikzpicture}[remember picture, overlay]
+        \node[rough,blue] at (current page.north west) (origin) {\roughtext};
+        \tikzmath{
+%            coordinate \c, \e, \w;
+%            \e = (current page.east);
+%            \w = (current page.west);
+            for \x in {1,...,15}{
+                {
+                	 \node[ below = of origin, rough] (origin) {\roughtext};
+                     \node[ left = of origin, rough] (alley) {\roughtext};
+                     \node[ left = of alley, rough] (alley) {\roughtext}; 
+                     \node[ right = of origin, rough] (alley) {\roughtext};
+                     \node[ right = of alley, rough] (alley) {\roughtext}; 
+%                     \node[ below left= of origin, rough] (origin) {\roughsubtext};
+%                     \node[ left = of origin, rough] (alley) {\roughsubtext};
+%                     \node[ left = of alley, rough] (alley) {\roughsubtext}; 
+%                     \node[ right = of origin, rough] (alley) {\roughsubtext};
+%                     \node[ right = of alley, rough] (alley) {\roughsubtext}; 
+                }; 
+            };
+        }
+\end{tikzpicture}
+}
+
+\AddEverypageHook{\roughmark}
+}{}
 
 % ---------------------------------------------------------------------------------------
 % Configure logos for document header
@@ -290,7 +330,7 @@
 %%%% 		Section Level Title Styling, Document and TOC
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\RequirePackage[titles]{tocloft}
+\RequirePackage{tocloft}
 
 \setcounter{secnumdepth}{5}
 \setlength{\headheight}{17pt}
@@ -301,27 +341,59 @@
 \definecolor{sectcolor}{rgb}{0,0,0.2}
 \definecolor{secpcolor}{rgb}{0,0,0.2}
 
+\addtocontents{toc}{~\hfill{Page}\par}
+\addtocontents{lof}{~\hfill{Page}\par}
+\addtocontents{lot}{~\hfill{Page}\par}
+\addtocontents{lol}{~\hfill{Page}\par}
+
+\renewcommand{\cftfigpresnum}{\bfseries Figure\ }
+\renewcommand{\cfttabpresnum}{\bfseries Table\ }
+
+%\renewcommand{\cftmarktoc}{\fontfamily{qhv}\selectfont !!}
+\renewcommand{\cfttoctitlefont}{\bfseries\scshape\Large\fontfamily{qhv}\selectfont}
+\renewcommand{\cftlottitlefont}{\vspace*{1cm}\bfseries\scshape\Large\fontfamily{qhv}\selectfont}
+\renewcommand{\cftloftitlefont}{\vspace*{1cm}\bfseries\scshape\Large\fontfamily{qhv}\selectfont}
+
+\renewcommand{\contentsname}{Table of Contents}
+%\renewcommand{\cftaftertoctitle}{%
+%	\\[\baselineskip]\mbox{}\hfill Page}
+%\renewcommand\cfttoctitlefont{\Large\bfseries Table of }
+%\renewcommand\cftaftertoctitle{\hfill\mbox{Page}}
+
+%\renewcommand{\cftXfont}{\bfseries}
+%\renewcommand{\cftXleader}{\bfseries\cftdotfill{\cftXdotsep}}
+%\renewcommand{\cftXpagefont}{\bfseries}
+%\renewcommand{\cftXpresnum}{SOMETHING }
+%\renewcommand{\cftXaftersnum}{:}
+%\renewcommand{\cftXaftersnumb}{\\}
+
+
 
 % % Table of Contents Entries
 % Make Entries in the ToC in Small Caps
-\renewcommand{\cftsecfont}{\scshape\sffamily\larger}
-\renewcommand{\cftsecaftersnumb}{: \bfseries\sffamily\color{sectcolor}}
-%\renewcommand{\cftsecaftersnumb}{\bfseries\hfill}
-
+% Format Sec headers
+\renewcommand{\cftsecfont}{\scshape\sffamily}
 \renewcommand{\cftsecleader}{\hfill}
+\renewcommand{\cftsecpagefont}{\larger\bfseries\sffamily\color{sectcolor}}
+\renewcommand{\cftsecpresnum}{Section }
+\renewcommand{\cftsecaftersnum}{\hspace*{0.2cm}}
+\renewcommand{\cftsecaftersnumb}{\bfseries}
 
+%\settowidth{\cftsecnumwidth}{Section XX}
 % Since we are modifying Section Titles, we have to adjust where the title text starts
 % Only matters if left justifying text
-
-\settowidth{\cftsecnumwidth}{Section XX}
-%\settowidth{\cftsecnumwidth}{}
-\renewcommand{\cftsecpresnum}{\color{secpcolor}\bfseries Section }
-%\renewcommand{\cftsecpresnum}{\bfseries Section }
-
+\newlength{\secheadlen} % a "scratch" length
+\settowidth{\secheadlen}{\bfseries\cftsecpresnum\cftsecaftersnum} % extra space
+\addtolength{\cftsecnumwidth}{\secheadlen} % add the extra space
+\addtolength{\cftsecnumwidth}{0.25cm} % For good measure
 
 
-%\renewcommand\cftsubsecfont{\scshape}
 
+\addtolength{\cftfignumwidth}{1cm} % For good measure
+\addtolength{\cfttabnumwidth}{1cm} % For good measure
+%\renewcommand{\cfttabfont}{\bfseries}
+
+%--------------------------------
 % Document Section Title Formatting
 
 \titleformat*{\section}{\Large\bfseries\sffamily\scshape}
@@ -350,8 +422,8 @@
 %=================== End Section Level Title Styling, Document and TOC ============
 
 
-%\newlength{\charwidth}
-%\setlength{\charwidth}{\widthof{\S}}
+\newlength{\charwidth}
+\setlength{\charwidth}{\widthof{\S}}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%% 		Special Look and Feel
@@ -367,7 +439,7 @@
 \RequirePackage[textfont={footnotesize,sl},labelfont=footnotesize, labelsep=endash]{caption}
 
 
-\RequirePackage[left=1.25in,right=1.25in,top=1.25in, bottom=1.25in, marginparsep=7pt]{geometry}
+\RequirePackage[left=1.25in,right=1in,top=1in, bottom=1.25in, marginparsep=7pt]{geometry}
 
 \newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
 
@@ -402,16 +474,14 @@
 %\RequirePackage{tablefootnote}
 \RequirePackage{threeparttable}
 
-\RequirePackage{enumitem}[itemsep = 1cm]
+\RequirePackage{enumitem}[itemsep = 0.08cm, parsep=0in]
 % Adjust indents/margins of lists. Provided by [enumitem]
-\newlength\listindent
-\setlength\listindent{\parindent}
-\setlist[enumerate]{leftmargin=3\listindent, label=\emph{\alph*})}
-\setlist[itemize]{leftmargin=3\listindent, rightmargin=\parindent} %, itemsep=0.2cm}
-\setlist[description]{leftmargin=3\listindent, labelwidth=0.45in, labelindent=\parindent}
+\setlist[enumerate]{leftmargin=0.7in, label=\emph{\alph*})}
+\setlist[itemize]{leftmargin=0.7in, rightmargin=0.7in}
+\setlist[description]{leftmargin=0.25in, labelwidth=0.7in, labelindent=\parindent}
 
 %  leave space around whole list
-\setlist{noitemsep} %
+%\setlist{noitemsep} %
 
 %\def\arraystretch{1.5}%  1 is the default, change whatever you need
 %\setlength\tabcolsep{0.1cm}
@@ -426,19 +496,73 @@
 
 %=================== End Special Look and Feel ======================================
 
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%% 		General Dynamic Referencing
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\RequirePackage{pdfpages}
+\RequirePackage[page,titletoc]{appendix}
+%\RequirePackage{lastpage}
+\RequirePackage{pageslts}
+
+
+\newcounter{appage}
+\newcounter{sappage}
+
+\newcommand{\appendixpagenumbering}{
+	\break
+	\pagenumbering{arabic}
+	\renewcommand{\thepage}{\thesection-\arabic{page}}
+	%		\label{endOf\thesection}
+}
+
+\AtBeginEnvironment{appendices}{
+			\newpage
+	\cleardoublepage
+	
+	% Put a correctly formatted title in for the Appendices (if present)
+	\addtocontents{toc}{\protecting{\vspace*{1cm}{\bfseries\scshape\Large\fontfamily{qhv}\selectfont  Appendices}}}
+	\addtocontents{toc}{~\hfill Page\par}
+	% Need this to remove any extra words added for the other sections.
+	% Has to be done like this, because it would be expanded during typesetting of ToC
+	% TODO - take advantage of this to list stuff in appendices correctly.
+	\addtocontents{toc}{\protecting{\renewcommand{\cftsecpresnum}{}}}
+	\addtocontents{toc}{\protecting{\addtolength{\cftsecnumwidth}{-\secheadlen}}}
+	
+	\preto{\section}{
+		\clearpage
+		\pagestyle{appendices}
+		\newcounter{endOf\thesection}
+		\setcounter{endOf\thesection}{\theCurrentPage}
+		\setcounter{sappage}{\theCurrentPage}
+	}
+	\label{LastMainPage}
+}
+
+\AtEndEnvironment{appendices}{
+	\setcounter{sappage}{\theCurrentPage}
+}
+
+%=================== End General Dynaimc Referencing ==============================
+
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%% 		Header and Footer Styling
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
+
+
+\RequirePackage{accsupp}
+
+\DeclareRobustCommand{\unselectable}[1]{\BeginAccSupp{method=plain,ActualText={}}#1\EndAccSupp{}}
+
 % Requires etoolbox package
 \RequirePackage{fancyhdr}
 \renewcommand{\headrulewidth}{1pt}
-
-\RequirePackage{pdfpages}
-\RequirePackage[title, titletoc,toc,page]{appendix}
-%\RequirePackage{lastpage}
-\RequirePackage{pageslts}
 
 \newcommand{\topfooterleft}{\textsc{For \textbf{\contractname} \projectdesignation\xspace Only}}
 \newcommand{\cornermark}{
@@ -457,26 +581,28 @@
 	}
 
 	%	\fancyhead[L]{{\textsc{\docnumber}}\newline\newline}
-	\fancyhead[L]{\cornermark}
+	\fancyhead[L]{\unselectable\cornermark
+        %\iftoggle{rough}{\roughmark}
+    }
 
-	\fancyfoot[L]{
+	\fancyfoot[L]{\unselectable
 		\scriptsize\topfooterleft\vspace{0.1cm}\hrule\vspace{0.1cm}
 		\ifboolexpr{togl{markingITAR}}{\textsc{Export Controlled}}{}
 		\ifboolexpr{ togl{markingDistribution} and togl{markingITAR}}{ \textbf{ // } }{}
 		\ifboolexpr{togl{markingDistribution}}{\textsc{Distribution} \distribution}{}
 	}
 
-	\fancyfoot[C]{
-		~\vspace{0.15cm}\\
+	\fancyfoot[C]{\unselectable
+		.\scriptsize~\vspace{0.1cm}\\
 		\iftoggle{markingProprietary}{\scriptsize\textsc{Raytheon Proprietary}\\[0.2cm]}~
 		\iftoggle{markingHazOp}{ \small\color{red}\textbf{PROCEDURE CONTAINS HAZARDOUS OPERATIONS }}
 	}
 
-	\fancyfoot[R]{
-		\iftoggle{markingSafetyCritical}{\scriptsize\textbf{\formatting\textsc{Safety Critical Item}}}
-		~\vspace{0.15cm}\\
+	\fancyfoot[R]{\unselectable{
+		\iftoggle{markingSafetyCritical}{\formatting\scriptsize\textbf{\textsc{Safety Critical Item}}}
+		~\vspace{0.1cm}\\
 		\scriptsize\textbf{UNCLASSIFIED}
-		\iftoggle{markingFOUO}{\textbf{ // ~FOUO}}
+		\iftoggle{markingFOUO}{\textbf{ // ~FOUO}}}
 	}
 
 	%	\fancyhead[C]{\iftoggle{markingHazOp}{ \small\color{red}\textbf{HAZARDOUS OPERATIONS PROCEDURE}} }
@@ -493,12 +619,15 @@
 	%	{\color{red}\colorbox{yellow}{\textbf{NOT RELEASABLE TO JAPAN}}}}
 
 
-	\fancyhead[L]{\cornermark\raggedright\small\rightmark}
-	\fancyhead[C]{{\textsc{\small\headingcenter}}}
+	\fancyhead[L]{\unselectable\cornermark\raggedright\small\rightmark
+        %\iftoggle{rough}{\roughmark}
+    }
+	\fancyhead[C]{\unselectable{\textsc{\small\headingcenter}}}
 	%	\expandafter\fancyhead[R]{\includegraphics[scale=0.4]{\headerlogo}}
 	\fancyhead[R]{}
 	%
 	\fancyfoot[L]{
+    \unselectable{
 		\scriptsize
 		\topfooterleft
 		\vspace{0.1cm}\hrule\vspace{0.1cm}
@@ -506,24 +635,28 @@
 		\ifboolexpr{ togl{markingDistribution} and togl{markingITAR}}{ \textbf{ // } }{}
 		\ifboolexpr{togl{markingDistribution}}{\textsc{Distribution} \distribution}{}
 		\ifboolexpr{ togl{markingDistribution} or togl{markingITAR}}{{\newline}\textsc{\textbf{See Cover Page}}}{}
+        }
 	}
 
 
 	\fancyfoot[C]{
-		\iftoggle{markingSafetyCritical}{\scriptsize\textbf{\formatting\textsc{Safety Critical Item}}}
-		~\vspace{0.15cm}\\
+	\unselectable{
+		\iftoggle{markingSafetyCritical}{\formatting\scriptsize\textbf{\textsc{Safety Critical Item}}}
+		~\vspace{0.1cm}\\
 		\iftoggle{markingProprietary}{\scriptsize\color{black}\textsc{Raytheon Proprietary}\\[0.2cm]}~
-		\iftoggle{markingHazOp}{ \small\color{red}\textbf{PROCEDURE CONTAINS HAZARDOUS OPERATIONS}}
+		\iftoggle{markingHazOp}{ \small\color{red}\textbf{PROCEDURE CONTAINS HAZARDOUS OPERATIONS}}}
 	}
 	%
 	\fancyfoot[R]{
-		\thepage\ of \pageref{LastPage}\vspace{0.15cm}\\
+		\unselectable{
+		\scriptsize{Page \vrule {\thepage\ of \pageref{LastPage}\vspace{0.1cm}}}\\ 
 		\scriptsize\textbf{UNCLASSIFIED}
-		\iftoggle{markingFOUO}{\textbf{ // ~FOUO}}
+		\iftoggle{markingFOUO}{\textbf{ // ~FOUO}}}
 	}
 }
 
 \fancypagestyle{appendices}{
+	\fancyhead[L]{\unselectable{\cornermark\raggedright\small\rightmark}}
 	\fancyfoot[R]{
 		%		\iflabelexists{endOf\thesection}
 		%	{\setcounter{lappage}{\getpagerefnumber{endOf\thesection}-\arabic{sappage}}}
@@ -533,74 +666,27 @@
 		%		\newcommand{\tempddd}{endOf\thesection}
 		%		I chooose YOU \tempddd
 		%		\setcounter{lappage}{\tempddd}-\arabic{sappage}}
-		(Appendix \thesection, \thesection-\arabic{appage}) \thepage~of \pageref{LastPage}
+	\unselectable{\scriptsize Page \arabic{appage}~of~~\textbf{Appendix \thesection}~~\vrule~~\thepage~of \pageref{LastPage} total  
+					~\vspace{0.1cm}\\
+				\scriptsize\textbf{UNCLASSIFIED}
+		\iftoggle{markingFOUO}{\textbf{ // ~FOUO}}}
 		%			\vspace{0.15cm}\\[0.1cm] \scriptsize
 		%			\textbf{\color{black}UNCLASSIFIED // FOUO} \\
 		%			boom \thepage~\arabic{sappage} \arabic{lappage} \arabic{appage} !!\getpagerefnumber{endofdoc}\\
 		%			section \thesection\\
 		%			I'm looking for endOf\thesection: \arabic{\value{endOf\thesection}}
 	}
+	\fancyfoot[C]{
+	\unselectable{
+		\iftoggle{markingSafetyCritical}{\scriptsize\textbf{\formatting\textsc{Safety Critical Item}}}
+		~\vspace{0.1cm}\\
+		\iftoggle{markingProprietary}{\scriptsize\color{black}\textsc{Raytheon Proprietary}\\[0.2cm]}~
+		\iftoggle{markingHazOp}{ \small\color{red}\textbf{PROCEDURE CONTAINS HAZARDOUS OPERATIONS}}
+	}
+}
+
 }
 %=================== End Header and Footer Styling ================================
-
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%% 		General Dynamic Referencing
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-
-
-\newcounter{appage}
-\newcounter{sappage}
-
-\newcommand{\appendixpagenumbering}{
-	\break
-	\pagenumbering{arabic}
-	\renewcommand{\thepage}{\thesection-\arabic{page}}
-	%		\label{endOf\thesection}
-}
-
-
-\AtBeginEnvironment{appendices}{
-	\newpage
-	\cleardoublepage
-	
-	% Put a correctly formatted title in for the Appendices (if present)
-	\addtocontents{toc}{\protecting{\vspace*{1cm}{\bfseries\scshape\Large\fontfamily{qhv}\selectfont  Appendices}}}
-	\addtocontents{toc}{~\hfill Page\par}
-	% Need this to remove any extra words added for the other sections.
-	% Has to be done like this, because it would be expanded during typesetting of ToC
-	% TODO - take advantage of this to list stuff in appendices correctly.
-	\addtocontents{toc}{\protecting{\renewcommand{\cftsecpresnum}{}}}
-	\addtocontents{toc}{\protecting{\addtolength{\cftsecnumwidth}{-\secheadlen}}}
-
-	\preto{\section}{
-		\newcounter{endOf\thesection}
-		\setcounter{endOf\thesection}{\theCurrentPage}
-		\setcounter{sappage}{\theCurrentPage}
-	}
-	\label{LastMainPage}
-}
-
-\AtEndEnvironment{appendices}{
-	\setcounter{sappage}{\theCurrentPage}
-}
-
-
-%------------------ Auto-revision Marking
-
-%\newenvironment{revisionblock}{
-%	
-%	
-%}
-%
-%
-%{enddef}
-
-
-%=================== End General Dynaimc Referencing ==============================
-
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%% 		Particular Annotations
@@ -619,6 +705,23 @@
 		\draw (current bounding box.south west) -- +(0,1);
 		\draw (current bounding box.south west) -- +(1,0);
 	\end{tikzpicture}
+}
+
+\newsavebox\foobox
+\def\slantvalue{0}
+\newcommand{\slantboxengine}[2][\slantvalue]{\mbox{%
+		\sbox{\foobox}{#2}%
+		\hskip\wd\foobox
+		\pdfsave
+		\pdfsetmatrix{1 0 #1 1}%
+		\llap{\usebox{\foobox}}%
+		\pdfrestore
+}}
+\newcommand\slantbox[2][\slantvalue]{%
+	\edef\slantvalue{#1}\expandafter\slantboxhelpA#2 \relax\relax}
+\def\slantboxhelpA#1 #2\relax{%
+	\slantboxengine{#1}%
+	\ifx\relax#2\relax\else\ \slantboxhelpA#2\relax\fi
 }
 
 \newcommand{\tbd}{{\color{red}\textbf{TBD}\xspace}}
@@ -648,7 +751,7 @@
 
 \newcommand{\note}[1]{~\\\marginnote{\textbf{NOTE:}}\noindent{#1}\\}
 
-\newcommand{\marku}{~\marginnote{\normalfont(U)}}
+\newcommand{\marku}{~\\\marginnote{(U)\\}}
 
 \newcommand{\tbr}[1]{\marginnote{\textbf{\small\color{orange}~~TBR:\\} #1}}
 
@@ -658,20 +761,26 @@
 		\fbox{\color{currentcolor}#2}}%
 }
 \newcommand{\todo}[1]{
+	
 	\noindent
-	\cfbox{red}{\parbox{\dimexpr\linewidth-2\fboxsep-2\fboxrule}{TODO: #1}}
+	\cfbox{red}{~\parbox{\dimexpr\linewidth-2\fboxsep-2\fboxrule}{TODO: #1}}
 }
 
 \colorlet{shadecolor}{gray!8}
 \newenvironment{starkpoints}{
+	
+	\begin{center}
+\begin{minipage}{0.875\linewidth}		
 \begin{snugshade}
 	\begin{leftbar}
-		\bigskip
-		\begin{itemize}[rightmargin=\parindent]
+		\smallskip
+		\begin{itemize}[leftmargin=0.2in, rightmargin=0.2in, topsep=0.1cm]
 }{
 \end{itemize}
 \end{leftbar}
-\end{snugshade}}
+\end{snugshade}\end{minipage}
+\medskip
+\end{center}}
 
 % ----- Revision block/tracking
 \newcounter{revcount}
@@ -683,6 +792,7 @@
 	% This is a neat trick. Expand macro -once-
 	\edef\revisionlist{\unexpanded\expandafter{\revisionlist}\revision \unexpanded{&} #1 \unexpanded{&} #2 \unexpanded{\\\hline}}
 	\stepcounter{revcount}
+	\renewcommand{\released}{#1}
 }
 
 \newcommand{\revisionblock}{   
@@ -883,44 +993,32 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 \renewcommand{\titlepage}{
-\thispagestyle{firststyle}
-\vspace*{-1cm}
+\thispagestyle{firststyle}\vspace*{-1cm}
 %\begin{center}
 
-\noindent\Large\textsc{\textbf{\fontfamily{qhv}\selectfont\titlelong}}
-
-\noindent\Large\textsc{\fontfamily{qhv}\selectfont\doctype}\smallskip
-
-%		\small~\\
-%	\\[0.25cm]
-
-%	{	\large\textit{for}}
-%	~\\[0.15cm]
-%\noindent	\Large\textsc{\contractname System (BMNS)}
-
-
-%\smallskip
-%	{	\Large \textsc{\contractname}}
-%	{\Large\textsc{some purpose here}},\\
-
-%		\end{minipage}
-%\\[0.15cm]~
+\noindent\Large\textsc{\textbf{\titlelong}}
+\noindent\Large\textsc{\doctype}\smallskip
 
 \vspace*{0.25cm}
 \noindent\hrule
 \vfill
-\small~\\[0.15cm]
-\normalsize
+%\small~\\[0.15cm]
+%\normalsize
 %\end{center}
 %	\vspace{1cm}
-\begin{minipage}{0.45\linewidth}
+
+\begin{minipage}{0.40\linewidth}
+	% Place top logo, unless disabled
+%\nottoggle{hidetoplogo}{\includegraphics[width=\linewidth]
 \begin{center}
 {\placetoplogo}
 {\placebotlogo}
 \end{center}
+
 \end{minipage}
 \hfill
-\begin{minipage}{0.53\linewidth}
+\begin{minipage}{0.5\linewidth}
+	\small
 %	\centering
 	%	\textsc{
 	%		\textbf{
@@ -935,9 +1033,9 @@
 	%		\vfill
 	\def\arraystretch{1}%  1 is the default, change whatever you need
 	\begin{tabular}{r @{ : } >{\raggedright\arraybackslash}p{1.3in}}
-	\large	\textsc{ Document }{\fontfamily{cmr}\selectfont\textnumero}
-                                            & \docnumber  \newline                                            \\
-		\textsc{{\newline}Current Revision} & \revision                                                           \\
+	{\large	\textsc{ Document }{\fontfamily{cmr}\selectfont\textnumero}}
+                                            & {\large\docnumber}  \newline                                            \\
+	\smaller	\textsc{{\newline}Current Revision} & \revision                                                           \\
 		\textsc{Total Pages}                & \pageref{LastPage}                                                  \\
 		\textsc{Status}                     & \documentstatus   \newline                                         \\
 		\textsc{Release Date}               & \released                                                              \\
@@ -967,24 +1065,17 @@
 
 \noindent\iftoggle{markingDistribution}{\distwarning}
 
-
 \noindent\iftoggle{markingITAR}{\itarwarning}
-
 
 \noindent\iftoggle{markingProprietary}{\raypropwarning}
 
-
 \noindent\iftoggle{markingFOUO}{\fouowarning}
-
 
 \noindent\iftoggle{markingDestroy}{\destructwarning}
 
-
 \noindent\iftoggle{programWarning}{\programwarning}
 
-
 \noindent\iftoggle{markingCopyright}{\copywarning}
-
 }
 
 \providecommand{\codelistings}{}
@@ -996,6 +1087,9 @@
 
 	\normalsize
 	\newpage
+	% Required to prevent tocloft package dicking with header style
+	% Can alternatively pass tocloft the [titles] option, but then it falls back to latex macros
+	\tocloftpagestyle{fancy}
 	\pagestyle{default}
 
 	\renewcommand{\sectionmark}[1]{\markright{\MakeUppercase{##1}}}
@@ -1011,8 +1105,8 @@
 
 	%\newpage
 	\listoftables
-    \iftoggle{codesnips}{\listoflistings}
 	\listoffigures
+    \iftoggle{codesnips}{\listoflistings}{}
 
     \revisionblock
 	\newpage
