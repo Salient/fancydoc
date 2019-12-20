@@ -97,7 +97,7 @@
 \iftoggle{rough}{
 
 \RequirePackage{everypage}
-\usetikzlibrary{math}
+\usetikzlibrary{math, positioning}
 %\SetWatermarkText{BIO-HAZARD}
 %\SetWatermarkScale{4}
 %\SetWatermarkAngle{}
@@ -155,11 +155,11 @@
 \setlength{\maxlogoheight}{1.75in}
 \iftoggle{hidebotlogo}{\setlength{\maxlogoheight}{3.5in}}{}
 
-\newcommand{\@toplogo}{\ClassError{Top logo never defined. You must call {\textbackslash}settoplogo{path/to/logo}, or disable by using option `notoplogo' in class options.}}
+\newcommand{\@toplogo}{\ClassError{fancydoc}{Top logo never defined. You must call \string\settoplogo{path/to/logo}, or disable by using option `notoplogo' in class options.}{do something pee pow poog}}
 
-\newcommand{\@botlogo}{\ClassError{Bottom logo never defined. You must call {\textbackslash}setbotlogo{path/to/logo}, or disable by using option `nobotlogo' in class options.}}
+\newcommand{\@botlogo}{\ClassError{fancydoc}{Bottom logo never defined. You must call \string\setbotlogo{path/to/logo}, or disable by using option `nobotlogo' in class options.}{do something pee pow poog}}
 
-\newcommand{\@headerlogo}{\ClassError{Header logo never defined. You must call {\textbackslash}setheaderlogo{path/to/logo}, or disable by using option `noheadlogo' in class options.}}
+\newcommand{\@headerlogo}{\ClassError{fancydoc}{Header logo never defined. You must call \string\setheaderlogo{path/to/logo}, or disable by using option `noheadlogo' in class options.}{do something pee pow poog}}
 
 \newcommand{\setheaderlogo}[1]{
 	\IfFileExists{#1}{
@@ -176,7 +176,7 @@
 	                 {\ClassWarning{fancydoc}{Top logo set to #1, but that file does not exist!}}}
 
 \newcommand{\setbotlogo}[1]{
-   	\IfFileExists{#1}{\renewcommand{\@botlogo}{\centering\includegraphics[height=\maxlogoheight,width=\linewidth,keepaspectratio]{#1}}}
+   	\IfFileExists{#1}{\renewcommand{\@botlogo}{\centering\includegraphics[height=\maxlogoheight,width=0.8\linewidth,keepaspectratio]{#1}}}
    	                 {\ClassWarning{fancydoc}{Bottom logo set to #1, but that file does not exist!}}}
 
 \newcommand{\placetoplogo}{\nottoggle{hidetoplogo}{\@toplogo}{}}
@@ -227,7 +227,7 @@
         \renewcommand{\logMarking}{\PackageWarning{fancydoc}{Markings file #1 found, reading...}} 
       	\renewcommand{\markingfile}{\sharedmedia/Markings/#1}
       }{
-        \ClassError{Markings file set to #1, but file does not exist!}
+      \ClassError{fancydoc}{Markings file set to #1, but file does not exist!}{You need to do ....umm...something}
     }
   }
 }
@@ -502,7 +502,7 @@
 %%%% 		General Dynamic Referencing
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\RequirePackage{pdfpages}
+% \RequirePackage{pdfpages}
 \RequirePackage[page,titletoc]{appendix}
 %\RequirePackage{lastpage}
 \RequirePackage{pageslts}
@@ -1065,17 +1065,24 @@
 
 \noindent\iftoggle{markingDistribution}{\distwarning}
 
+
 \noindent\iftoggle{markingITAR}{\itarwarning}
+
 
 \noindent\iftoggle{markingProprietary}{\raypropwarning}
 
+
 \noindent\iftoggle{markingFOUO}{\fouowarning}
+
 
 \noindent\iftoggle{markingDestroy}{\destructwarning}
 
+
 \noindent\iftoggle{programWarning}{\programwarning}
 
+
 \noindent\iftoggle{markingCopyright}{\copywarning}
+
 }
 
 \providecommand{\codelistings}{}
