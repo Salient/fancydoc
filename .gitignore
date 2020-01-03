@@ -13,3 +13,4 @@
 .DS_STORE
 *.fdb_latexmk
 *.fls
+tags

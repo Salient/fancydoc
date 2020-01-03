@@ -971,7 +971,7 @@
 \RequirePackage{relsize}
 \newcommand{\signalfont}{\fontfamily{NotoSans-TLF}\selectfont\smaller\smaller\bfseries}
 %\newcommand{\sig}[1]{{\fontfamily{\signalfont}\selectfont #1}}
-\newcommand{\sig}[1]{{\signalfont #1}}
+\newcommand{\sig}[1]{{\signalfont\uppercase#1}}
 
 \newcommand{\connfont}{\fontfamily{NotoSans-TLF}\selectfont}
 
