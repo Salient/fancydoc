@@ -157,8 +157,6 @@
     }
 }
 
-
-
 \newlength{\maxlogoheight}
 \setlength{\maxlogoheight}{1.75in}
 \iftoggle{hidebotlogo}{\setlength{\maxlogoheight}{3.5in}}{}
@@ -170,22 +168,45 @@
 \newcommand{\@headerlogo}{\ClassError{fancydoc}{Header logo never defined. You must call \string\setheaderlogo{path/to/logo}, or disable by using option `noheadlogo' in class options.}{do something pee pow poog}}
 
 \newcommand{\setheaderlogo}[1]{
-	\IfFileExists{#1}{
-%	\renewcommand{\@headerlogo}{\includegraphics[width=1.25in,keepaspectratio]{#1}}
-% Redefine header rule to include logo at the end
-\renewcommand{\headrule}{\hrule\@height\headrulewidth\@width\headwidth\vspace{-0.4cm}
-	\raggedleft\includegraphics[height=0.35cm,keepaspectratio]{#1}\hspace*{1px}\vskip-\headrulewidth}
-\renewcommand{\@headerlogo}{#1}
-    }{\ClassWarning{fancydoc}{Header logo set to #1, but that file does not exist!}}}
+    \IfFileExists{#1}{
+        %	\renewcommand{\@headerlogo}{\includegraphics[width=1.25in,keepaspectratio]{#1}}
+        % Redefine header rule to include logo at the end
+
+    \renewcommand{\headrule}{
+        \hrule\@height\headrulewidth\@width\headwidth\vspace{-0.4cm}
+        \raggedleft\includegraphics[height=0.35cm,keepaspectratio]{#1}\hspace*{1px}\vskip-\headrulewidth
+        }
+
+    \ClassWarning{fancydoc}{Header logo set to #1}
+    \renewcommand{\@headerlogo}{#1}
+    }{\ClassWarning{fancydoc}{Header logo set to #1, but that file does not exist!}}
+}
 
 \newcommand{\settoplogo}[1]{
 	\IfFileExists{#1}{
 		\renewcommand{\@toplogo}{\centering\includegraphics[height=\maxlogoheight,width=\linewidth,keepaspectratio]{#1}}}
 	                 {\ClassWarning{fancydoc}{Top logo set to #1, but that file does not exist!}}}
 
+
+\catcode`_ 13
+\newcommand\allowsforunderscores
+{%
+    \bgroup
+        \ttfamily
+        \let_\textunderscore
+        \catcode`\_=\active                
+    \let\next=%
+}%
+\catcode`_ 8
+
 \newcommand{\setbotlogo}[1]{
-   	\IfFileExists{#1}{\renewcommand{\@botlogo}{\centering\includegraphics[height=\maxlogoheight,width=0.8\linewidth,keepaspectratio]{#1}}}
-   	                 {\ClassWarning{fancydoc}{Bottom logo set to #1, but that file does not exist!}}}
+   	\IfFileExists{#1}{% logo does exist
+        \renewcommand{\@botlogo}{\centering\includegraphics[height=\maxlogoheight,width=0.8\linewidth,keepaspectratio]{#1}}
+        }{% Logo does *not* exist
+            \ClassWarning{fancydoc}{Bottom logo set to #1, but that file does not exist! Continuing with placeholder warning...}
+            \renewcommand{\@botlogo}{\color{red}{\small<\allowsforunderscores{#1} not found!>}}
+        }% endif
+ }
 
 \newcommand{\placetoplogo}{\nottoggle{hidetoplogo}{\@toplogo}{}}
 \newcommand{\placebotlogo}{\nottoggle{hidebotlogo}{\@botlogo}{}}
@@ -638,7 +659,7 @@
     \unselectable{
 		\scriptsize
 		\topfooterleft
-		\vspace{0.1cm} \hrule\vspace{0.1cm}
+		\vspace{0.1cm}\hrule\vspace{0.1cm}
 		\ifboolexpr{togl{markingITAR}}{\textsc{Export Controlled}}{}
 		\ifboolexpr{ togl{markingDistribution} and togl{markingITAR}}{ \textbf{ // } }{}
 		\ifboolexpr{togl{markingDistribution}}{\textsc{Distribution} \distribution}{}
@@ -1082,21 +1103,15 @@
 
 \noindent\iftoggle{markingDistribution}{\distwarning}
 
-
 \noindent\iftoggle{markingITAR}{\itarwarning}
-
 
 \noindent\iftoggle{markingProprietary}{\raypropwarning}
 
-
 \noindent\iftoggle{markingFOUO}{\fouowarning}
-
 
 \noindent\iftoggle{markingDestroy}{\destructwarning}
 
-
 \noindent\iftoggle{programWarning}{\programwarning}
-
 
 \noindent\iftoggle{markingCopyright}{\copywarning}
 
@@ -1135,3 +1150,5 @@
     \revisionblock
 	\newpage
 }
+
+% vim: nospell filetype=tex
