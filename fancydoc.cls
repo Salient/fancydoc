@@ -125,12 +125,13 @@
 %            coordinate \c, \e, \w;
 %            \e = (current page.east);
 %            \w = (current page.west);
-            for \x in {1,...,15}{
+            for \x in {1,...,20}{
                 {
                 	 \node[ below = of origin, rough] (origin) {\roughtext};
                      \node[ left = of origin, rough] (alley) {\roughtext};
                      \node[ left = of alley, rough] (alley) {\roughtext}; 
                      \node[ right = of origin, rough] (alley) {\roughtext};
+                     \node[ right = of alley, rough] (alley) {\roughtext}; 
                      \node[ right = of alley, rough] (alley) {\roughtext}; 
 %                     \node[ below left= of origin, rough] (origin) {\roughsubtext};
 %                     \node[ left = of origin, rough] (alley) {\roughsubtext};
@@ -152,8 +153,8 @@
 % NOTE - FileExists must have correct file extension
 \newcommand{\logoSet}{\ClassError{fancydoc}{Invalid list of logos}{You should do something}}
 \newcommand{\setLogos}[1]{
-
-   	\IfFileExists{#1}{\renewcommand{\@botlogo}{\centering\includegraphics[height=\maxlogoheight,width=0.8\linewidth,keepaspectratio]{#1}}}
+    \IfFileExists{#1}{\renewcommand{\@botlogo}{\centering\includegraphics[height=\maxlogoheight,width=0.8\linewidth,keepaspectratio]{#1}}}{\ClassWarning{fancydoc}{oh noes!}
+    }
 }
 
 
@@ -637,7 +638,7 @@
     \unselectable{
 		\scriptsize
 		\topfooterleft
-		\vspace{0.1cm}\hrule\vspace{0.1cm}
+		\vspace{0.1cm} \hrule\vspace{0.1cm}
 		\ifboolexpr{togl{markingITAR}}{\textsc{Export Controlled}}{}
 		\ifboolexpr{ togl{markingDistribution} and togl{markingITAR}}{ \textbf{ // } }{}
 		\ifboolexpr{togl{markingDistribution}}{\textsc{Distribution} \distribution}{}
@@ -654,9 +655,17 @@
 		\iftoggle{markingHazOp}{ \small\color{red}\textbf{PROCEDURE CONTAINS HAZARDOUS OPERATIONS}}}
 	}
 	%
+
+    \newcommand{\floorbar}{\rule[-0.5\baselineskip]{1pt}{1.25\baselineskip}}
 	\fancyfoot[R]{
 		\unselectable{
-		\scriptsize{Page \vrule {\thepage\ of \pageref{LastPage}\vspace{0.1cm}}}\\ 
+            \scriptsize{% \floorbar
+		    \vspace{-0.18\baselineskip}
+            % \rule[.3\baselineskip]{0pt}{0.3\baselineskip}
+                % \raisebox{0.3\baselineskip}
+            \floorbar~~Page {\thepage\ of \pageref{LastPage}~~}\floorbar
+            }
+            \\ \vspace{0.02cm}
 		\scriptsize\textbf{UNCLASSIFIED}
 		\iftoggle{markingFOUO}{\textbf{ // ~FOUO}}}
 	}
