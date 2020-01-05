@@ -54,7 +54,7 @@
 % Pull in packages we know we need
 
 \RequirePackage[dvipsnames,table]{xcolor}
-\RequirePackage[printonlyused]{acronym}
+\RequirePackage[printonlyused, smaller]{acronym}
 \RequirePackage{multicol}
 \RequirePackage{hyperref}
 \RequirePackage{xspace}
@@ -150,6 +150,13 @@
 % Configure logos for document header
 
 % NOTE - FileExists must have correct file extension
+\newcommand{\logoSet}{\ClassError{fancydoc}{Invalid list of logos}{You should do something}}
+\newcommand{\setLogos}[1]{
+
+   	\IfFileExists{#1}{\renewcommand{\@botlogo}{\centering\includegraphics[height=\maxlogoheight,width=0.8\linewidth,keepaspectratio]{#1}}}
+}
+
+
 
 \newlength{\maxlogoheight}
 \setlength{\maxlogoheight}{1.75in}
@@ -971,7 +978,7 @@
 \RequirePackage{relsize}
 \newcommand{\signalfont}{\fontfamily{NotoSans-TLF}\selectfont\smaller\smaller\bfseries}
 %\newcommand{\sig}[1]{{\fontfamily{\signalfont}\selectfont #1}}
-\newcommand{\sig}[1]{{\signalfont #1}}
+\newcommand{\sig}[1]{{\signalfont\uppercase{#1}}}
 
 \newcommand{\connfont}{\fontfamily{NotoSans-TLF}\selectfont}
 
@@ -996,8 +1003,9 @@
 \thispagestyle{firststyle}\vspace*{-1cm}
 %\begin{center}
 
-\noindent\Large\textsc{\textbf{\titlelong}}
-\noindent\Large\textsc{\doctype}\smallskip
+\noindent\Large\textsc{\textbf{\doctype}:  \docnumber}
+
+\noindent\Large\textsc{\titlelong}\smallskip
 
 \vspace*{0.25cm}
 \noindent\hrule

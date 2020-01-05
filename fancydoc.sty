@@ -371,3 +371,32 @@
 }
 \setcounter{rqsdepth}{2}
 \fi
+
+
+\newcounter{@arrayLen}
+\usepackage{xstring}
+\newcommand{\getArrayLen}[1]{
+    \setcounter{@arrayLen}{0}
+    \foreach \x in #1 {%
+        \IfStrEq{\x}{}{}{% only increment when non-empty
+            \stepcounter{@arrayLen}%
+        }%
+    }%
+    \arabic{@arrayLen}
+}
+\newcommand{\repeatArrayLen}{
+    \arabic{@arrayLen}
+}
+% \newcommand{\getArrayLength}{\arabic{@arrayLen}}%
+% \newcommand*{\SetArrayLength}[1]{%
+%     % Counts the number of array members. This ignore any empty
+%     % array members created by extraneous commas (such as those
+%     % as  result of a double comma, or a trailing comma.
+%     \setcounter{@LengthOfArray}{0}%
+%     \foreach \x in #1 {%
+%         \IfStrEq{\x}{}{}{% only increment when non-empty
+%             \stepcounter{@LengthOfArray}%
+%         }%
+%     }%
+% }%
+
