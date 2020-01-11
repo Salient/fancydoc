@@ -286,6 +286,16 @@
 	\fi
 }
 
+\newcommand{\defValwCount}[2]{%
+	\ifcsname useVal@#1@defined\endcsname
+	\PackageError{useVal}{Value "#1" already defined}{}
+	\else
+	\immediate\write\@auxout{%
+\unexpanded{\global\@namedef}\charlb useVal@#1\charrb{#2}%
+	}
+	\global\@namedef{useVal@#1@defined}{}
+	\fi
+}
 %\makeatother
 
 
