@@ -62,6 +62,7 @@
 \RequirePackage{tikz}
 \usepackage{pgfplots} \pgfplotsset{compat=newest}
 \RequirePackage{subfiles}
+\RequirePackage{framed}
 \RequirePackage{core/fancydoc}
 
 % TODO Fix this here.....V
