@@ -159,7 +159,7 @@
 }
 
 \newlength{\maxlogoheight}
-\setlength{\maxlogoheight}{1.75in}
+\setlength{\maxlogoheight}{1in}
 \iftoggle{hidebotlogo}{\setlength{\maxlogoheight}{3.5in}}{}
 
 \newcommand{\@toplogo}{\ClassError{fancydoc}{Top logo never defined. You must call \string\settoplogo{path/to/logo}, or disable by using option `notoplogo' in class options.}{do something pee pow poog}}
@@ -202,7 +202,7 @@
 
 \newcommand{\setbotlogo}[1]{
     \IfFileExists{#1}{% logo does exist
-        \renewcommand{\@botlogo}{\centering\includegraphics[height=\maxlogoheight,width=0.8\linewidth,keepaspectratio]{#1}}
+        \renewcommand{\@botlogo}{\centering\includegraphics[height=\maxlogoheight,width=0.5\linewidth,keepaspectratio]{#1}}
     }{% Logo does *not* exist
         \ClassWarning{fancydoc}{Bottom logo set to #1, but that file does not exist! Continuing with placeholder warning...}
         \renewcommand{\@botlogo}{\color{red}{\small<\allowsforunderscores{#1} not found!>}}
@@ -506,7 +506,7 @@
 
 \RequirePackage{enumitem}[itemsep = 0.08cm, parsep=0in]
 % Adjust indents/margins of lists. Provided by [enumitem]
-\setlist[enumerate]{leftmargin=0.7in, label=\emph{\alph*})}
+\setlist[enumerate]{leftmargin=0.7in, label=\emph{\alph*}}
 \setlist[itemize]{leftmargin=0.7in, rightmargin=0.7in}
 \setlist[description]{leftmargin=0.25in, labelwidth=0.7in, labelindent=\parindent}
 
@@ -787,7 +787,7 @@
 
 \newcommand{\fouo}{{\marginnote{\textbf{\small\formatting(FOUO)}}}}
 
-\newcommand{\note}[1]{~\\\marginnote{\textbf{NOTE:}}\noindent{#1}\\}
+\newcommand{\note}[1]{\medskip\par\marginnote{\textbf{NOTE:}}\noindent{#1}\par}
 
 \newcommand{\marku}{~\\\marginnote{(U)\\}}
 
@@ -1034,9 +1034,10 @@
     \thispagestyle{firststyle}\vspace*{-1cm}
     %\begin{center}
 
-    \noindent\Large\textsc{\textbf{\doctype}:  \docnumber}
+    \noindent\Large{\textbf{\doctype}}
 
-    \noindent\Large\textsc{\titlelong}\smallskip
+    \noindent\Large{\sffamily \titlelong}\smallskip
+
 
     \vspace*{0.25cm}
     \noindent\hrule
@@ -1099,8 +1100,6 @@
     \vfill
 
     \footnotesize
-
-    \noindent
 
     \noindent\iftoggle{markingDistribution}{\distwarning}
 
