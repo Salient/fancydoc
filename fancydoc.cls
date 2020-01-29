@@ -29,6 +29,7 @@
 \newtoggle{codesnips}
 \newtoggle{stark}
 \newtoggle{rough}
+\newtoggle{verbose}
 
 
 
@@ -44,6 +45,7 @@
 \DeclareOption{nohead}{\toggletrue{hideheaderlogo}}
 \DeclareOption{rough}{\toggletrue{rough}}
 \DeclareOption{stark}{\toggletrue{stark}}
+\DeclareOption{verbose}{\toggletrue{verbose}}
 
 \DeclareOption*{\PassOptionsToClass{\CurrentOption}{article}}
 \ProcessOptions\relax
@@ -79,7 +81,7 @@
 % Handle conditionals
 
 \iftoggle{codesnips}{
-    \RequirePackage{minted}
+    \RequirePackage[outputdir=livepreview]{minted}
     \setminted[vhdl]{fontsize=\scriptsize, linenos}
     \renewcommand{\listoflistingscaption}{Logic Code Excerpts}
     \newcommand{\codesref}{Code Excerpt }
@@ -233,6 +235,10 @@
 }
 
 
+% For future expansion...
+
+% \ClassInfo{class name}{info-text}. In this case the information in the second parameter will only be printed in the transcript file, including the line number.
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%        Define Marking Options
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -254,7 +260,9 @@
     }{
         % File not found in current directory, or full path given is not valid. Just to be nice, check if they meant in the core/
         \IfFileExists{\sharedmedia/Markings/#1}{
+            \iftoggle{verbose}{
             \renewcommand{\logMarking}{\PackageWarning{fancydoc}{Markings file #1 found, reading...}}
+        }{\renewcommand{\logMarking}{}}
             \renewcommand{\markingfile}{\sharedmedia/Markings/#1}
         }{
             \ClassError{fancydoc}{Markings file set to #1, but file does not exist!}{You need to do ....umm...something}
@@ -314,6 +322,7 @@
 \providecommand{\fouowarning}{\textbf{\color{red}[Please set the FOUO Warning text.]}}
 \providecommand{\destructwarning}{\textbf{\color{red}[Please set the Destruction Warning text.]}}
 \providecommand{\copywarning}{\textbf{\color{red}[Please set the Copyright Warning text.]}}
+\providecommand{\programwarning}{\textbf{\color{red}[Please set the Program Warning text.]}}
 
 %%=================== End Marking Options ==========================================
 
@@ -347,6 +356,8 @@
 \toggletrue{markingSafetyCritical}
 
 \togglefalse{markingCopyright}
+
+\toggletrue{programWarning}
 
 \togglefalse{markingFOUO}
 
