@@ -30,7 +30,8 @@
 \newtoggle{stark}
 \newtoggle{rough}
 \newtoggle{verbose}
-
+\newtoggle{acrolist}
+\toggletrue{acrolist}
 
 
 % ---------------------------------------------------------------------------------------
@@ -46,6 +47,7 @@
 \DeclareOption{rough}{\toggletrue{rough}}
 \DeclareOption{stark}{\toggletrue{stark}}
 \DeclareOption{verbose}{\toggletrue{verbose}}
+\DeclareOption{noacrolist}{\togglefalse{acrolist}}
 
 \DeclareOption*{\PassOptionsToClass{\CurrentOption}{article}}
 \ProcessOptions\relax
@@ -71,7 +73,20 @@
 % \newcommand{\sharedmedia}{C:/Users/1117384/Documents/Work/Utilities/Latex}
 %\newcommand{\sharedmedia}{/Users/vanquish/Work/Utilities/Latex}
 \newcommand{\sharedmedia}{core}
-\newcommand{\listacronyms}{\input{\sharedmedia/Acronyms/acronyms.tex}}
+
+\iftoggle{acrolist}{
+        \PackageInfo{fancydebug}{acrolist true. defining listacronyms}
+
+        \newcommand{\listacronyms}{
+\input{\sharedmedia/Acronyms/acronyms.tex}
+        }
+    }{
+        \PackageInfo{fancydebug}{acrolist false. reading in now listacronyms}
+\providecommand{\listacronyms}{}
+\input{\sharedmedia/Acronyms/acronyms.tex}
+}
+
+
 \RequirePackage{multicol} % Required to list acronyms nicely
 
 
