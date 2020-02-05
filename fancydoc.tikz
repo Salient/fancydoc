@@ -68,8 +68,26 @@
     rem/.style = {%
         draw=red!40,text=red!70, shadow opacity=0
     },
-    new/.style = {%
-        opacity=1, draw = added, text=added
+    pwr/.style = {%
+        opacity=1,  text = green!50!black, font=\bfseries
+    },
+    pwrleader/.style = {
+        draw=green!50!black,very thick, arrow, -Circle
+    },
+    inp/.style = {%
+        opacity=1,  text = blue!50!black, font=\bfseries
+    },
+    inpleader/.style = {
+        draw=blue!50!black,very thick, arrow, -Circle
+    },
+    failline/.style = {
+        draw=red!50!black, opacity=0.5, thin, arrow
+    },
+    failleader/.style = {
+        draw=red!50!black, thin, arrow, dashed, -Circle,
+    },
+    failtext/.style = {
+        auto,red!50!black, align=left
     }
 }
 
