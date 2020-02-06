@@ -75,7 +75,7 @@
         draw=green!50!black,very thick, arrow, -Circle
     },
     inp/.style = {%
-        opacity=1,  text = blue!50!black, font=\bfseries
+        opacity=1,  text = blue!50!black,% font=\bfseries
     },
     inpleader/.style = {
         draw=blue!50!black,very thick, arrow, -Circle
@@ -91,6 +91,9 @@
     }
 }
 
+\newcommand*\raiseedge{{\scriptsize\tikz[scale = 0.22, >=stealth]{
+            \draw[-,postaction={decoration={markings,mark=at position 0.6 with {\arrow{stealth}}},decorate}
+      ] (0, 0) -- ++(0:1) -- ++(80:1) -- ++(0:1);}}}
 
 \pdfmapfile{+sansmathaccent.map}
 \newcommand{\timer}[1]{{\sffamily\textsc{\textbf{[{\selectfont{~\uppercase{#1}~TIMER~}}]}}}}
