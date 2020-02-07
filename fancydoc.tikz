@@ -4,6 +4,7 @@
 \usetikzlibrary{calc}
 \usetikzlibrary{decorations.markings}
 \usetikzlibrary{decorations.pathreplacing}
+% \usetikzlibrary{caligraphy}
 \usetikzlibrary{fit}
 \usetikzlibrary{intersections}
 \usetikzlibrary{math}
@@ -80,6 +81,9 @@
     inpleader/.style = {
         draw=blue!50!black,very thick, arrow, -Circle
     },
+    inpbrace/.style = {
+        draw=blue!50!black,very thick, arrow, -
+    },
     failline/.style = {
         draw=red!50!black, opacity=0.5, thin, arrow
     },
@@ -91,9 +95,21 @@
     }
 }
 
-\newcommand*\raiseedge{{\scriptsize\tikz[scale = 0.22, >=stealth]{
-            \draw[-,postaction={decoration={markings,mark=at position 0.6 with {\arrow{stealth}}},decorate}
-      ] (0, 0) -- ++(0:1) -- ++(80:1) -- ++(0:1);}}}
+% \newcommand*\raiseedge{{\large\tikz[scale = 0.33, >=stealth]{
+%             \draw[-,postaction={decoration={markings,mark=at position 0.6 with {\arrow{stealth[length=4cm, width=4cm]}}},decorate}
+%        ] (0, 0) -- ++(0:1) -- ++(80:1) -- ++(0:1);}}}
+
+\newcommand*\raiseedge{
+    {
+        \tikz[y=0.3cm]{
+            \draw[decorate, decoration={
+                markings, mark=at position 0.6 with {\arrow[blue!50!black, line width=0.3mm]{Triangle}};
+            }]
+            (0,0) -- (0:0.5) -- ++(80:1) -- ++ (0:0.5);
+            \draw (0,0) -- (0:0.5) -- ++(80:1) -- ++ (0:0.5);
+}}}
+
+
 
 \pdfmapfile{+sansmathaccent.map}
 \newcommand{\timer}[1]{{\sffamily\textsc{\textbf{[{\selectfont{~\uppercase{#1}~TIMER~}}]}}}}
