@@ -91,7 +91,7 @@
         draw=red!50!black, opacity=0.5, thin, arrow
     },
     failleader/.style = {
-        draw=red!50!black, thin, arrow, dashed, -Circle,
+        draw=red!50!black, thin, arrow, dashed, -{Circle[sep=-3pt,length=3mm]},
     },
     failtext/.style = {
         auto,red!50!black, align=left
