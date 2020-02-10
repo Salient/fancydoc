@@ -95,6 +95,15 @@
     },
     failtext/.style = {
         auto,red!50!black, align=left
+    },
+    nonenv/.style = {%
+        opacity=1,  text = green!50!black,% font=\bfseries
+    },
+    nonenvleader/.style = {
+        draw=green!50!black,very thick, arrow, -Circle
+    },
+    nonenvbrace/.style = {
+        draw=green!50!black,very thick, arrow, -
     }
 }
 
@@ -112,6 +121,7 @@
             (0,0) -- (0:0.3) -- ++(80:1) -- ++ (0:0.3);
             \draw (0,0) -- (0:0.3) -- ++(80:1) -- ++ (0:0.3);
 }}}
+
 
 
 
