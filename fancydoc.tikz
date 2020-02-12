@@ -88,10 +88,10 @@
             draw=blue!50!black,very thick, arrow, -
         },
         failline/.style = {
-            draw=red!50!black, opacity=0.5, thin,
+            draw=red!50!black, opacity=0.5, thin, -{Circle}
         },
         failleader/.style = {
-            draw=red!50!black, thin, arrow, dashed, -{Circle[sep=-3pt,length=3mm]},
+            draw=red!50!black, thin, arrow, dashed, opacity=0.5, -{Circle[sep=-3pt,length=3mm]},
         },
         failtext/.style = {
             auto,red!50!black, align=left
