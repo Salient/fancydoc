@@ -37,11 +37,12 @@
             line width=1.5pt, minimum width=0in, very near start, arrow, font=\bfseries
         },
         mainflow/.style = {%
-            line width=2pt, minimum width=0in, very near start, arrow, font=\bfseries
+            line width=3pt, minimum width=0in, very near start, arrow, font=\bfseries
         },
         %   every draw/.style = {flow},
         state/.style  = {%
-            draw, ultra thick, fill=white, align=center, rectangle
+            draw, line width=3pt,inner sep=6pt,fill=white, align=center,
+            rectangle, font=\bfseries
         },
         action/.style   = {%
             rectangle, align=left, draw, minimum width = 1.25in, fill=gray!10, append after command={%
@@ -88,10 +89,10 @@
             draw=blue!50!black,very thick, arrow, -
         },
         failline/.style = {
-            draw=red!50!black, opacity=0.5, thin, -{Circle}
+            draw=red!50!black,  dashed,thin, -{Stealth[length=4mm]}
         },
         failleader/.style = {
-            draw=red!50!black, thin, arrow, dashed, opacity=0.5, -{Circle[sep=-3pt,length=3mm]},
+            draw=red!50!black, opacity=0.5,thin, arrow,  -{Circle[sep=-3pt,length=3mm]},
         },
         failtext/.style = {
             auto,red!50!black, align=left
