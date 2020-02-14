@@ -4,6 +4,7 @@
 \usetikzlibrary{calc}
 \usetikzlibrary{decorations.markings}
 \usetikzlibrary{decorations.pathreplacing}
+% \usetikzlibrary{caligraphy}
 \usetikzlibrary{fit}
 \usetikzlibrary{intersections}
 \usetikzlibrary{math}
@@ -19,59 +20,110 @@
 
 \tikzset{%
     %   >=latex,
-    %   myarr/.style = {decoration={%
-    %          markings,
-    %          mark=at position 1 with {\arrow[scale=7,black]{latex}};
-    %      }},
-    arrow/.style = {%
-        -{Latex[length=3.5mm]}
-    },
-    every node/.style = {%
-        node distance =2cm, minimum width = 1.5in, inner sep = 5pt,align=center, auto
-    },
-    every shadow/.style={%
-        shadow opacity=60, shadow blur steps=10, shadow blur extra rounding, shadow blur radius = 0.5ex
-    },
-    flow/.style = {%
-        line width=1.5pt, minimum width=0in, very near start, arrow, font=\bfseries
-    },
-    %   every draw/.style = {flow},
-    state/.style  = {%
-        draw, ultra thick, fill=white, align=center, rectangle
-    },
-    action/.style   = {%
-        rectangle, align=left, draw, minimum width = 1.25in, fill=gray!10, append after command={%
-            \pgfextra{%
-                \node[fit= (\tikzlastnode), name=\tikzlastnode, draw, minimum width=1.3in, xscale=1.1, inner sep = -0.2pt, fill=gray!20]{};
+        %   myarr/.style = {decoration={%
+            %          markings,
+            %          mark=at position 1 with {\arrow[scale=7,black]{latex}};
+            %      }},
+        arrow/.style = {%
+            -{Latex[length=3.5mm]}
+        },
+        every node/.style = {%
+            node distance =2cm, minimum width = 1.5in, inner sep = 5pt,align=center, auto
+        },
+        every shadow/.style={%
+            shadow opacity=60, shadow blur steps=10, shadow blur extra rounding, shadow blur radius = 0.5ex
+        },
+        flow/.style = {%
+            line width=1.5pt, minimum width=0in, very near start, arrow, font=\bfseries
+        },
+        mainflow/.style = {%
+            line width=3pt, minimum width=0in, very near start, arrow, font=\bfseries
+        },
+        %   every draw/.style = {flow},
+        state/.style  = {%
+            draw, line width=3pt,inner sep=6pt,fill=white, align=center,
+            rectangle, font=\bfseries
+        },
+        action/.style   = {%
+            rectangle, align=left, draw, minimum width = 1.25in, fill=gray!10, append after command={%
+                \pgfextra{%
+                    \node[fit= (\tikzlastnode), name=\tikzlastnode, draw, minimum width=1.3in, xscale=1.1, inner sep = -0.2pt, fill=gray!20]{};
+                }
             }
+        },
+        decision/.style = {%
+            diamond, draw, anchor=center, fill=white,  thin, inner sep = -1pt,  outer sep=0pt,
+            text width =1.6in,  aspect =1.8
+        },
+        fire/.style = {%
+            state, draw=red, font=\bfseries
+        },
+        endstate/.style = {%
+            circle, double, draw, align=center,  minimum width=0in
+        },
+        failsafe/.style= {%
+            state, draw=violet, name path = fail, font = \bfseries\scshape
+        },
+        every circle/.style={%
+            radius=1cm
+        },
+        note/.style = {%
+            gray, text width = 3.5in, shorten >=2pt, opacity=0.9, dashed, draw, Circle-, inner sep=5pt
+        },
+        rem/.style = {%
+            draw=red!40,text=red!70, shadow opacity=0
+        },
+        pwr/.style = {%
+            opacity=1,  text = green!50!black, font=\bfseries
+        },
+        pwrleader/.style = {
+            draw=green!50!black,very thick, arrow, -Circle
+        },
+        inp/.style = {%
+            opacity=1,  text = blue!50!black,
+        },
+        inpleader/.style = {
+            draw=blue!50!black,very thick, arrow, -Circle
+        },
+        inpbrace/.style = {
+            draw=blue!50!black,very thick, arrow, -
+        },
+        failline/.style = {
+            draw=red!50!black,  dashed,thin, -{Stealth[length=4mm]}
+        },
+        failleader/.style = {
+            draw=red!50!black, opacity=0.5,thin, arrow,  -{Circle[sep=-3pt,length=3mm]},
+        },
+        failtext/.style = {
+            auto,red!50!black, align=left
+        },
+        nonenv/.style = {%
+            opacity=1,  text = magenta!50!black,% font=\bfseries
+        },
+        nonenvleader/.style = {
+            draw=magenta!50!black,very thick, arrow, -Circle
+        },
+        nonenvbrace/.style = {
+            draw=magenta!50!black,very thick, arrow, -
         }
-    },
-    decision/.style = {%
-        diamond, draw, anchor=center, fill=white,  thin, inner sep = -1pt,  outer sep=0pt,
-        text width =1.6in,  aspect =1.8
-    },
-    fire/.style = {%
-        state, draw=red, font=\bfseries
-    },
-    endstate/.style = {%
-        circle, double, draw, align=center,  minimum width=0in
-    },
-    failsafe/.style= {%
-        state, draw=violet, name path = fail, font = \bfseries\scshape
-    },
-    every circle/.style={%
-        radius=1cm
-    },
-    note/.style = {%
-        gray, text width = 3.5in, shorten >=2pt, opacity=0.9, dashed, draw, Circle-, inner sep=5pt
-    },
-    rem/.style = {%
-        draw=red!40,text=red!70, shadow opacity=0
-    },
-    new/.style = {%
-        opacity=1, draw = added, text=added
-    }
 }
+
+% \newcommand*\raiseedge{{\large\tikz[scale = 0.33, >=stealth]{
+    %             \draw[-,postaction={decoration={markings,mark=at position 0.6 with {\arrow{stealth[length=4cm, width=4cm]}}},decorate}
+    %        ] (0, 0) -- ++(0:1) -- ++(80:1) -- ++(0:1);}}}
+
+    \newcommand*\raiseedge{
+        {
+            \tikz[y=0.3cm]{
+                \draw[decorate, decoration={
+                    markings, mark=at position 0.6 with {\arrow[blue!50!black, line
+                        width=0.3mm]{stealth}};
+                }]
+                (0,0) -- (0:0.3) -- ++(80:1) -- ++ (0:0.3);
+                \draw (0,0) -- (0:0.3) -- ++(80:1) -- ++ (0:0.3);
+            }}}
+
+
 
 
 \pdfmapfile{+sansmathaccent.map}
@@ -81,8 +133,8 @@
 
 \newcommand{\gettikzxy}[3]{%
     \tikz@scan@one@point\pgfutil@firstofone#1\relax
-    \edef#2{\the\pgf@x}%
-    \edef#3{\the\pgf@y}%
+        \edef#2{\the\pgf@x}%
+        \edef#3{\the\pgf@y}%
 }
 
 \newcommand{\pgfextractangle}[3]{%
@@ -97,20 +149,20 @@
     \path[name intersections={of=#1 and l1, total = \tot, by={c1,c2}}];
     \pgfextractangle{\myanglea}{c3}{c1}
     \pgfextractangle{\myangleb}{c3}{c2}
-\draw[flow]    (c2) arc[start angle = \myangleb, delta angle = 360 - ( \myangleb - \myanglea), radius=1cm] node[above right, very near start, flow, #2] {#3};}
+    \draw[flow]    (c2) arc[start angle = \myangleb, delta angle = 360 - ( \myangleb - \myanglea), radius=1cm] node[above right, very near start, flow, #2] {#3};}
 
 
-\newcommand{\putaleftlooponit}[3]{%
-    \path[name path = l1] (#1.west) coordinate (c3) circle (1cm);
-    \path[name intersections={of=#1 and l1,name=i, total = \tot, by={c1,c2}}];
-    \pgfextractangle{\myanglea}{c3}{c1}
-    \pgfextractangle{\myangleb}{c3}{c2}
-\draw[flow]    (i-2) arc[start angle = \myangleb, delta angle = ( \myanglea - \myangleb), radius=1cm] node[  above left, very near start, flow, #2] {#3};}
+    \newcommand{\putaleftlooponit}[3]{%
+        \path[name path = l1] (#1.west) coordinate (c3) circle (1cm);
+        \path[name intersections={of=#1 and l1,name=i, total = \tot, by={c1,c2}}];
+        \pgfextractangle{\myanglea}{c3}{c1}
+        \pgfextractangle{\myangleb}{c3}{c2}
+        \draw[flow]    (i-2) arc[start angle = \myangleb, delta angle = ( \myanglea - \myangleb), radius=1cm] node[  above left, very near start, flow, #2] {#3};}
 
-\DeclareMathAlphabet{\mathpzc}{OT1}{pzc}{m}{it}
-\newcommand{\flag}[1]{{\sffamily\smaller{\uppercase{\textbf{#1}}}}}
+        \DeclareMathAlphabet{\mathpzc}{OT1}{pzc}{m}{it}
+        \newcommand{\flag}[1]{{\sffamily\smaller{\uppercase{\textbf{#1}}}}}
 
-\pgfdeclarelayer{bg}    % declare background layer
+        \pgfdeclarelayer{bg}    % declare background layer
 \pgfsetlayers{bg,main}  % set the order of the layers (main is the standard layer)
 
-% vim: ft=tex
+    % vim: ft=tex
