@@ -1,4 +1,7 @@
 
+%*************%
+%* Libraries *%
+%*************%
 \usetikzlibrary{arrows.meta}
 \usetikzlibrary{backgrounds}
 \usetikzlibrary{calc}
@@ -16,8 +19,19 @@
 \usetikzlibrary{tikzmark}
 \usetikzlibrary{trees}
 
-\pgfplotsset{compat=1.16}
 
+%************%
+%* Settings *%
+%************%
+\pgfplotsset{compat=1.16}
+\pdfmapfile{+sansmathaccent.map}
+\DeclareMathAlphabet{\mathpzc}{OT1}{pzc}{m}{it}
+\pgfdeclarelayer{bg}    % declare background layer
+\pgfsetlayers{bg,main}  % set the order of the layers (main is the standard layer)
+
+%*********************%
+%* Node Types/Styles *%
+%*********************%
 \tikzset{%
     %   >=latex,
         %   myarr/.style = {decoration={%
@@ -108,34 +122,11 @@
         }
 }
 
-% \newcommand*\raiseedge{{\large\tikz[scale = 0.33, >=stealth]{
-    %             \draw[-,postaction={decoration={markings,mark=at position 0.6 with {\arrow{stealth[length=4cm, width=4cm]}}},decorate}
-    %        ] (0, 0) -- ++(0:1) -- ++(80:1) -- ++(0:1);}}}
 
-    \newcommand*\raiseedge{
-        {
-            \tikz[y=0.3cm]{
-                \draw[decorate, decoration={
-                    markings, mark=at position 0.6 with {\arrow[blue!50!black, line
-                        width=0.3mm]{stealth}};
-                }]
-                (0,0) -- (0:0.3) -- ++(80:1) -- ++ (0:0.3);
-                \draw (0,0) -- (0:0.3) -- ++(80:1) -- ++ (0:0.3);
-            }}}
-
-
-
-
-\pdfmapfile{+sansmathaccent.map}
-\newcommand{\timer}[1]{{\sffamily\textsc{\textbf{[{\selectfont{~\uppercase{#1}~TIMER~}}]}}}}
-
-\newcommand{\drawbounding}{\draw [brown] (current bounding box.south west) rectangle (current bounding box.north east);}
-
-\newcommand{\gettikzxy}[3]{%
-    \tikz@scan@one@point\pgfutil@firstofone#1\relax
-        \edef#2{\the\pgf@x}%
-        \edef#3{\the\pgf@y}%
-}
+%*********************%
+%* Utility Functions *%
+%*********************%
+\newcommand\lastNode{\the\tikz@lastxsaved,\the\tikz@lastysaved}
 
 \newcommand{\pgfextractangle}[3]{%
     \pgfmathanglebetweenpoints{\pgfpointanchor{#2}{center}}
@@ -143,26 +134,61 @@
     \global\let#1\pgfmathresult
 }
 
+\newcommand{\gettikzxy}[3]{%
+    \tikz@scan@one@point\pgfutil@firstofone#1\relax
+        \edef#2{\the\pgf@x}%
+        \edef#3{\the\pgf@y}%
+}
+
+% \newcommand*\raiseedge{{\large\tikz[scale = 0.33, >=stealth]{
+    %             \draw[-,postaction={decoration={markings,mark=at position 0.6 with {\arrow{stealth[length=4cm, width=4cm]}}},decorate}
+    %        ] (0, 0) -- ++(0:1) -- ++(80:1) -- ++(0:1);}}}
+
+\newcommand*\raiseedge{
+    {
+        \tikz[y=0.3cm]{
+            \draw[decorate, decoration={
+                markings, mark=at position 0.6 with {\arrow[blue!50!black, line
+                    width=0.3mm]{stealth}};
+            }]
+            (0,0) -- (0:0.3) -- ++(80:1) -- ++ (0:0.3);
+            \draw (0,0) -- (0:0.3) -- ++(80:1) -- ++ (0:0.3);
+        }}}
+
+
+
+%***********************%
+%* Drawing Subroutines *%
+%***********************%
 \newcommand{\putalooponit}[3]{%
     %   \tikzset{overlay,remember picture}
     \path[name path = l1] (#1.east) coordinate (c3) circle (1cm);
     \path[name intersections={of=#1 and l1, total = \tot, by={c1,c2}}];
     \pgfextractangle{\myanglea}{c3}{c1}
     \pgfextractangle{\myangleb}{c3}{c2}
-    \draw[flow]    (c2) arc[start angle = \myangleb, delta angle = 360 - ( \myangleb - \myanglea), radius=1cm] node[above right, very near start, flow, #2] {#3};}
+    \draw[flow]    (c2) arc[start angle = \myangleb, delta angle = 360 - ( \myangleb - \myanglea), radius=1cm] node[above right, very near start, flow, #2] {#3};
+}
+
+\newcommand{\putaleftlooponit}[3]{%
+    \path[name path = l1] (#1.west) coordinate (c3) circle (1cm);
+    \path[name intersections={of=#1 and l1,name=i, total = \tot, by={c1,c2}}];
+    \pgfextractangle{\myanglea}{c3}{c1}
+    \pgfextractangle{\myangleb}{c3}{c2}
+    \draw[flow]    (i-2) arc[start angle = \myangleb, delta angle = ( \myanglea - \myangleb), radius=1cm] node[  above left, very near start, flow, #2] {#3};
+}
+
+\newcommand{\drawbounding}{\draw [brown] (current bounding box.south west) rectangle (current bounding box.north east);}
+
+%*************************%
+%* Label Text Formatting *%
+%*************************%
+\newcommand{\timer}[1]{{\sffamily\textsc{\textbf{[{\selectfont{~\uppercase{#1}~TIMER~}}]}}}}
+\newcommand{\flag}[1]{{\sffamily\smaller{\uppercase{\textbf{#1}}}}}
 
 
-    \newcommand{\putaleftlooponit}[3]{%
-        \path[name path = l1] (#1.west) coordinate (c3) circle (1cm);
-        \path[name intersections={of=#1 and l1,name=i, total = \tot, by={c1,c2}}];
-        \pgfextractangle{\myanglea}{c3}{c1}
-        \pgfextractangle{\myangleb}{c3}{c2}
-        \draw[flow]    (i-2) arc[start angle = \myangleb, delta angle = ( \myanglea - \myangleb), radius=1cm] node[  above left, very near start, flow, #2] {#3};}
 
-        \DeclareMathAlphabet{\mathpzc}{OT1}{pzc}{m}{it}
-        \newcommand{\flag}[1]{{\sffamily\smaller{\uppercase{\textbf{#1}}}}}
 
-        \pgfdeclarelayer{bg}    % declare background layer
-\pgfsetlayers{bg,main}  % set the order of the layers (main is the standard layer)
+
+
 
     % vim: ft=tex
