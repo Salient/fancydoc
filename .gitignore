@@ -1,30 +1,12 @@
 
 tags
-*/tags
-*/*/tags
-
-*.nav
-*.snm
-*.aux
-*.lof
-*.log
-*.lol
-*.lot
-*.out
-*.synctex*
-*.toc
-*.pygtex
-*.pygstyle
-.DS_STORE
-*.fdb_latexmk
-*.fls
-tags
+**/tags
 
 ### TeX
 ## Core latex/pdflatex auxiliary files:
 *.aux
 *.lof
-*.log
+**.log
 *.lot
 *.fls
 *.out
@@ -57,243 +39,243 @@ tags
 
 ## Build tool auxiliary files:
 *.fdb_latexmk
-*.synctex
+    *.synctex
 *.synctex(busy)
-*.synctex.gz
+    *.synctex.gz
 *.synctex.gz(busy)
-*.pdfsync
+    *.pdfsync
 
 ## Build tool directories for auxiliary files
 # latexrun
-latex.out/
+    latex.out/
 
 ## Auxiliary and intermediate files from other packages:
 # algorithms
-*.alg
-*.loa
+    *.alg
+    *.loa
 
 # achemso
-acs-*.bib
+    acs-*.bib
 
 # amsthm
-*.thm
+    *.thm
 
 # beamer
-*.nav
-*.pre
-*.snm
-*.vrb
+    *.nav
+    *.pre
+    *.snm
+    *.vrb
 
 # changes
-*.soc
+    *.soc
 
 # comment
-*.cut
+    *.cut
 
 # cprotect
-*.cpt
+    *.cpt
 
 # elsarticle (documentclass of Elsevier journals)
-*.spl
+    *.spl
 
 # endnotes
-*.ent
+    *.ent
 
 # fixme
-*.lox
+    *.lox
 
 # feynmf/feynmp
-*.mf
-*.mp
-*.t[1-9]
-*.t[1-9][0-9]
-*.tfm
+    *.mf
+    *.mp
+    *.t[1-9]
+    *.t[1-9][0-9]
+    *.tfm
 
 #(r)(e)ledmac/(r)(e)ledpar
-*.end
-*.?end
-*.[1-9]
-*.[1-9][0-9]
-*.[1-9][0-9][0-9]
-*.[1-9]R
-*.[1-9][0-9]R
-*.[1-9][0-9][0-9]R
-*.eledsec[1-9]
-*.eledsec[1-9]R
-*.eledsec[1-9][0-9]
-*.eledsec[1-9][0-9]R
-*.eledsec[1-9][0-9][0-9]
-*.eledsec[1-9][0-9][0-9]R
+    *.end
+    *.?end
+    *.[1-9]
+    *.[1-9][0-9]
+    *.[1-9][0-9][0-9]
+    *.[1-9]R
+    *.[1-9][0-9]R
+    *.[1-9][0-9][0-9]R
+    *.eledsec[1-9]
+    *.eledsec[1-9]R
+    *.eledsec[1-9][0-9]
+    *.eledsec[1-9][0-9]R
+    *.eledsec[1-9][0-9][0-9]
+    *.eledsec[1-9][0-9][0-9]R
 
 # glossaries
-*.acn
-*.acr
-*.glg
-*.glo
-*.gls
-*.glsdefs
-*.lzo
-*.lzs
+    *.acn
+    *.acr
+    *.glg
+    *.glo
+    *.gls
+    *.glsdefs
+    *.lzo
+    *.lzs
 
 # uncomment this for glossaries-extra (will ignore makeindex's style files!)
 # *.ist
 
 # gnuplottex
-*-gnuplottex-*
+    *-gnuplottex-*
 
 # gregoriotex
-*.gaux
-*.gtex
+    *.gaux
+    *.gtex
 
 # htlatex
-*.4ct
-*.4tc
-*.idv
-*.lg
-*.trc
-*.xref
+    *.4ct
+    *.4tc
+    *.idv
+    *.lg
+    *.trc
+    *.xref
 
 # hyperref
-*.brf
+    *.brf
 
 # knitr
-*-concordance.tex
+    *-concordance.tex
 # TODO Comment the next line if you want to keep your tikz graphics files
-*.tikz
-*-tikzDictionary
+    *.tikz
+    *-tikzDictionary
 
 # listings
-*.lol
+    *.lol
 
 # luatexja-ruby
-*.ltjruby
+    *.ltjruby
 
 # makeidx
-*.idx
-*.ilg
-*.ind
+    *.idx
+    *.ilg
+    *.ind
 
 # minitoc
-*.maf
-*.mlf
-*.mlt
-*.mtc[0-9]*
-*.slf[0-9]*
-*.slt[0-9]*
-*.stc[0-9]*
+    *.maf
+    *.mlf
+    *.mlt
+    *.mtc[0-9]*
+    *.slf[0-9]*
+    *.slt[0-9]*
+    *.stc[0-9]*
 
 # minted
-_minted*
-*.pyg
+    _minted*
+    *.pyg
 
 # morewrites
-*.mw
+    *.mw
 
 # nomencl
-*.nlg
-*.nlo
-*.nls
+    *.nlg
+    *.nlo
+    *.nls
 
 # pax
-*.pax
+    *.pax
 
 # pdfpcnotes
-*.pdfpc
+    *.pdfpc
 
 # sagetex
-*.sagetex.sage
-*.sagetex.py
-*.sagetex.scmd
+    *.sagetex.sage
+    *.sagetex.py
+    *.sagetex.scmd
 
 # scrwfile
-*.wrt
+    *.wrt
 
 # sympy
-*.sout
-*.sympy
-sympy-plots-for-*.tex/
+    *.sout
+    *.sympy
+    sympy-plots-for-*.tex/
 
 # pdfcomment
-*.upa
-*.upb
+    *.upa
+    *.upb
 
 # pythontex
-*.pytxcode
-pythontex-files-*/
+    *.pytxcode
+    pythontex-files-*/
 
 # tcolorbox
-*.listing
+    *.listing
 
 # thmtools
-*.loe
+    *.loe
 
 # TikZ & PGF
-*.dpth
-*.md5
-*.auxlock
+    *.dpth
+    *.md5
+    *.auxlock
 
 # todonotes
-*.tdo
+    *.tdo
 
 # vhistory
-*.hst
-*.ver
+    *.hst
+    *.ver
 
 # easy-todo
-*.lod
+    *.lod
 
 # xcolor
-*.xcp
+    *.xcp
 
 # xmpincl
-*.xmpi
+    *.xmpi
 
 # xindy
-*.xdy
+    *.xdy
 
 # xypic precompiled matrices and outlines
-*.xyc
-*.xyd
+    *.xyc
+    *.xyd
 
 # endfloat
-*.ttt
-*.fff
+    *.ttt
+    *.fff
 
 # Latexian
-TSWLatexianTemp*
+    TSWLatexianTemp*
 
 ## Editors:
 # WinEdt
-*.bak
-*.sav
+    *.bak
+    *.sav
 
 # Texpad
-.texpadtmp
+    .texpadtmp
 
 # LyX
-*.lyx~
+    *.lyx~
 
 # Kile
-*.backup
+    *.backup
 
 # gummi
-.*.swp
+    .*.swp
 
 # KBibTeX
-*~[0-9]*
+    *~[0-9]*
 
 # TeXnicCenter
-*.tps
+    *.tps
 
 # auto folder when using emacs and auctex
-./auto/*
-*.el
+    ./auto/*
+           *.el
 
 # expex forward references with \gathertags
-*-tags.tex
+           *-tags.tex
 
 # standalone packages
-*.sta
+           *.sta
 
 # Makeindex log files
-*.lpz
+           *.lpz

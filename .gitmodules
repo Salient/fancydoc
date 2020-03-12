@@ -1,16 +1,20 @@
 [submodule "Logos"]
-	path = Logos
-	url = https://salient@github.com/salient/docudrama
-	branch = Logos
+    path = Logos
+    url = https://github.com/salient/docudrama
+    branch = Logos
+    update = rebase
 [submodule "Acronyms"]
-	path = Acronyms
-	url = https://salient@github.com/salient/docudrama
-	branch = Acronyms
+    path = Acronyms
+    url = https://github.com/salient/docudrama
+    branch = Acronyms
+    update = rebase
 [submodule "Utilities"]
-	path = Utilities
-	url = https://salient@github.com/salient/docudrama
-	branch = Utilities
+    path = Utilities
+    url = https://github.com/salient/docudrama
+    branch = Utilities
+    update = rebase
 [submodule "Markings"]
-	path = Markings
-	url = https://github.com/Salient/docudrama
-	branch = Markings
+    path = Markings
+    url = https://github.com/salient/docudrama
+    branch = Markings
+    update = rebase
