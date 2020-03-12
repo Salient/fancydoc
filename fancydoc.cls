@@ -81,7 +81,7 @@
 % Handle conditionals
 
 \iftoggle{codesnips}{
-    \RequirePackage[outputdir=livepreview]{minted}
+    \RequirePackage[outputdir=cruft]{minted}
     \setminted[vhdl]{fontsize=\scriptsize, linenos}
     \renewcommand{\listoflistingscaption}{Logic Code Excerpts}
     \newcommand{\codesref}{Code Excerpt }
