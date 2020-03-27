@@ -339,6 +339,19 @@
 \providecommand{\copywarning}{\textbf{\color{red}[Please set the Copyright Warning text.]}}
 \providecommand{\programwarning}{\textbf{\color{red}[Please set the Program Warning text.]}}
 
+\newsavebox{\fminipagebox}
+\NewDocumentEnvironment{fminipage}{m O{\fboxsep}}
+ {\par\kern#2\noindent\begin{lrbox}{\fminipagebox}
+  \begin{minipage}{#1}\ignorespaces}
+ {\end{minipage}\end{lrbox}%
+  \makebox[#1]{%
+    \kern\dimexpr-\fboxsep-\fboxrule\relax
+    \fbox{\usebox{\fminipagebox}}%
+    \kern\dimexpr-\fboxsep-\fboxrule\relax
+  }\par\kern#2
+ }
+
+
 %%=================== End Marking Options ==========================================
 
 
