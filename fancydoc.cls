@@ -16,7 +16,7 @@
 %\pdfobjcompresslevel=0
 
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{fancydoc}[2019/01/31 Make Overly Nice Documents]
+\ProvidesClass{core/fancydoc}[2019/01/31 Make Overly Nice Documents]
 
 
 % Setup conditional logic before processing Options
@@ -191,8 +191,9 @@
         % Redefine header rule to include logo at the end
 
         \renewcommand{\headrule}{
-            \hrule\@height\headrulewidth\@width\headwidth\vspace{-0.4cm}
-            \raggedleft\includegraphics[height=0.35cm,keepaspectratio]{#1}\hspace*{1px}\vskip-\headrulewidth
+            \hrule\@height\headrulewidth\@width\headwidth
+            \vspace{-0.9cm}
+            \raggedleft\includegraphics[height=0.75cm,keepaspectratio]{#1}\hspace*{1px}\vskip-\headrulewidth
         }
 
         \ClassWarning{fancydoc}{Header logo set to #1}
@@ -465,8 +466,8 @@
 %--------------------------------
 % Document Section Title Formatting
 
-\titleformat*{\section}{\Large\bfseries\sffamily\scshape}
-\titleformat*{\subsection}{\large\bfseries\sffamily\scshape}
+%\titleformat*{\section}{\Large\bfseries\sffamily\scshape}
+%\titleformat*{\subsection}{\large\bfseries\sffamily\scshape}
 %\titleformat*{\subsubsection}{\bfseries\scshape}
 %\titleformat*{\paragraph}{\bfseries\scshape}
 %\titleformat*{\subparagraph}{\bfseries\scshape}
@@ -501,14 +502,13 @@
 
 \hypersetup{colorlinks, linktoc=all, linkcolor={blue!20!black}, citecolor={red!50!black}, urlcolor={red!80!black}, pdftitle=\titlelong, pdfauthor=James Heller, pdfsubject=\doctype, pdfkeywords=}
 
-%\setlength{\abovecaptionskip}{0pt}
 
 
 % Select look and feel of captions
-\RequirePackage[textfont={footnotesize,sl},labelfont=footnotesize, labelsep=endash]{caption}
+\RequirePackage[skip=5pt, textfont={footnotesize,sl},labelfont=footnotesize, labelsep=endash]{caption}
+\setlength{\abovecaptionskip}{0pt}
 
-
-\RequirePackage[left=1.25in,right=1in,top=1in, bottom=1.25in, marginparsep=7pt]{geometry}
+\RequirePackage[left=1.25in,right=1in,top=1in, bottom=1in, marginparsep=7pt]{geometry}
 
 \newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
 
@@ -545,7 +545,7 @@
 
 \RequirePackage{enumitem}[itemsep = 0.08cm, parsep=0in]
 % Adjust indents/margins of lists. Provided by [enumitem]
-\setlist[enumerate]{leftmargin=0.7in, label=\emph{\alph*}}
+\setlist[enumerate]{leftmargin=0.7in, label=(\alph*)}
 \setlist[itemize]{leftmargin=0.7in, rightmargin=0.7in}
 \setlist[description]{leftmargin=0.25in, labelwidth=0.7in, labelindent=\parindent}
 
@@ -639,6 +639,7 @@
     [xshift=0.65cm, yshift=-2.75cm, rotate=90]{\scriptsize \docnumber, Rev. (\revision)};
     %\marginnote{\rotatebox{90}{\raisebox{0.5in}{\qquad\scriptsize\textbf{\docnumber (\revision)}}}}
 }
+    \newcommand{\floorbar}{\rule[-0.5\baselineskip]{1pt}{1.25\baselineskip}}
 
 \RequirePackage{rotating}
 
@@ -717,7 +718,6 @@
     }
     %
 
-    \newcommand{\floorbar}{\rule[-0.5\baselineskip]{1pt}{1.25\baselineskip}}
     \fancyfoot[R]{
         \unselectable{
             \scriptsize{% \floorbar
@@ -784,6 +784,26 @@
     \end{tikzpicture}
 }
 
+\newcommand{\tbrfig}[1]{
+    %   \tikzstyle{background grid}=[draw, black!50,step=.5cm]
+\noindent\begin{tikzpicture}[orange] %[show background grid]
+    \node [inner sep=0pt] (main) {#1};
+        \node (t1)[anchor=south west] at (current bounding box.north west)
+        {\sffamily\textbf{SUBJECT TO CHANGE // TO BE REVIEWED}};
+        \node (t2)[anchor=north east] at (current bounding box.south east)
+            {\sffamily\textbf{SUBJECT TO CHANGE // TO BE REVIEWED}};
+        %   \node (c1) at (current bounding box.north east) {};
+        %   \node (c2) at (current bounding box.south west) {};
+        \draw (current bounding box.north east) -- (current bounding box.north);
+        \draw (current bounding box.north east) -- (current bounding box.east);
+        \draw (current bounding box.south west) -- +(0,1);
+        \draw (current bounding box.south west) -- +(1,0);
+        \clip (current bounding box.north west) rectangle (current bounding box.south east);
+        % \foreach \m in {135,2,...,315}{
+        % \draw[opacity=0.4] (main.\m) node{x} -- +(45:2in);}
+    \end{tikzpicture}
+}
+
 \newsavebox\foobox
 \def\slantvalue{0}
 \newcommand{\slantboxengine}[2][\slantvalue]{\mbox{%
@@ -814,6 +834,7 @@
     \end{minipage}%\vspace{-0.25cm}
 }
 
+
 \newcommand{\stdquote}[3]{{
         \smallskip
         \smaller    \textbf{#1 ~~\S#2}  \hfill \parbox{0.7\linewidth}{{\raggedright
@@ -830,7 +851,7 @@
 
 \newcommand{\marku}{~\\\marginnote{(U)\\}}
 
-\newcommand{\tbr}[1]{\marginnote{\textbf{\small\color{orange}~~TBR:\\} #1}}
+\newcommand{\tbr}[1]{\marginnote{\textbf{\smaller\color{orange}~~TBR:\\}\smaller#1}}
 
 \newcommand{\cfbox}[2]{%
     \colorlet{currentcolor}{.}%
@@ -1001,6 +1022,7 @@
 
 % Nice balance between sans and serif. Good weight, full support
 \RequirePackage{fourier}
+\RequirePackage[T1]{fontenc}
 
 % Blocky, clear, full support. One of the top three
 %\usepackage{txfonts}
@@ -1073,7 +1095,7 @@
     \thispagestyle{firststyle}\vspace*{-1cm}
     %\begin{center}
 
-    \noindent\Large{\textbf{\doctype}}
+    \noindent\Large{\textbf{\scshape\doctype}}
 
     \noindent\Large{\sffamily \titlelong}\smallskip
 
@@ -1125,7 +1147,7 @@
             \textsc{Contract \#}                & \textsc{\contract}
             {\newline}                                                                                                \\
 
-            \textsc{Originating Facility}       & Raytheon Missile\newline~Systems Company                   \\
+            \textsc{Originating Facility}       & Raytheon Missiles\newline~and Defense                   \\
             \textsc{Located}                    &
             1151 E. Hermans Rd\newline
             Tucson, AZ 85756                                                                                          \\

@@ -27,6 +27,7 @@
 
 \newenvironment{boldlist}[2]{\newcommand{\captiontemp}{#1~}\newcommand{\labeltemp}{#2}
     %   \begin{table}[h!]
+    \newcommand{\entry}[3]{\textbf{##1} & {\scshape ##2} \newline {\textsl{##3}}\\}
 
     \begin{center}
         \begin{tabular}{ B@{~\textbf{\textendash~}}p{0.6\linewidth}}}{
@@ -300,12 +301,39 @@
 %\makeatother
 
 
-
-
-
 % % % % % % % % % % % % % % % % % % % % % % % %
 % % % Custom Framework Commands...
 % % % % % % % % % % % % % % % % % % % % % % % %
+
+% May split out into its own module at some point
+% &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+% Electrical Connector Definition Framework
+
+
+% Right now only supports one global connector namespace
+% easy enough to add more
+\newcommand{\defPin}[3]{
+    %   Arguments should be {number/counterreference}
+    %                       {Signal name (underscores escaped....need to figure out how to do that )}
+    %                       {shortname}
+
+    \ifcsname fancy@pinDef@#1@defined\endcsname
+        \PackageError{fancy}{Connector Pin definition '#1' is defined twice}{}
+    \else
+        \immediate\write\@auxout{%
+        \unexpanded{\global\@namedef}{fancy@pinDef@#1@name}\unexpanded{{#2}}%
+        \unexpanded{\global\@namedef}{fancy@pinDef@#1@alias}\unexpanded{{#3}}%
+        \unexpanded{\global\@namedef{fancy@pinDef@#3@num}}{#1}%
+        }
+        % \unexpanded{\global\@namedef}{fancy@pinDef@#1@defined}{}
+        \global\@namedef{fancy@pinDef@#1@defined}{}
+    \fi
+}
+
+   
+
+
+
 
 % \reqitem{requirement title}{desired label for requirement}{something}
 % \subreqitem{subreq title}{expected time due}
