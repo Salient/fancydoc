@@ -10,7 +10,8 @@
 %%% This is good stuff
 % https://tex.stackexchange.com/questions/416260/define-global-commands-in-aux-file
 % https://tex.stackexchange.com/questions/4736/what-is-the-difference-between-fragile-and-robust-commands
-
+% https://tex.stackexchange.com/questions/451/when-to-use-edef-noexpand-and-expandafter
+% https://tex.stackexchange.com/questions/38200/appending-to-variables?noredirect=1
 
 %\pdfcompresslevel=0
 %\pdfobjcompresslevel=0
@@ -62,7 +63,7 @@
 \RequirePackage{multicol}
 \RequirePackage{hyperref}
 \RequirePackage{xspace}
-\RequirePackage{titlesec}
+\RequirePackage[explicit]{titlesec}
 \RequirePackage{tikz}
 \usepackage{pgfplots} \pgfplotsset{compat=newest}
 \RequirePackage{subfiles}
@@ -1070,7 +1071,7 @@
 \RequirePackage{relsize}
 \newcommand{\signalfont}{\fontfamily{NotoSans-TLF}\selectfont\smaller\bfseries}
 %\newcommand{\sig}[1]{{\fontfamily{\signalfont}\selectfont #1}}
-\newcommand{\sig}[1]{{\signalfont\uppercase{#1}}}
+\newcommand{\sig}[1]{{\smaller\signalfont\uppercase{#1}}}
 
 \newcommand{\connfont}{\fontfamily{NotoSans-TLF}\selectfont}
 
@@ -1163,17 +1164,17 @@
     \footnotesize
 
     \noindent\iftoggle{markingDistribution}{\distwarning}
-
+\newline
     \noindent\iftoggle{markingITAR}{\itarwarning}
-
+\newline
     \noindent\iftoggle{markingProprietary}{\raypropwarning}
-
+\newline
     \noindent\iftoggle{markingFOUO}{\fouowarning}
-
+\newline
     \noindent\iftoggle{markingDestroy}{\destructwarning}
-
+\newline
     \noindent\iftoggle{programWarning}{\programwarning}
-
+\newline
     \noindent\iftoggle{markingCopyright}{\copywarning}
 
 }
