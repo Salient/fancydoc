@@ -17,7 +17,7 @@
 %\pdfobjcompresslevel=0
 
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{core/fancydoc}[2019/01/31 Make Overly Nice Documents]
+\ProvidesClass{core/fancydoc}[2020/06/09 Make Overly Nice Technical Documents]
 
 
 % Setup conditional logic before processing Options
@@ -33,6 +33,7 @@
 \newtoggle{verbose}
 \newtoggle{acrolist}
 \toggletrue{acrolist}
+\newtoggle{reqspec}
 
 
 % ---------------------------------------------------------------------------------------
@@ -49,6 +50,7 @@
 \DeclareOption{stark}{\toggletrue{stark}}
 \DeclareOption{verbose}{\toggletrue{verbose}}
 \DeclareOption{noacrolist}{\togglefalse{acrolist}}
+\DeclareOption{reqspec}{\toggletrue{reqspec}}
 
 \DeclareOption*{\PassOptionsToClass{\CurrentOption}{article}}
 \ProcessOptions\relax
@@ -68,7 +70,10 @@
 \usepackage{pgfplots} \pgfplotsset{compat=newest}
 \RequirePackage{subfiles}
 \RequirePackage{framed}
-\RequirePackage{core/fancydoc}
+\RequirePackage{core/fancydoc} % has a lot of helper ....stuff? 
+
+% add support for requirements document framework, if selected
+\iftoggle{reqspec}{\RequirePackage{core/fancyreqs}}{}
 
 % TODO Fix this here.....V
 % \newcommand{\sharedmedia}{C:/Users/1117384/Documents/Work/Utilities/Latex}
@@ -341,17 +346,17 @@
 \providecommand{\copywarning}{\textbf{\color{red}[Please set the Copyright Warning text.]}}
 \providecommand{\programwarning}{\textbf{\color{red}[Please set the Program Warning text.]}}
 
-\newsavebox{\fminipagebox}
-\NewDocumentEnvironment{fminipage}{m O{\fboxsep}}
- {\par\kern#2\noindent\begin{lrbox}{\fminipagebox}
-  \begin{minipage}{#1}\ignorespaces}
- {\end{minipage}\end{lrbox}%
-  \makebox[#1]{%
-    \kern\dimexpr-\fboxsep-\fboxrule\relax
-    \fbox{\usebox{\fminipagebox}}%
-    \kern\dimexpr-\fboxsep-\fboxrule\relax
-  }\par\kern#2
- }
+% \newsavebox{\fminipagebox}
+% \NewDocumentEnvironment{fminipage}{m O{\fboxsep}}
+%  {\par\kern#2\noindent\begin{lrbox}{\fminipagebox}
+%   \begin{minipage}{#1}\ignorespaces}
+%  {\end{minipage}\end{lrbox}%
+%   \makebox[#1]{%
+%     \kern\dimexpr-\fboxsep-\fboxrule\relax
+%     \fbox{\usebox{\fminipagebox}}%
+%     \kern\dimexpr-\fboxsep-\fboxrule\relax
+%   }\par\kern#2
+%  }
 
 
 %%=================== End Marking Options ==========================================
@@ -445,7 +450,7 @@
 % Format Sec headers
 \renewcommand{\cftsecfont}{\scshape\sffamily}
 \renewcommand{\cftsecleader}{\hfill}
-\renewcommand{\cftsecpagefont}{\larger\bfseries\sffamily\color{sectcolor}}
+\renewcommand{\cftsecpagefont}{\bfseries\sffamily\color{sectcolor}}
 \renewcommand{\cftsecpresnum}{Section }
 \renewcommand{\cftsecaftersnum}{\hspace*{0.2cm}}
 \renewcommand{\cftsecaftersnumb}{\bfseries}
@@ -493,8 +498,8 @@
 %=================== End Section Level Title Styling, Document and TOC ============
 
 
-\newlength{\charwidth}
-\setlength{\charwidth}{\widthof{\S}}
+% \newlength{\charwidth}
+% \setlength{\charwidth}{\widthof{\S}}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%        Special Look and Feel
@@ -509,7 +514,7 @@
 \RequirePackage[skip=5pt, textfont={footnotesize,sl},labelfont=footnotesize, labelsep=endash]{caption}
 \setlength{\abovecaptionskip}{0pt}
 
-\RequirePackage[left=1.25in,right=1in,top=1in, bottom=1in, marginparsep=7pt]{geometry}
+\RequirePackage[left=1.25in,right=1.25in,top=1in, bottom=1in, marginparsep=7pt]{geometry}
 
 \newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
 
@@ -572,10 +577,9 @@
 %%%%        General Dynamic Referencing
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% \RequirePackage{pdfpages}
 \RequirePackage[page,titletoc]{appendix}
-%\RequirePackage{lastpage}
 \RequirePackage{pageslts}
+% \RequirePackage{pdfpages}
 
 
 \newcounter{appage}
@@ -787,18 +791,18 @@
 
 \newcommand{\tbrfig}[1]{
     %   \tikzstyle{background grid}=[draw, black!50,step=.5cm]
-\noindent\begin{tikzpicture}[orange] %[show background grid]
-    \node [inner sep=0pt] (main) {#1};
-        \node (t1)[anchor=south west] at (current bounding box.north west)
+\noindent\begin{tikzpicture}[] %[show background grid]
+    \node [inner sep=10pt] (main) {#1};
+        \node (t1)[anchor=south west, orange] at (current bounding box.north west)
         {\sffamily\textbf{SUBJECT TO CHANGE // TO BE REVIEWED}};
-        \node (t2)[anchor=north east] at (current bounding box.south east)
+        \node (t2)[anchor=north east, orange] at (current bounding box.south east)
             {\sffamily\textbf{SUBJECT TO CHANGE // TO BE REVIEWED}};
         %   \node (c1) at (current bounding box.north east) {};
         %   \node (c2) at (current bounding box.south west) {};
-        \draw (current bounding box.north east) -- (current bounding box.north);
-        \draw (current bounding box.north east) -- (current bounding box.east);
-        \draw (current bounding box.south west) -- +(0,1);
-        \draw (current bounding box.south west) -- +(1,0);
+        \draw[orange] (current bounding box.north east) -- (current bounding box.north);
+        \draw[orange] (current bounding box.north east) -- (current bounding box.east);
+        \draw[orange] (current bounding box.south west) -- +(0,1);
+        \draw[orange] (current bounding box.south west) -- +(1,0);
         \clip (current bounding box.north west) rectangle (current bounding box.south east);
         % \foreach \m in {135,2,...,315}{
         % \draw[opacity=0.4] (main.\m) node{x} -- +(45:2in);}
@@ -835,6 +839,16 @@
     \end{minipage}%\vspace{-0.25cm}
 }
 
+
+\newcommand{\tbrfigleft}{
+    {\raggedright~\newline\large\textbf{\color{orange}SUBJECT TO CHANGE}\newline\\}
+}
+\newcommand{\tbrfigright}{
+    \begin{minipage}{\linewidth}
+        \vspace{0.3em} 
+    {\raggedright\hfill~\large\textbf{\color{orange}SUBJECT TO CHANGE}\\}
+    \end{minipage}%\vspace{-0.25cm}
+}
 
 \newcommand{\stdquote}[3]{{
         \smallskip
@@ -1071,7 +1085,7 @@
 \RequirePackage{relsize}
 \newcommand{\signalfont}{\fontfamily{NotoSans-TLF}\selectfont\smaller\bfseries}
 %\newcommand{\sig}[1]{{\fontfamily{\signalfont}\selectfont #1}}
-\newcommand{\sig}[1]{{\smaller\signalfont\uppercase{#1}}}
+\newcommand{\sig}[1]{{\signalfont\uppercase{#1}}}
 
 \newcommand{\connfont}{\fontfamily{NotoSans-TLF}\selectfont}
 
@@ -1096,7 +1110,7 @@
     \thispagestyle{firststyle}\vspace*{-1cm}
     %\begin{center}
 
-    \noindent\Large{\textbf{\scshape\doctype}}
+    \noindent\Large{\textbf{\sffamily\scshape\doctype}}
 
     \noindent\Large{\sffamily \titlelong}\smallskip
 
@@ -1113,8 +1127,7 @@
         % Place top logo, unless disabled
         %\nottoggle{hidetoplogo}{\includegraphics[width=\linewidth]
         \begin{center}
-            {\placetoplogo}
-            {\placebotlogo}
+            {\placetoplogo} {\placebotlogo}
         \end{center}
 
     \end{minipage}
@@ -1159,24 +1172,23 @@
     \end{minipage}
     %
     %\vspace{0.25cm}
-    \vfill
+~\\\vfill
 
     \footnotesize
 
     \noindent\iftoggle{markingDistribution}{\distwarning}
-\newline
+~\\
     \noindent\iftoggle{markingITAR}{\itarwarning}
-\newline
+~\\
     \noindent\iftoggle{markingProprietary}{\raypropwarning}
-\newline
+~\\
     \noindent\iftoggle{markingFOUO}{\fouowarning}
-\newline
+~\\
     \noindent\iftoggle{markingDestroy}{\destructwarning}
-\newline
+~\\
     \noindent\iftoggle{programWarning}{\programwarning}
-\newline
+~\\
     \noindent\iftoggle{markingCopyright}{\copywarning}
-
 }
 
 \providecommand{\codelistings}{}

@@ -1,0 +1,193 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{core/fancyreqs}[2020/06/11 Fancy Requirements Document Framework]
+
+% Note: Requires nameref package
+% No, I don't remember why.
+
+\PackageInfo{fancydoc}{Loading Framework for Requirement Specifications Document}
+\RequirePackage{core/fancydoc} % not sure how i feel about this
+\RequirePackage{marginnote}
+\RequirePackage{xcolor}
+%  We don't really use this package, but we need cleveref, and it has to be loaded after amsmath if it's used, so we are going to preemptively atteck!
+\RequirePackage{amsmath} 
+\RequirePackage[nameinlink]{cleveref}
+\RequirePackage{tocloft}
+
+
+% ==============================================
+% ==============================================
+% Initialize Framework 
+
+% If run before, there will be things to remember
+\InputIfFileExists{reqsData.tex}{
+    \PackageInfo{fancyreqs}{Reading in previous requirement definitions.}
+    } {
+    \PackageInfo{fancyreqs}{No previous requirement definitions.}
+}
+
+
+% Processing files
+% Create a few files necessary for great magick
+
+% Entry for each requirement created in the document. For giggles.
+% After compilation, for information. 
+\newwrite\fancyreq@defs
+\immediate\openout\fancyreq@defs=reqsUsed.tex
+
+% Create a custom table to display verification methods for each requirement
+\newwrite\fancyreq@table
+\immediate\openout\fancyreq@table=reqsTable.tex
+
+% Record references for use anywhere in the document. 
+\newwrite\fancyreq@data
+\immediate\openout\fancyreq@data=reqsData.tex
+
+
+% ==============================================
+% Setup parameters for other packages
+
+% Table of Contents for Requirements
+\newcommand{\listreqs}{Requirements and Verification Methods}
+
+% Declare new type of item (requirements) to track
+\newlistof{requirement}{req}{\listreqs}     
+\crefname{requirement}{Req. \#}{Reqs. \#}
+\crefformat{requirement}{#2\unexpanded{[ESAD\_}#1\unexpanded{]}#3}
+
+\newlength{\margunder}
+\settowidth{\margunder}{[ESADXX]}
+\definecolor{marginmark}{rgb}{0, 0.175, 0.459}
+
+        % Settings for listing all requirements ToC style
+        % Reference:
+
+        % {\cftXfont {\cftXpresnum SNUM\cftXaftersnum\hfil} \cftXaftersnumb TITLE}%
+        %          {\cftXleader}{\cftXpagefont PAGE}\cftXafterpnum\par
+
+        % where SNUM is the section number, TITLE is the title text and PAGE is the page number. In the numbered entry the pseudo-code
+
+        % {\cftXpresnum SNUM\cftaftersnum\hfil}
+        % is typeset within a box of width \cftXnumwidth.
+
+        % Configure with \setlength
+        % \setlength{\cftbeforeXskip}
+
+        \renewcommand{\cftrequirementfont}{} %
+        %    \renewcommand{\cftreqitemleader}{\bfseries\cftdotfill{\cftreqitemdotsep}}
+        \renewcommand{\cftrequirementleader}{}
+        \renewcommand{\cftrequirementpagefont}{}
+        \renewcommand{\cftrequirementpresnum}{[ESAD }
+        \renewcommand{\cftrequirementaftersnum}{]}
+
+        \newlength{\mylen}   % a "scratch" length
+        % \settowidth{\mylen}{longtextislong} % extra space
+        \setlength{\mylen}{0.5in}
+        % \addtolength{\cftrequirementnumwidth}{\mylen} % add the extra space
+        \setlength{\cftrequirementnumwidth}{\mylen} % add the extra space
+
+        %    \renewcommand{\cftreqitemaftersnumb}{}
+
+% ==============================================
+% Define framework functions
+
+% Constants
+% frakking hell i need to figure out this shit vvvvv
+\newcommand{\vmethodA}{Analysis}
+\newcommand{\vmethodT}{Test}
+\newcommand{\vmethodD}{Demonstration}
+\newcommand{\vmethodI}{Inspection}
+\newcommand{\vmethodS}{Simulation}
+% \newcommand{\vmethoda}{Analysis}
+% \newcommand{\vmethodt}{Test}
+% \newcommand{\vmethodd}{Demonstration}
+% \newcommand{\vmethodi}{Inspection}
+% \newcommand{\vmethods}{Simulation}
+
+\newcommand{\ngt}{\textbf{NGT}}
+\newcommand{\nlt}{\textbf{NLT}}
+
+\newcommand{\@fancy@getFullMethod}[1]{
+    \newcommand{\methodLetter}{\uppercase{#1}}
+    \expandafter{\csname vmethod\methodLetter\endcsname}
+    % \undef is a thing if you need it
+}
+
+\newcommand{\@fancy@reqs@recordReq}[4]{%
+% Takes keyword, critical value (if any), method of verification, and source (if any)
+\PackageInfo{fancyreq}{Creating new requirement with alias [#1].}%
+% \immediate\write\fancyreq@defs{oh hai, i'm over at \inputlineno. or is it \whereami.... bah. i dunno. but the keyword is #1}%
+% Write definitions for the next time the doc is read in. Existing definitions will be overwritten.
+% \unexpanded{\global\@namedef}{fancy@pinDef@aliasToNum@#3}{#1}%
+\immediate\write\fancyreq@data{\unexpanded{\global\@namedef{fancy@reqs@aliasNumber@#1@}}{\therequirement}}%
+\immediate\write\fancyreq@data{\unexpanded{\global\@namedef{fancy@reqs@aliasValue@#1@}{#2}}}%
+\immediate\write\fancyreq@data{\unexpanded{\global\@namedef{fancy@reqs@aliasMethod@#1@}{#3}}}%
+\immediate\write\fancyreq@data{\unexpanded{\global\@namedef{fancy@reqs@aliasUpstream@#1@}{#4}}}%
+\immediate\write\fancyreq@data{\unexpanded{\global\@namedef{fancy@reqs@aliasLoc@#1@}}{\whereami}}%
+% Mark this alias as defined to prevent it from being used elsewhere
+% for something else by mistake
+\global\@namedef{fancy@reqs@definedAliases@#1}{}%
+}
+
+% Enter requirement into list
+\newcommand{\newreq}[4]{%
+    % Check for collision
+    \ifcsname fancy@reqs@definedAliases@#1\endcsname
+        \PackageError{fancyreqs}{ Requirement alias '#1' is taken. Please select a different alias.}{Requirements are defined with a unique alias for cross-referencing.  Two requirements cannot have the same alias.}%
+    \else% Do some journalling
+        \refstepcounter{requirement}%
+       \label{#1}% Lean on existing reference facilities
+       \@fancy@reqs@recordReq{#1}{#2}{#3}{#4}%
+       \normalmarginpar
+        \marginnote{
+            \color{marginmark}
+            \centering
+            \textbf{[ESAD\_\therequirement]}\\
+            {
+                \vspace{-0.35\baselineskip}
+                \scriptsize
+                \expandafter{\csname vmethod#3\endcsname}
+            }
+        }%
+        % \hspace{-0.1in}\raisebox{-2pt}{\rule{\margunder}{0.pt}}
+        % {brwaaaaaang\rule{1in}{0.5pt}}\\
+        % Enter into contents table
+       \phantomsection
+       \addcontentsline{req}{requirement}{\protect\numberline{\therequirement}\enspace \qquad \parbox{0.35in}{\whereami}\qquad\textbf{\nameref{#1}}\Dotfill{0.8 em}\hfil Page }%
+        % Add entry to Comprehensive Verification Methods Table
+        % \immediate\write\tempfile{
+        % &&&\\
+        % \hyperref[#1]{\bfseries[ESAD \therequirement]} & 
+        % \hyperref[#1]{\bfseries \nameref{#1}} & 
+        % \hyperref[#1]{\cref{#1}} & 
+        % \hyperref[#1]{#2} \\
+        % }
+\fi}
+
+\newcommand{\reqval}[1]{
+    \ifcsname fancy@reqs@aliasValue@#1@\endcsname%
+    \textbf{\emph{\csname fancy@reqs@aliasValue@#1@\endcsname}}
+    \else% Go get it
+        \PackageWarning{fancyreqs}{ Attempt to retrieve critical value of requirement
+        '#1' failed.}{}
+        {\TBD }
+\fi%
+}
+% Macros to retrieve previously stored requirement information
+
+
+
+% \newcommand{\refreq}[1]{\hyperref[#1]{\textbf{[SDRL \useVal{#1-num}]} (\textsc{\useVal{#1-name}})}}
+
+%
+%
+% \newlistentry[reqitem]{subreqitem}{rqs}{1}
+% \cftsetindents{subreqitem}{1.5em}{3.0em}
+        % \renewcommand{\thesubreqitem}{\thereqitem.\alph{subreqitem}}
+
+        % \newcommand{\subreqitem}[2]{%
+        %     \refstepcounter{subreqitem}
+        %     %   \par\textbf{\thesubreqitem) #1}
+        %     %   \addcontentsline{rqs}{subreqitem}{\protect\numberline{\thesubreqitem}#1}
+        %     \subrecsdrl{\Alph{subreqitem}}{#1}{#2}
+        % }
+        % \setcounter{rqsdepth}{2}
