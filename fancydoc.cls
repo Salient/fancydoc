@@ -417,10 +417,10 @@
 \definecolor{sectcolor}{rgb}{0,0,0.2}
 \definecolor{secpcolor}{rgb}{0,0,0.2}
 
-\addtocontents{toc}{~\hfill{Page}\par}
-\addtocontents{lof}{~\hfill{Page}\par}
-\addtocontents{lot}{~\hfill{Page}\par}
-\addtocontents{lol}{~\hfill{Page}\par}
+\addtocontents{toc}{~\hfill{\large{}Page}\par}
+\addtocontents{lof}{~\hfill{\large{}Page}\par}
+\addtocontents{lot}{~\hfill{\large{}Page}\par}
+\addtocontents{lol}{~\hfill{\large{}Page}\par}
 
 \renewcommand{\cftfigpresnum}{\bfseries Figure\ }
 \renewcommand{\cfttabpresnum}{\bfseries Table\ }
@@ -1220,6 +1220,7 @@
     \listoftables
     \listoffigures
     \iftoggle{codesnips}{\listoflistings}{}
+    \iftoggle{reqspec}{\listofrequirement}{}
 
     \revisionblock
     \newpage

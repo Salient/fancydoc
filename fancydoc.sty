@@ -370,12 +370,12 @@
 
 \newcommand{\pinAliasRef}[1]{%
 \edef\thispin{\pinAliasNum{#1}}%
-{\smaller\sig{\pinNumName{\thispin}} (\textbf{\textsc{\smaller{}Pin \thispin})}}}
+{\smaller\sig{\sloppy\pinNumName{\thispin}} (\textbf{\textsc{\smaller{}Pin \thispin})}}}
 
 \newcommand{\pinsig}[1]{%
 \edef\thispin{\pinAliasNum{#1}}%
 {\smaller\sig{\pinNumName{\thispin}}}}
-\newcommand{\state}[1]{\fbox{\sig{#1}}}
+\newcommand{\state}[1]{\sloppy\fbox{\sig{#1}}\xspace}
 
 
 
