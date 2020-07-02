@@ -10,14 +10,14 @@
 \RequirePackage{booktabs}
 \RequirePackage{xcolor}
 %  We don't really use this package, but we need cleveref, and it has to be loaded after amsmath if it's used, so we are going to preemptively atteck!
-\RequirePackage{amsmath} 
+\RequirePackage{amsmath}
 \RequirePackage[nameinlink]{cleveref}
 \RequirePackage{tocloft}
 
 
 % ==============================================
 % ==============================================
-% Initialize Framework 
+% Initialize Framework
 
 % If run before, there will be things to remember
 \InputIfFileExists{reqsData.tex}{
@@ -31,7 +31,7 @@
 % Create a few files necessary for great magick
 
 % Entry for each requirement created in the document. For giggles.
-% After compilation, for information. 
+% After compilation, for information.
 \newwrite\fancyreq@defs
 \immediate\openout\fancyreq@defs=reqsUsed.tex
 
@@ -39,21 +39,23 @@
 \newwrite\fancyreq@table
 \immediate\openout\fancyreq@table=reqsTable.tex
 
-% Record references for use anywhere in the document. 
+% Record references for use anywhere in the document.
 \newwrite\fancyreq@data
 \immediate\openout\fancyreq@data=reqsData.tex
 
 
 \newcommand{\placeReqTable}{
-    
+
     % Can't read without closing it first
 \immediate\closeout\fancyreq@table
 
 % renew document reference commands for better formatting
 \renewcommand{\rd}[1]{$[\text{LLNL-RD}]_{##1}$}
-\renewcommand{\icd}[1]{[LLNL-ICD] \textit{##1}} 
+\renewcommand{\icd}[1]{[LLNL-ICD] \textit{##1}}
 \renewcommand{\fuzestd}[1]{[1316F] \S~##1}
-\renewcommand{\mcd}{[LLNL-DWG]} 
+\renewcommand{\mcd}{[LLNL-DWG]}
+\renewcommand{\tdone}[1]{[CPS-TD-001B] \S~##1}
+\renewcommand{\tdtwo}[1]{[CPS-TD-002B] \S~##1}
 \def\arraystretch{1.3}
 
 
@@ -64,11 +66,11 @@
         Matrix\label{vcrm}}\\
         \toprule
 &&&&&\\
-        \textbf{Designated} & 
+        \textbf{Designated} &
         \textbf{Origination} &
         \textbf{Requirement Name} &
-        \textbf{Critical Value} & 
-        \textbf{Verify By} & 
+        \textbf{Critical Value} &
+        \textbf{Verify By} &
         \textbf{Defined In}\\
                            &&&&&\\
                            \midrule
@@ -77,11 +79,11 @@
         \caption{Verification Cross-Reference Matrix (continued...)}\\
         \toprule
 &&&&&\\
-        \textbf{Designatedn} & 
+        \textbf{Designatedn} &
         \textbf{Origination} &
         \textbf{Requirement Name} &
-        \textbf{Critical Value} & 
-        \textbf{Verify By} & 
+        \textbf{Critical Value} &
+        \textbf{Verify By} &
         \textbf{Defined In}\\
                            &&&&&\\
                            \midrule
@@ -116,7 +118,7 @@
 \newcommand{\listreqs}{List of Requirements}
 
 % Declare new type of item (requirements) to track
-\newlistof{requirement}{req}{\listreqs}     
+\newlistof{requirement}{req}{\listreqs}
 \addtocontents{req}{~\hfill{\large{}Page}\par}
 
 % \renewcommand{\cftreqfont}{} %
@@ -242,8 +244,8 @@
     %
     \immediate\write\fancyreq@table{
         \string\hyperref[#1]{\noexpand\bfseries[ESAD\noexpand\_\therequirement]}
-        \unexpanded{& #4 &} 
-        \noexpand\scshape\string\nameref*{#1} & 
+        \unexpanded{& #4 &}
+        \noexpand\scshape\string\nameref*{#1} &
         \unexpanded{\bfseries{#2} & #3 &}
     \string\hyperref[#1]{\whereami}\noexpand\\}%
 \fi}

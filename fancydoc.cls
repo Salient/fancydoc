@@ -577,7 +577,7 @@
 %%%%        General Dynamic Referencing
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\RequirePackage[page,titletoc]{appendix}
+\RequirePackage[page]{appendix}
 \RequirePackage{pageslts}
 % \RequirePackage{pdfpages}
 
@@ -589,13 +589,14 @@
     \break
     \pagenumbering{arabic}
     \renewcommand{\thepage}{\thesection-\arabic{page}}
-    %       \label{endOf\thesection}
 }
 
 \AtBeginEnvironment{appendices}{
     \newpage
     \cleardoublepage
+    \pagestyle{appendices}
 
+        
     % Put a correctly formatted title in for the Appendices (if present)
     \addtocontents{toc}{\protecting{\vspace*{1cm}{\bfseries\scshape\Large\fontfamily{qhv}\selectfont  Appendices}}}
     \addtocontents{toc}{~\hfill Page\par}
@@ -607,9 +608,6 @@
 
     \preto{\section}{
         \clearpage
-        \pagestyle{appendices}
-        \newcounter{endOf\thesection}
-        \setcounter{endOf\thesection}{\theCurrentPage}
         \setcounter{sappage}{\theCurrentPage}
     }
     \label{LastMainPage}
@@ -651,14 +649,7 @@
 
 \fancypagestyle{firststyle} {
 
-    \fancyhead[R]{
-        %\placeheaderlogo
-    }
-
-    %   \fancyhead[L]{{\textsc{\docnumber}}\newline\newline}
-    \fancyhead[L]{\unselectable\cornermark
-        %\iftoggle{rough}{\roughmark}
-    }
+    \fancyhead[L]{\unselectable\cornermark}
 
     \fancyfoot[L]{\unselectable
         \scriptsize\topfooterleft\vspace{0.1cm}\hrule\vspace{0.1cm}
@@ -668,7 +659,7 @@
     }
 
     \fancyfoot[C]{\unselectable
-        .\scriptsize~\vspace{0.1cm}\\
+        \scriptsize~\vspace{0.2cm}\\
         \iftoggle{markingProprietary}{\scriptsize\textsc{Raytheon Proprietary}\\[0.2cm]}~
         \iftoggle{markingHazOp}{ \small\color{red}\textbf{PROCEDURE CONTAINS HAZARDOUS OPERATIONS }}
     }
@@ -716,8 +707,9 @@
 
     \fancyfoot[C]{
         \unselectable{
+            \scriptsize
             \iftoggle{markingSafetyCritical}{\formatting\scriptsize\textbf{\textsc{Safety Critical Item}}}
-            ~\vspace{0.1cm}\\
+            \\~\vspace{2\baselineskip}
             \iftoggle{markingProprietary}{\scriptsize\color{black}\textsc{Raytheon Proprietary}\\[0.2cm]}~
             \iftoggle{markingHazOp}{ \small\color{red}\textbf{PROCEDURE CONTAINS HAZARDOUS OPERATIONS}}}
     }
@@ -731,7 +723,7 @@
                 % \raisebox{0.3\baselineskip}
                 \floorbar~~Page {\thepage\ of \pageref{LastPage}~~}\floorbar
             }
-            \\ \vspace{0.02cm}
+            \\ \vspace{0.2cm}
             \scriptsize\textbf{UNCLASSIFIED}
             \iftoggle{markingFOUO}{\textbf{ // ~FOUO}}}
     }
@@ -740,23 +732,11 @@
 \fancypagestyle{appendices}{
     \fancyhead[L]{\unselectable{\cornermark\raggedright\small\rightmark}}
     \fancyfoot[R]{
-        %       \iflabelexists{endOf\thesection}
-        %   {\setcounter{lappage}{\getpagerefnumber{endOf\thesection}-\arabic{sappage}}}
-        %                     {\setcounter{lappage}{\getpagerefnumber{LastPage}-\arabic{sappage}+1}}
-        %       \setcounter{lappage}{\getpagerefnumber{endOf\thesection}-\arabic{sappage}}
         \setcounter{appage}{\theCurrentPage-\arabic{sappage}+1}
-        %       \newcommand{\tempddd}{endOf\thesection}
-        %       I chooose YOU \tempddd
-        %       \setcounter{lappage}{\tempddd}-\arabic{sappage}}
         \unselectable{\scriptsize Page \arabic{appage}~of~~\textbf{Appendix \thesection}~~\vrule~~\thepage~of \pageref{LastPage} total
             ~\vspace{0.1cm}\\
             \scriptsize\textbf{UNCLASSIFIED}
             \iftoggle{markingFOUO}{\textbf{ // ~FOUO}}}
-        %           \vspace{0.15cm}\\[0.1cm] \scriptsize
-        %           \textbf{\color{black}UNCLASSIFIED // FOUO} \\
-        %           boom \thepage~\arabic{sappage} \arabic{lappage} \arabic{appage} !!\getpagerefnumber{endofdoc}\\
-        %           section \thesection\\
-        %           I'm looking for endOf\thesection: \arabic{\value{endOf\thesection}}
     }
     \fancyfoot[C]{
         \unselectable{
@@ -862,7 +842,7 @@
 
 \newcommand{\fouo}{{\marginnote{\textbf{\small\formatting(FOUO)}}}}
 
-\newcommand{\note}[1]{\medskip\par\marginnote{\textbf{NOTE:}}\noindent{#1}\par}
+\newcommand{\note}[1]{\reversemarginpar\medskip\par\marginnote{\textbf{NOTE:}}\noindent{#1}\par}
 
 \newcommand{\marku}{~\\\marginnote{(U)\\}}
 
