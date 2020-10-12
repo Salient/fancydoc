@@ -1,4 +1,3 @@
-
 % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
 % % Humble beginnings of some elaborate document layout and reference
 % % system for use in professional environment writing specifications
@@ -81,15 +80,15 @@
 \newcommand{\sharedmedia}{core}
 
 \iftoggle{acrolist}{
-        \PackageInfo{fancydebug}{acrolist true. defining listacronyms}
+	\PackageInfo{fancydebug}{acrolist true. defining listacronyms}
 
-        \newcommand{\listacronyms}{
-\input{\sharedmedia/Acronyms/acronyms.tex}
-        }
-    }{
-        \PackageInfo{fancydebug}{acrolist false. reading in now listacronyms}
-\providecommand{\listacronyms}{}
-\input{\sharedmedia/Acronyms/acronyms.tex}
+	\newcommand{\listacronyms}{
+		\input{\sharedmedia/Acronyms/acronyms.tex}
+	}
+}{
+	\PackageInfo{fancydebug}{acrolist false. reading in now listacronyms}
+	\providecommand{\listacronyms}{}
+	\input{\sharedmedia/Acronyms/acronyms.tex}
 }
 
 
@@ -102,73 +101,73 @@
 % Handle conditionals
 
 \iftoggle{codesnips}{
-    \RequirePackage[outputdir=cruft]{minted}
-    \setminted[vhdl]{fontsize=\scriptsize, linenos}
-    \renewcommand{\listoflistingscaption}{Logic Code Excerpts}
-    \newcommand{\codesref}{Code Excerpt }
-    \renewcommand{\listingscaption}{\ac{CDL} \codesref}
-    \newcommand{\coderef}[1]{\hyperref[#1]{\codesref \ref*{#1}}}
-    \newcommand{\codereff}[1]{\hyperref[{#1}]{\codesref \ref*{#1}, page \pageref*{#1}}}
+	\RequirePackage[outputdir=cruft]{minted}
+	\setminted[vhdl]{fontsize=\scriptsize, linenos}
+	\renewcommand{\listoflistingscaption}{Logic Code Excerpts}
+	\newcommand{\codesref}{Code Excerpt }
+	\renewcommand{\listingscaption}{\ac{CDL} \codesref}
+	\newcommand{\coderef}[1]{\hyperref[#1]{\codesref \ref*{#1}}}
+	\newcommand{\codereff}[1]{\hyperref[{#1}]{\codesref \ref*{#1}, page \pageref*{#1}}}
 }
 
 
 \newcommand{\formatting}{\color{black}}
 \iftoggle{stark}{
-    \renewcommand{\formatting}{\color{red}}
+	\renewcommand{\formatting}{\color{red}}
 }{}
 
 % -----------
 \iftoggle{rough}{
 
-    \RequirePackage{everypage}
-    \usetikzlibrary{math, positioning}
-    %\SetWatermarkText{BIO-HAZARD}
-    %\SetWatermarkScale{4}
-    %\SetWatermarkAngle{}
-    %\SetWatermarkColor{}
-    %\SetWatermarkFontSize{}
-    %\SetWatermarkScale{}
-    %\SetWatermarkHorCenter{}
-    %\SetWatermarkVerCenter{}
-    %\SetWatermarkLightness{0.96} % Higher is lighter
+	\RequirePackage{everypage}
+	\usetikzlibrary{math, positioning}
+	%\SetWatermarkText{BIO-HAZARD}
+	%\SetWatermarkScale{4}
+	%\SetWatermarkAngle{}
+	%\SetWatermarkColor{}
+	%\SetWatermarkFontSize{}
+	%\SetWatermarkScale{}
+	%\SetWatermarkHorCenter{}
+	%\SetWatermarkVerCenter{}
+	%\SetWatermarkLightness{0.96} % Higher is lighter
 
-    %\newcommand{\roughtext}{WORK IN PROGRESS}
+	%\newcommand{\roughtext}{WORK IN PROGRESS}
 
-    \newcommand{\roughtext}{\unselectable{ROUGH DRAFT}}
+	\newcommand{\roughtext}{\unselectable{ROUGH DRAFT}}
 
 
-    \newcommand{\roughmark}{
-        \tikzset{
-            rough/.style = { scale = 1.5, rotate=40, opacity=0.02,  node distance = 1.5in, font=\LARGE\sffamily}
-            %   shadow/.style = {append after command={
-            %                           \pgfextra{\node[at = (\tikzlastnode),below left = of \tikzlastnode, gray, rough]{ROUGH DRAFT};}}}
-        }
-        \begin{tikzpicture}[remember picture, overlay]
-            \node[rough,blue] at (current page.north west) (origin) {\roughtext};
-            \tikzmath{
-                %            coordinate \c, \e, \w;
-                %            \e = (current page.east);
-                %            \w = (current page.west);
-                for \x in {1,...,20}{
-                    {
-                        \node[ below = of origin, rough] (origin) {\roughtext};
-                        \node[ left = of origin, rough] (alley) {\roughtext};
-                        \node[ left = of alley, rough] (alley) {\roughtext};
-                        \node[ right = of origin, rough] (alley) {\roughtext};
-                        \node[ right = of alley, rough] (alley) {\roughtext};
-                        \node[ right = of alley, rough] (alley) {\roughtext};
-                        %                     \node[ below left= of origin, rough] (origin) {\roughsubtext};
-                        %                     \node[ left = of origin, rough] (alley) {\roughsubtext};
-                        %                     \node[ left = of alley, rough] (alley) {\roughsubtext};
-                        %                     \node[ right = of origin, rough] (alley) {\roughsubtext};
-                        %                     \node[ right = of alley, rough] (alley) {\roughsubtext};
-                    };
-                };
-            }
-        \end{tikzpicture}
-    }
+	\newcommand{\roughmark}{
+		\tikzset{
+			rough/.style = { scale = 1.5, rotate=40, opacity=0.02,  node distance = 1.5in, font=\LARGE\sffamily}
+			%   shadow/.style = {append after command={
+			%                           \pgfextra{\node[at = (\tikzlastnode),below left = of \tikzlastnode, gray, rough]{ROUGH DRAFT};}}}
+		}
+		\begin{tikzpicture}[remember picture, overlay]
+			\node[rough,blue] at (current page.north west) (origin) {\roughtext};
+			\tikzmath{
+				%            coordinate \c, \e, \w;
+				%            \e = (current page.east);
+				%            \w = (current page.west);
+				for \x in {1,...,20}{
+						{
+								\node[ below = of origin, rough] (origin) {\roughtext};
+								\node[ left = of origin, rough] (alley) {\roughtext};
+								\node[ left = of alley, rough] (alley) {\roughtext};
+								\node[ right = of origin, rough] (alley) {\roughtext};
+								\node[ right = of alley, rough] (alley) {\roughtext};
+								\node[ right = of alley, rough] (alley) {\roughtext};
+								%                     \node[ below left= of origin, rough] (origin) {\roughsubtext};
+								%                     \node[ left = of origin, rough] (alley) {\roughsubtext};
+								%                     \node[ left = of alley, rough] (alley) {\roughsubtext};
+								%                     \node[ right = of origin, rough] (alley) {\roughsubtext};
+								%                     \node[ right = of alley, rough] (alley) {\roughsubtext};
+							};
+					};
+			}
+		\end{tikzpicture}
+	}
 
-    \AddEverypageHook{\roughmark}
+	\AddEverypageHook{\roughmark}
 }{}
 
 % ---------------------------------------------------------------------------------------
@@ -177,8 +176,8 @@
 % NOTE - FileExists must have correct file extension
 \newcommand{\logoSet}{\ClassError{fancydoc}{Invalid list of logos}{You should do something}}
 \newcommand{\setLogos}[1]{
-    \IfFileExists{#1}{\renewcommand{\@botlogo}{\centering\includegraphics[height=\maxlogoheight,width=0.8\linewidth,keepaspectratio]{#1}}}{\ClassWarning{fancydoc}{oh noes!}
-    }
+	\IfFileExists{#1}{\renewcommand{\@botlogo}{\centering\includegraphics[height=\maxlogoheight,width=0.8\linewidth,keepaspectratio]{#1}}}{\ClassWarning{fancydoc}{oh noes!}
+	}
 }
 
 \newlength{\maxlogoheight}
@@ -192,54 +191,57 @@
 \newcommand{\@headerlogo}{\ClassError{fancydoc}{Header logo never defined. You must call \string\setheaderlogo{path/to/logo}, or disable by using option `noheadlogo' in class options.}{do something pee pow poog}}
 
 \newcommand{\setheaderlogo}[1]{
-    \IfFileExists{#1}{
-        %   \renewcommand{\@headerlogo}{\includegraphics[width=1.25in,keepaspectratio]{#1}}
-        % Redefine header rule to include logo at the end
+	\IfFileExists{#1}{
+		%   \renewcommand{\@headerlogo}{\includegraphics[width=1.25in,keepaspectratio]{#1}}
+		% Redefine header rule to include logo at the end
 
-        \renewcommand{\headrule}{
-            \hrule\@height\headrulewidth\@width\headwidth
-            \vspace{-0.9cm}
-            \raggedleft\includegraphics[height=0.75cm,keepaspectratio]{#1}\hspace*{1px}\vskip-\headrulewidth
-        }
+		\renewcommand{\headrule}{
+			\hrule\@height\headrulewidth\@width\headwidth
+			\vspace{-0.9cm}
+			\raggedleft\includegraphics[height=0.75cm,keepaspectratio]{#1}\hspace*{1px}\vskip-\headrulewidth
+		}
 
-        \ClassWarning{fancydoc}{Header logo set to #1}
-        \renewcommand{\@headerlogo}{#1}
-    }{\ClassWarning{fancydoc}{Header logo set to #1, but that file does not exist!}}
+		\ClassWarning{fancydoc}{Header logo set to #1}
+		\renewcommand{\@headerlogo}{#1}
+	}{\ClassWarning{fancydoc}{Header logo set to #1, but that file does not exist!}}
 }
 
 \newcommand{\settoplogo}[1]{
-    \IfFileExists{#1}{
-        \renewcommand{\@toplogo}{\centering\includegraphics[height=\maxlogoheight,width=\linewidth,keepaspectratio]{#1}}}
-    {\ClassWarning{fancydoc}{Top logo set to #1, but that file does not exist!}}}
+	\IfFileExists{#1}{
+		\renewcommand{\@toplogo}{\centering\includegraphics[height=\maxlogoheight,width=\linewidth,keepaspectratio]{#1}}}
+	{
+		\renewcommand{\@toplogo}{\centering\includegraphics[height=\maxlogoheight,width=\linewidth,keepaspectratio]{example-image}}}
+
+	\ClassWarning{fancydoc}{Top logo set to #1, but that file does not exist!}}
 
 
 \catcode`_ 13
 \newcommand\allowsforunderscores
 {%
-    \bgroup
-    \ttfamily
-    \let_\textunderscore
-    \catcode`\_=\active
-    \let\next=%
+	\bgroup
+	\ttfamily
+	\let_\textunderscore
+	\catcode`\_=\active
+	\let\next=%
 }%
 \catcode`_ 8
 
 \newcommand{\setbotlogo}[1]{
-    \IfFileExists{#1}{% logo does exist
-        \renewcommand{\@botlogo}{\centering\includegraphics[height=\maxlogoheight,width=0.5\linewidth,keepaspectratio]{#1}}
-    }{% Logo does *not* exist
-        \ClassWarning{fancydoc}{Bottom logo set to #1, but that file does not exist! Continuing with placeholder warning...}
-        \renewcommand{\@botlogo}{\color{red}{\small<\allowsforunderscores{#1} not found!>}}
-    }% endif
+	\IfFileExists{#1}{% logo does exist
+		\renewcommand{\@botlogo}{\centering\includegraphics[height=\maxlogoheight,width=0.5\linewidth,keepaspectratio]{#1}}
+	}{% Logo does *not* exist
+		\ClassWarning{fancydoc}{Bottom logo set to #1, but that file does not exist! Continuing with placeholder warning...}
+		\renewcommand{\@botlogo}{\color{red}{\small<\allowsforunderscores{#1} not found!>}}
+	}% endif
 }
 
 \newcommand{\placetoplogo}{\nottoggle{hidetoplogo}{\@toplogo}{}}
 \newcommand{\placebotlogo}{\nottoggle{hidebotlogo}{\@botlogo}{}}
 
 \newcommand{\placeheaderlogo}{\@headerlogo
-    %   \begin{tikzpicture}[overlay]
-    %   \node[anchor=east, yshift=-0.2cm]  {\@headerlogo};
-    %   \end{tikzpicture}
+	%   \begin{tikzpicture}[overlay]
+	%   \node[anchor=east, yshift=-0.2cm]  {\@headerlogo};
+	%   \end{tikzpicture}
 }
 
 
@@ -252,8 +254,8 @@
 % environment hook is run. So, here is where markings are set, or the default markings are set.
 
 \AfterPreamble{
-    % Enact definition of document markings
-    \definemarkings
+	% Enact definition of document markings
+	\definemarkings
 }
 
 
@@ -272,29 +274,29 @@
 
 \newcommand{\markingfile}{\sharedmedia/Markings/mixed}
 \newcommand{\logMarking}{
-    \ClassWarning{fancydoc}{Using default markings found  in \\markingfile. To change, use \\setmarkings{path/to/markingsfile}.}
+	\ClassWarning{fancydoc}{Using default markings found  in \\markingfile. To change, use \\setmarkings{path/to/markingsfile}.}
 }
 
 \newcommand{\setmarkings}[1]{
-    \IfFileExists{#1}{
-        \renewcommand{\logMarking}{\PackageWarning{fancydoc}{Markings file #1 found, reading...}}
-        \renewcommand{\markingfile}{#1}
-    }{
-        % File not found in current directory, or full path given is not valid. Just to be nice, check if they meant in the core/
-        \IfFileExists{\sharedmedia/Markings/#1}{
-            \iftoggle{verbose}{
-            \renewcommand{\logMarking}{\PackageWarning{fancydoc}{Markings file #1 found, reading...}}
-        }{\renewcommand{\logMarking}{}}
-            \renewcommand{\markingfile}{\sharedmedia/Markings/#1}
-        }{
-            \ClassError{fancydoc}{Markings file set to #1, but file does not exist!}{You need to do ....umm...something}
-        }
-    }
+	\IfFileExists{#1}{
+		\renewcommand{\logMarking}{\PackageWarning{fancydoc}{Markings file #1 found, reading...}}
+		\renewcommand{\markingfile}{#1}
+	}{
+		% File not found in current directory, or full path given is not valid. Just to be nice, check if they meant in the core/
+		\IfFileExists{\sharedmedia/Markings/#1}{
+			\iftoggle{verbose}{
+				\renewcommand{\logMarking}{\PackageWarning{fancydoc}{Markings file #1 found, reading...}}
+			}{\renewcommand{\logMarking}{}}
+			\renewcommand{\markingfile}{\sharedmedia/Markings/#1}
+		}{
+			\ClassError{fancydoc}{Markings file set to #1, but file does not exist!}{You need to do ....umm...something}
+		}
+	}
 }
 
 \newcommand{\definemarkings}{
-    \logMarking
-    \input{\markingfile}
+	\logMarking
+	\input{\markingfile}
 }
 
 % Select the appropriate Marking Template (Must already exist....)
@@ -586,35 +588,35 @@
 \newcounter{sappage}
 
 \newcommand{\appendixpagenumbering}{
-    \break
-    \pagenumbering{arabic}
-    \renewcommand{\thepage}{\thesection-\arabic{page}}
+	\break
+	\pagenumbering{arabic}
+	\renewcommand{\thepage}{\thesection-\arabic{page}}
 }
 
 \AtBeginEnvironment{appendices}{
-    \newpage
-    \cleardoublepage
-    \pagestyle{appendices}
+	\newpage
+	\cleardoublepage
+	\pagestyle{appendices}
 
-        
-    % Put a correctly formatted title in for the Appendices (if present)
-    \addtocontents{toc}{\protecting{\vspace*{1cm}{\bfseries\scshape\Large\fontfamily{qhv}\selectfont  Appendices}}}
-    \addtocontents{toc}{~\hfill Page\par}
-    % Need this to remove any extra words added for the other sections.
-    % Has to be done like this, because it would be expanded during typesetting of ToC
-    % TODO - take advantage of this to list stuff in appendices correctly.
-    \addtocontents{toc}{\protecting{\renewcommand{\cftsecpresnum}{}}}
-    \addtocontents{toc}{\protecting{\addtolength{\cftsecnumwidth}{-\secheadlen}}}
 
-    \preto{\section}{
-        \clearpage
-        \setcounter{sappage}{\theCurrentPage}
-    }
-    \label{LastMainPage}
+	% Put a correctly formatted title in for the Appendices (if present)
+	\addtocontents{toc}{\protecting{\vspace*{1cm}{\bfseries\scshape\Large\fontfamily{qhv}\selectfont  Appendices}}}
+	\addtocontents{toc}{~\hfill Page\par}
+	% Need this to remove any extra words added for the other sections.
+	% Has to be done like this, because it would be expanded during typesetting of ToC
+	% TODO - take advantage of this to list stuff in appendices correctly.
+	\addtocontents{toc}{\protecting{\renewcommand{\cftsecpresnum}{}}}
+	\addtocontents{toc}{\protecting{\addtolength{\cftsecnumwidth}{-\secheadlen}}}
+
+	\preto{\section}{
+		\clearpage
+		\setcounter{sappage}{\theCurrentPage}
+	}
+	\label{LastMainPage}
 }
 
 \AtEndEnvironment{appendices}{
-    \setcounter{sappage}{\theCurrentPage}
+	\setcounter{sappage}{\theCurrentPage}
 }
 
 %=================== End General Dynaimc Referencing ==============================
@@ -638,114 +640,114 @@
 
 \newcommand{\topfooterleft}{\textsc{For \textbf{\contractname} \projectdesignation\xspace Only}}
 \newcommand{\cornermark}{
-    \tikz[remember picture, overlay, anchor=west]\node at (current page.135)
-    [xshift=0.65cm, yshift=-2.75cm, rotate=90]{\scriptsize \docnumber, Rev. (\revision)};
-    %\marginnote{\rotatebox{90}{\raisebox{0.5in}{\qquad\scriptsize\textbf{\docnumber (\revision)}}}}
+	\tikz[remember picture, overlay, anchor=west]\node at (current page.135)
+	[xshift=0.65cm, yshift=-2.75cm, rotate=90]{\scriptsize \docnumber, Rev. (\revision)};
+	%\marginnote{\rotatebox{90}{\raisebox{0.5in}{\qquad\scriptsize\textbf{\docnumber (\revision)}}}}
 }
-    \newcommand{\floorbar}{\rule[-0.5\baselineskip]{1pt}{1.25\baselineskip}}
+\newcommand{\floorbar}{\rule[-0.5\baselineskip]{1pt}{1.25\baselineskip}}
 
 \RequirePackage{rotating}
 
 
 \fancypagestyle{firststyle} {
 
-    \fancyhead[L]{\unselectable\cornermark}
+	\fancyhead[L]{\unselectable\cornermark}
 
-    \fancyfoot[L]{\unselectable
-        \scriptsize\topfooterleft\vspace{0.1cm}\hrule\vspace{0.1cm}
-        \ifboolexpr{togl{markingITAR}}{\textsc{Export Controlled}}{}
-        \ifboolexpr{ togl{markingDistribution} and togl{markingITAR}}{ \textbf{ // } }{}
-        \ifboolexpr{togl{markingDistribution}}{\textsc{Distribution} \distribution}{}
-    }
+	\fancyfoot[L]{\unselectable
+		\scriptsize\topfooterleft\vspace{0.1cm}\hrule\vspace{0.1cm}
+		\ifboolexpr{togl{markingITAR}}{\textsc{Export Controlled}}{}
+		\ifboolexpr{ togl{markingDistribution} and togl{markingITAR}}{ \textbf{ // } }{}
+		\ifboolexpr{togl{markingDistribution}}{\textsc{Distribution} \distribution}{}
+	}
 
-    \fancyfoot[C]{\unselectable
-        \scriptsize~\vspace{0.2cm}\\
-        \iftoggle{markingProprietary}{\scriptsize\textsc{Raytheon Proprietary}\\[0.2cm]}~
-        \iftoggle{markingHazOp}{ \small\color{red}\textbf{PROCEDURE CONTAINS HAZARDOUS OPERATIONS }}
-    }
+	\fancyfoot[C]{\unselectable
+		\scriptsize~\vspace{0.2cm}\\
+		\iftoggle{markingProprietary}{\scriptsize\textsc{Raytheon Proprietary}\\[0.2cm]}~
+		\iftoggle{markingHazOp}{ \small\color{red}\textbf{PROCEDURE CONTAINS HAZARDOUS OPERATIONS }}
+	}
 
-    \fancyfoot[R]{\unselectable{
-            \iftoggle{markingSafetyCritical}{\formatting\scriptsize\textbf{\textsc{Safety Critical Item}}}
-            ~\vspace{0.1cm}\\
-            \scriptsize\textbf{UNCLASSIFIED}
-            \iftoggle{markingFOUO}{\textbf{ // ~FOUO}}}
-    }
+	\fancyfoot[R]{\unselectable{
+			\iftoggle{markingSafetyCritical}{\formatting\scriptsize\textbf{\textsc{Safety Critical Item}}}
+			~\vspace{0.1cm}\\
+			\scriptsize\textbf{UNCLASSIFIED}
+			\iftoggle{markingFOUO}{\textbf{ // ~FOUO}}}
+	}
 
-    %   \fancyhead[C]{\iftoggle{markingHazOp}{ \small\color{red}\textbf{HAZARDOUS OPERATIONS PROCEDURE}} }
-    %   \fancyfoot[C]{\vspace{0.1cm}\HRule \\[0.1cm] \scriptsize
-    %   FOR U.S./JAPAN SM-3 BLK IIA PROJECT ONLY
+	%   \fancyhead[C]{\iftoggle{markingHazOp}{ \small\color{red}\textbf{HAZARDOUS OPERATIONS PROCEDURE}} }
+	%   \fancyfoot[C]{\vspace{0.1cm}\HRule \\[0.1cm] \scriptsize
+	%   FOR U.S./JAPAN SM-3 BLK IIA PROJECT ONLY
 }
 
 \fancypagestyle{default}{
-    \renewcommand{\headrulewidth}{1pt}
-    %
-    %\fancyfoot[C]{\vspace{0.1cm}\HRule \\[0.1cm] \scriptsize
-    %   FOR U.S./JAPAN SM-3 BLK IIA PROJECT ONLY\\
-    %   UNCLASSIFIED // FOR OFFICIAL USE ONLY\\
-    %   {\color{red}\colorbox{yellow}{\textbf{NOT RELEASABLE TO JAPAN}}}}
+\renewcommand{\headrulewidth}{1pt}
+%
+%\fancyfoot[C]{\vspace{0.1cm}\HRule \\[0.1cm] \scriptsize
+%   FOR U.S./JAPAN SM-3 BLK IIA PROJECT ONLY\\
+%   UNCLASSIFIED // FOR OFFICIAL USE ONLY\\
+%   {\color{red}\colorbox{yellow}{\textbf{NOT RELEASABLE TO JAPAN}}}}
 
 
-    \fancyhead[L]{\unselectable\cornermark\raggedright\small\rightmark
-        %\iftoggle{rough}{\roughmark}
-    }
-    \fancyhead[C]{\unselectable{\textsc{\small\headingcenter}}}
-    %   \expandafter\fancyhead[R]{\includegraphics[scale=0.4]{\headerlogo}}
-    \fancyhead[R]{}
-    %
-    \fancyfoot[L]{
-        \unselectable{
-            \scriptsize
-            \topfooterleft
-            \vspace{0.1cm}\hrule\vspace{0.1cm}
-            \ifboolexpr{togl{markingITAR}}{\textsc{Export Controlled}}{}
-            \ifboolexpr{ togl{markingDistribution} and togl{markingITAR}}{ \textbf{ // } }{}
-            \ifboolexpr{togl{markingDistribution}}{\textsc{Distribution} \distribution}{}
-            \ifboolexpr{ togl{markingDistribution} or togl{markingITAR}}{{\newline}\textsc{\textbf{See Cover Page}}}{}
-        }
-    }
+\fancyhead[L]{\unselectable\cornermark\raggedright\small\rightmark
+	%\iftoggle{rough}{\roughmark}
+}
+\fancyhead[C]{\unselectable{\textsc{\small\headingcenter}}}
+%   \expandafter\fancyhead[R]{\includegraphics[scale=0.4]{\headerlogo}}
+\fancyhead[R]{}
+%
+\fancyfoot[L]{
+	\unselectable{
+		\scriptsize
+		\topfooterleft
+		\vspace{0.1cm}\hrule\vspace{0.1cm}
+		\ifboolexpr{togl{markingITAR}}{\textsc{Export Controlled}}{}
+		\ifboolexpr{ togl{markingDistribution} and togl{markingITAR}}{ \textbf{ // } }{}
+		\ifboolexpr{togl{markingDistribution}}{\textsc{Distribution} \distribution}{}
+		\ifboolexpr{ togl{markingDistribution} or togl{markingITAR}}{{\newline}\textsc{\textbf{See Cover Page}}}{}
+	}
+}
 
 
-    \fancyfoot[C]{
-        \unselectable{
-            \scriptsize
-            \iftoggle{markingSafetyCritical}{\formatting\scriptsize\textbf{\textsc{Safety Critical Item}}}
-            \\~\vspace{2\baselineskip}
-            \iftoggle{markingProprietary}{\scriptsize\color{black}\textsc{Raytheon Proprietary}\\[0.2cm]}~
-            \iftoggle{markingHazOp}{ \small\color{red}\textbf{PROCEDURE CONTAINS HAZARDOUS OPERATIONS}}}
-    }
-    %
+\fancyfoot[C]{
+	\unselectable{
+		\scriptsize
+		\iftoggle{markingSafetyCritical}{\formatting\scriptsize\textbf{\textsc{Safety Critical Item}}}
+		\\~\vspace{2\baselineskip}
+		\iftoggle{markingProprietary}{\scriptsize\color{black}\textsc{Raytheon Proprietary}\\[0.2cm]}~
+		\iftoggle{markingHazOp}{ \small\color{red}\textbf{PROCEDURE CONTAINS HAZARDOUS OPERATIONS}}}
+}
+%
 
-    \fancyfoot[R]{
-        \unselectable{
-            \scriptsize{% \floorbar
-                \vspace{-0.18\baselineskip}
-                % \rule[.3\baselineskip]{0pt}{0.3\baselineskip}
-                % \raisebox{0.3\baselineskip}
-                \floorbar~~Page {\thepage\ of \pageref{LastPage}~~}\floorbar
-            }
-            \\ \vspace{0.2cm}
-            \scriptsize\textbf{UNCLASSIFIED}
-            \iftoggle{markingFOUO}{\textbf{ // ~FOUO}}}
-    }
+\fancyfoot[R]{
+\unselectable{
+\scriptsize{% \floorbar
+\vspace{-0.18\baselineskip}
+% \rule[.3\baselineskip]{0pt}{0.3\baselineskip}
+% \raisebox{0.3\baselineskip}
+\floorbar~~Page {\thepage\ of \pageref{LastPage}~~}\floorbar
+}
+\\ \vspace{0.2cm}
+\scriptsize\textbf{UNCLASSIFIED}
+\iftoggle{markingFOUO}{\textbf{ // ~FOUO}}}
+}
 }
 
 \fancypagestyle{appendices}{
-    \fancyhead[L]{\unselectable{\cornermark\raggedright\small\rightmark}}
-    \fancyfoot[R]{
-        \setcounter{appage}{\theCurrentPage-\arabic{sappage}+1}
-        \unselectable{\scriptsize Page \arabic{appage}~of~~\textbf{Appendix \thesection}~~\vrule~~\thepage~of \pageref{LastPage} total
-            ~\vspace{0.1cm}\\
-            \scriptsize\textbf{UNCLASSIFIED}
-            \iftoggle{markingFOUO}{\textbf{ // ~FOUO}}}
-    }
-    \fancyfoot[C]{
-        \unselectable{
-            \iftoggle{markingSafetyCritical}{\scriptsize\textbf{\formatting\textsc{Safety Critical Item}}}
-            ~\vspace{0.1cm}\\
-            \iftoggle{markingProprietary}{\scriptsize\color{black}\textsc{Raytheon Proprietary}\\[0.2cm]}~
-            \iftoggle{markingHazOp}{ \small\color{red}\textbf{PROCEDURE CONTAINS HAZARDOUS OPERATIONS}}
-        }
-    }
+	\fancyhead[L]{\unselectable{\cornermark\raggedright\small\rightmark}}
+	\fancyfoot[R]{
+		\setcounter{appage}{\theCurrentPage-\arabic{sappage}+1}
+		\unselectable{\scriptsize Page \arabic{appage}~of~~\textbf{Appendix \thesection}~~\vrule~~\thepage~of \pageref{LastPage} total
+			~\vspace{0.1cm}\\
+			\scriptsize\textbf{UNCLASSIFIED}
+			\iftoggle{markingFOUO}{\textbf{ // ~FOUO}}}
+	}
+	\fancyfoot[C]{
+		\unselectable{
+			\iftoggle{markingSafetyCritical}{\scriptsize\textbf{\formatting\textsc{Safety Critical Item}}}
+			~\vspace{0.1cm}\\
+			\iftoggle{markingProprietary}{\scriptsize\color{black}\textsc{Raytheon Proprietary}\\[0.2cm]}~
+			\iftoggle{markingHazOp}{ \small\color{red}\textbf{PROCEDURE CONTAINS HAZARDOUS OPERATIONS}}
+		}
+	}
 
 }
 %=================== End Header and Footer Styling ================================
@@ -755,55 +757,55 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \newcommand{\fouofig}[1]{
-    %   \tikzstyle{background grid}=[draw, black!50,step=.5cm]
-    \begin{tikzpicture}[red] %[show background grid]
-        \node [anchor=north east, inner sep=0pt]  {#1};
-        \node (t1)[anchor=south] at (current bounding box.north west) {\scriptsize \textbf{(FOUO)}};
-        \node (t2)[anchor=north] at (current bounding box.south east) {\scriptsize \textbf{(FOUO)}};
-        %   \node (c1) at (current bounding box.north east) {};
-        %   \node (c2) at (current bounding box.south west) {};
-        \draw (current bounding box.north east) -- (current bounding box.north);
-        \draw (current bounding box.north east) -- (current bounding box.east);
-        \draw (current bounding box.south west) -- +(0,1);
-        \draw (current bounding box.south west) -- +(1,0);
-    \end{tikzpicture}
+	%   \tikzstyle{background grid}=[draw, black!50,step=.5cm]
+	\begin{tikzpicture}[red] %[show background grid]
+		\node [anchor=north east, inner sep=0pt]  {#1};
+		\node (t1)[anchor=south] at (current bounding box.north west) {\scriptsize \textbf{(FOUO)}};
+		\node (t2)[anchor=north] at (current bounding box.south east) {\scriptsize \textbf{(FOUO)}};
+		%   \node (c1) at (current bounding box.north east) {};
+		%   \node (c2) at (current bounding box.south west) {};
+		\draw (current bounding box.north east) -- (current bounding box.north);
+		\draw (current bounding box.north east) -- (current bounding box.east);
+		\draw (current bounding box.south west) -- +(0,1);
+		\draw (current bounding box.south west) -- +(1,0);
+	\end{tikzpicture}
 }
 
 \newcommand{\tbrfig}[1]{
-    %   \tikzstyle{background grid}=[draw, black!50,step=.5cm]
-\noindent\begin{tikzpicture}[] %[show background grid]
-    \node [inner sep=10pt] (main) {#1};
-        \node (t1)[anchor=south west, orange] at (current bounding box.north west)
-        {\sffamily\textbf{SUBJECT TO CHANGE // TO BE REVIEWED}};
-        \node (t2)[anchor=north east, orange] at (current bounding box.south east)
-            {\sffamily\textbf{SUBJECT TO CHANGE // TO BE REVIEWED}};
-        %   \node (c1) at (current bounding box.north east) {};
-        %   \node (c2) at (current bounding box.south west) {};
-        \draw[orange] (current bounding box.north east) -- (current bounding box.north);
-        \draw[orange] (current bounding box.north east) -- (current bounding box.east);
-        \draw[orange] (current bounding box.south west) -- +(0,1);
-        \draw[orange] (current bounding box.south west) -- +(1,0);
-        \clip (current bounding box.north west) rectangle (current bounding box.south east);
-        % \foreach \m in {135,2,...,315}{
-        % \draw[opacity=0.4] (main.\m) node{x} -- +(45:2in);}
-    \end{tikzpicture}
+	%   \tikzstyle{background grid}=[draw, black!50,step=.5cm]
+	\noindent\begin{tikzpicture}[] %[show background grid]
+		\node [inner sep=10pt] (main) {#1};
+		\node (t1)[anchor=south west, orange] at (current bounding box.north west)
+		{\sffamily\textbf{SUBJECT TO CHANGE // TO BE REVIEWED}};
+		\node (t2)[anchor=north east, orange] at (current bounding box.south east)
+		{\sffamily\textbf{SUBJECT TO CHANGE // TO BE REVIEWED}};
+		%   \node (c1) at (current bounding box.north east) {};
+		%   \node (c2) at (current bounding box.south west) {};
+		\draw[orange] (current bounding box.north east) -- (current bounding box.north);
+		\draw[orange] (current bounding box.north east) -- (current bounding box.east);
+		\draw[orange] (current bounding box.south west) -- +(0,1);
+		\draw[orange] (current bounding box.south west) -- +(1,0);
+		\clip (current bounding box.north west) rectangle (current bounding box.south east);
+		% \foreach \m in {135,2,...,315}{
+		% \draw[opacity=0.4] (main.\m) node{x} -- +(45:2in);}
+	\end{tikzpicture}
 }
 
 \newsavebox\foobox
 \def\slantvalue{0}
 \newcommand{\slantboxengine}[2][\slantvalue]{\mbox{%
-        \sbox{\foobox}{#2}%
-        \hskip\wd\foobox
-        \pdfsave
-        \pdfsetmatrix{1 0 #1 1}%
-        \llap{\usebox{\foobox}}%
-        \pdfrestore
-    }}
+		\sbox{\foobox}{#2}%
+		\hskip\wd\foobox
+		\pdfsave
+		\pdfsetmatrix{1 0 #1 1}%
+		\llap{\usebox{\foobox}}%
+		\pdfrestore
+	}}
 \newcommand\slantbox[2][\slantvalue]{%
-    \edef\slantvalue{#1}\expandafter\slantboxhelpA#2 \relax\relax}
+	\edef\slantvalue{#1}\expandafter\slantboxhelpA#2 \relax\relax}
 \def\slantboxhelpA#1 #2\relax{%
-    \slantboxengine{#1}%
-    \ifx\relax#2\relax\else\ \slantboxhelpA#2\relax\fi
+	\slantboxengine{#1}%
+	\ifx\relax#2\relax\else\ \slantboxhelpA#2\relax\fi
 }
 
 \newcommand{\tbd}{{\color{red}\textbf{TBD}\xspace}}
@@ -811,30 +813,30 @@
 % Classification Markings
 
 \newcommand{\fouofigleft}{
-    {\raggedright \scriptsize\textbf{\formatting(FOUO)}\\}
+	{\raggedright \scriptsize\textbf{\formatting(FOUO)}\\}
 }
 \newcommand{\fouofigright}{
-    \begin{minipage}{\linewidth}
-        \vspace{0.3em}  \raggedleft\scriptsize\textbf{\formatting(FOUO)}
-    \end{minipage}%\vspace{-0.25cm}
+	\begin{minipage}{\linewidth}
+		\vspace{0.3em}  \raggedleft\scriptsize\textbf{\formatting(FOUO)}
+	\end{minipage}%\vspace{-0.25cm}
 }
 
 
 \newcommand{\tbrfigleft}{
-    {\raggedright~\newline\large\textbf{\color{orange}SUBJECT TO CHANGE}\newline\\}
+	{\raggedright~\newline\large\textbf{\color{orange}SUBJECT TO CHANGE}\newline\\}
 }
 \newcommand{\tbrfigright}{
-    \begin{minipage}{\linewidth}
-        \vspace{0.3em} 
-    {\raggedright\hfill~\large\textbf{\color{orange}SUBJECT TO CHANGE}\\}
-    \end{minipage}%\vspace{-0.25cm}
+	\begin{minipage}{\linewidth}
+		\vspace{0.3em}
+		{\raggedright\hfill~\large\textbf{\color{orange}SUBJECT TO CHANGE}\\}
+	\end{minipage}%\vspace{-0.25cm}
 }
 
 \newcommand{\stdquote}[3]{{
-        \smallskip
-        \smaller    \textbf{#1 ~~\S#2}  \hfill \parbox{0.7\linewidth}{{\raggedright
-                \fontfamily{lmtt}\selectfont{\begin{flushright}``#3''\end{flushright}}}}
-    }}
+			\smallskip
+			\smaller    \textbf{#1 ~~\S#2}  \hfill \parbox{0.7\linewidth}{{\raggedright
+						\fontfamily{lmtt}\selectfont{\begin{flushright}``#3''\end{flushright}}}}
+		}}
 
 
 % Add NOTE marker in margin
@@ -849,57 +851,57 @@
 \newcommand{\tbr}[1]{\marginnote{\textbf{\smaller\color{orange}~~TBR:\\}\smaller#1}}
 
 \newcommand{\cfbox}[2]{%
-    \colorlet{currentcolor}{.}%
-    {\color{#1}%
-        \fbox{\color{currentcolor}#2}}%
+	\colorlet{currentcolor}{.}%
+	{\color{#1}%
+		\fbox{\color{currentcolor}#2}}%
 }
 \newcommand{\todo}[1]{
 
-    \noindent
-    \cfbox{red}{~\parbox{\dimexpr\linewidth-2\fboxsep-2\fboxrule}{TODO: #1}}
+	\noindent
+	\cfbox{red}{~\parbox{\dimexpr\linewidth-2\fboxsep-2\fboxrule}{TODO: #1}}
 }
 
 \colorlet{shadecolor}{gray!8}
 \newenvironment{starkpoints}{
 
-    \begin{center}
-        \begin{minipage}{0.875\linewidth}
-            \begin{snugshade}
-                \begin{leftbar}
-                    \smallskip
-                    \begin{itemize}[leftmargin=0.2in, rightmargin=0.2in, topsep=0.1cm]
-                        }{
-                    \end{itemize}
-                \end{leftbar}
-            \end{snugshade}\end{minipage}
-        \medskip
-    \end{center}}
+	\begin{center}
+		\begin{minipage}{0.875\linewidth}
+			\begin{snugshade}
+				\begin{leftbar}
+					\smallskip
+					\begin{itemize}[leftmargin=0.2in, rightmargin=0.2in, topsep=0.1cm]
+						}{
+					\end{itemize}
+				\end{leftbar}
+			\end{snugshade}\end{minipage}
+		\medskip
+	\end{center}}
 
 % ----- Revision block/tracking
 \newcounter{revcount}
 \def\revisionlist{}
 \newcommand{\addrevision}[2]{
-    \ifnum\therevcount=0
-    \renewcommand{\revision}{-}
-    \else\edef\revision{\Alph{revcount}}\fi
-    % This is a neat trick. Expand macro -once-
-    \edef\revisionlist{\unexpanded\expandafter{\revisionlist}\revision \unexpanded{&} #1 \unexpanded{&} #2 \unexpanded{\\\hline}}
-    \stepcounter{revcount}
-    \renewcommand{\released}{#1}
+	\ifnum\therevcount=0
+		\renewcommand{\revision}{-}
+	\else\edef\revision{\Alph{revcount}}\fi
+	% This is a neat trick. Expand macro -once-
+	\edef\revisionlist{\unexpanded\expandafter{\revisionlist}\revision \unexpanded{&} #1 \unexpanded{&} #2 \unexpanded{\\\hline}}
+	\stepcounter{revcount}
+	\renewcommand{\released}{#1}
 }
 
 \newcommand{\revisionblock}{
-    \vfill
-    \section*{Revision History}
-    \begin{center}
-        \begin{tabularx}{\linewidth}{ c | c | X }
-            \textbf{Revision} & \textbf{Effective Date} & \textbf{Description of Change} \\ \hline
-            \ifnum\therevcount=0 % No revisions specified. Default to rev - with current date.
-            - & \today & Draft Review Copy\\
-            \else\revisionlist\fi
-        \end{tabularx}
-    \end{center}
-    \newpage
+	\vfill
+	\section*{Revision History}
+	\begin{center}
+		\begin{tabularx}{\linewidth}{ c | c | X }
+			\textbf{Revision} & \textbf{Effective Date} & \textbf{Description of Change} \\ \hline
+			\ifnum\therevcount=0 % No revisions specified. Default to rev - with current date.
+			-                 & \today                  & Draft Review Copy              \\
+			\else\revisionlist\fi
+		\end{tabularx}
+	\end{center}
+	\newpage
 }
 
 %=================== End Particular Annotations ===================================
@@ -913,25 +915,25 @@
 
 %\pgfplotsset{compat=1.14}
 \tikzset{
-    basic/.style  = {draw, text width=2cm, drop shadow, align=center, font=\sffamily, rectangle},
-    root/.style   = {basic, rounded corners=2pt, thin,
-        fill=gray!30, font=\Large},
-    level 2/.style = {basic, rounded corners=6pt, thin, fill=blue!20,
-        text width=1.4in, font=\scshape\large},
-    level 3/.style = {basic, thin, align=center, fill=yellow!40, text width=1.5in, node distance = 1.4cm and 2cm},
-    level 4s/.style = {basic, thin, align=right, fill=green!40, text width=1in, node distance=1cm},
-    level 4r/.style = {basic, thin, align=left, fill=red!40, text width=1in, node distance=1cm},
-    doubt/.style = {fill=green!40},
-    plaus/.style = {fill=yellow!40},
-    prob/.style = {fill=red!40},
-    good/.style = {fill=green!40},
-    bad/.style = {fill=red!40},
-    %  supp/.style= {basic,cloud, cloud puffs=13, cloud puff arc=190,fill=green!40,node distance=2in, text width=1in, font=\tiny\bfseries, aspect=4, yshift=-0.5in}
-    supp/.style= {basic,signal,fill=gray!20, node distance=1in, text width=2in, inner xsep=0pt, thin, aspect=4, signal to=west, anchor=west},
-    weak refute/.style  = {blue!40!green, thin},
-    weak support/.style  = {blue!20!red, thin},
-    strong refute/.style  = {blue!40!green, ultra thick},
-    strong support/.style  = {blue!20!red, ultra thick}
+	basic/.style  = {draw, text width=2cm, drop shadow, align=center, font=\sffamily, rectangle},
+	root/.style   = {basic, rounded corners=2pt, thin,
+			fill=gray!30, font=\Large},
+	level 2/.style = {basic, rounded corners=6pt, thin, fill=blue!20,
+			text width=1.4in, font=\scshape\large},
+	level 3/.style = {basic, thin, align=center, fill=yellow!40, text width=1.5in, node distance = 1.4cm and 2cm},
+	level 4s/.style = {basic, thin, align=right, fill=green!40, text width=1in, node distance=1cm},
+	level 4r/.style = {basic, thin, align=left, fill=red!40, text width=1in, node distance=1cm},
+	doubt/.style = {fill=green!40},
+	plaus/.style = {fill=yellow!40},
+	prob/.style = {fill=red!40},
+	good/.style = {fill=green!40},
+	bad/.style = {fill=red!40},
+	%  supp/.style= {basic,cloud, cloud puffs=13, cloud puff arc=190,fill=green!40,node distance=2in, text width=1in, font=\tiny\bfseries, aspect=4, yshift=-0.5in}
+	supp/.style= {basic,signal,fill=gray!20, node distance=1in, text width=2in, inner xsep=0pt, thin, aspect=4, signal to=west, anchor=west},
+	weak refute/.style  = {blue!40!green, thin},
+	weak support/.style  = {blue!20!red, thin},
+	strong refute/.style  = {blue!40!green, ultra thick},
+	strong support/.style  = {blue!20!red, ultra thick}
 }
 
 
@@ -1056,10 +1058,10 @@
 
 % Cute utility function
 \newcommand{\showfont}{encoding: \f@encoding{},
-    family: \f@family{},
-    series: \f@series{},
-    shape: \f@shape{},
-    size: \f@size{}
+	family: \f@family{},
+	series: \f@series{},
+	shape: \f@shape{},
+	size: \f@size{}
 }
 
 \RequirePackage{relsize}
@@ -1087,123 +1089,123 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 \renewcommand{\titlepage}{
-    \thispagestyle{firststyle}\vspace*{-1cm}
-    %\begin{center}
+	\thispagestyle{firststyle}\vspace*{-1cm}
+	%\begin{center}
 
-    \noindent\Large{\textbf{\sffamily\scshape\doctype}}
+	\noindent\Large{\textbf{\sffamily\scshape\doctype}}
 
-    \noindent\Large{\sffamily \titlelong}\smallskip
+	\noindent\Large{\sffamily \titlelong}\smallskip
 
 
-    \vspace*{0.25cm}
-    \noindent\hrule
-    \vfill
-    %\small~\\[0.15cm]
-    %\normalsize
-    %\end{center}
-    %   \vspace{1cm}
+	\vspace*{0.25cm}
+	\noindent\hrule
+	\vfill
+	%\small~\\[0.15cm]
+	%\normalsize
+	%\end{center}
+	%   \vspace{1cm}
 
-    \begin{minipage}{0.40\linewidth}
-        % Place top logo, unless disabled
-        %\nottoggle{hidetoplogo}{\includegraphics[width=\linewidth]
-        \begin{center}
-            {\placetoplogo} {\placebotlogo}
-        \end{center}
+	\begin{minipage}{0.40\linewidth}
+		% Place top logo, unless disabled
+		%\nottoggle{hidetoplogo}{\includegraphics[width=\linewidth]
+		\begin{center}
+			{\placetoplogo} {\placebotlogo}
+		\end{center}
 
-    \end{minipage}
-    \hfill
-    \begin{minipage}{0.5\linewidth}
-        \small
-        %   \centering
-        %   \textsc{
-        %       \textbf{
-        %           {\large Record {\fontfamily{cmr}\selectfont\textnumero}:}
-        %           %               $\textnumero$
-        %           \LARGE
-        %           %           \underline{\docnumber}
-        %           \docnumber
-        %   }}
-        %   \\[0.25cm]
-        %       \small \vspace{0.5cm}
-        %       \vfill
-        \def\arraystretch{1}%  1 is the default, change whatever you need
-        \begin{tabular}{r @{ : } >{\raggedright\arraybackslash}p{1.3in}}
-            {\large \textsc{ Document }{\fontfamily{cmr}\selectfont\textnumero}}
-            & {\large\docnumber}  \newline                                            \\
-            \smaller    \textsc{{\newline}Current Revision} & \revision                                                           \\
-            \textsc{Total Pages}                & \pageref{LastPage}                                                  \\
-            \textsc{Status}                     & \documentstatus   \newline                                         \\
-            \textsc{Release Date}               & \released                                                              \\
-            \textsc{Prepared By}                & James Heller\newline {Fuzing, Initiator Safety}\newline                    \\
-            \textsc{Classification}             & UNCLASSIFIED\iftoggle{markingFOUO}{, FOUO \\}     \\
-            \iftoggle{markingDistribution}{\textsc{Distribution}&\distribution\\}
-            \newline{\scshape\projectdesignation}        & \textsc{\contractname}                                                       \\
-            \textsc{Contract \#}                & \textsc{\contract}
-            {\newline}                                                                                                \\
+	\end{minipage}
+	\hfill
+	\begin{minipage}{0.5\linewidth}
+		\small
+		%   \centering
+		%   \textsc{
+		%       \textbf{
+		%           {\large Record {\fontfamily{cmr}\selectfont\textnumero}:}
+		%           %               $\textnumero$
+		%           \LARGE
+		%           %           \underline{\docnumber}
+		%           \docnumber
+		%   }}
+		%   \\[0.25cm]
+		%       \small \vspace{0.5cm}
+		%       \vfill
+		\def\arraystretch{1}%  1 is the default, change whatever you need
+		\begin{tabular}{r @{ : } >{\raggedright\arraybackslash}p{1.3in}}
+			{\large \textsc{ Document }{\fontfamily{cmr}\selectfont\textnumero}}
+			                                                     & {\large\docnumber}  \newline                                        \\
+			\smaller    \textsc{{\newline}Current Revision}      & \revision                                                           \\
+			\textsc{Total Pages}                                 & \pageref{LastPage}                                                  \\
+			\textsc{Status}                                      & \documentstatus   \newline                                          \\
+			\textsc{Release Date}                                & \released                                                           \\
+			\textsc{Prepared By}                                 & James Heller\newline {Fuzing, Initiator Safety}\newline             \\
+			\textsc{Classification}                              & UNCLASSIFIED\iftoggle{markingFOUO}{, FOUO \\} \\
+			\iftoggle{markingDistribution}{\textsc{Distribution} & \distribution\\}
+			\newline{\scshape\projectdesignation}                & \textsc{\contractname}                                              \\
+			\textsc{Contract \#}                                 & \textsc{\contract}
+			{\newline}                                                                                                                 \\
 
-            \textsc{Originating Facility}       & Raytheon Missiles\newline~and Defense                   \\
-            \textsc{Located}                    &
-            1151 E. Hermans Rd\newline
-            Tucson, AZ 85756                                                                                          \\
-            \textsc{CAGE Code}                  & 15090                                                               \\
-        \end{tabular}
-        \vfill
-        %\def\arraystretch{1.5}%  1 is the default, change whatever you need
-    \end{minipage}
-    %
-    %\vspace{0.25cm}
-~\\\vfill
+			\textsc{Originating Facility}                        & Raytheon Missiles\newline~and Defense                               \\
+			\textsc{Located}                                     &
+			1151 E. Hermans Rd\newline
+			Tucson, AZ 85756                                                                                                           \\
+			\textsc{CAGE Code}                                   & 15090                                                               \\
+		\end{tabular}
+		\vfill
+		%\def\arraystretch{1.5}%  1 is the default, change whatever you need
+	\end{minipage}
+	%
+	%\vspace{0.25cm}
+	~\\\vfill
 
-    \footnotesize
+	\footnotesize
 
-    \noindent\iftoggle{markingDistribution}{\distwarning}
-~\\
-    \noindent\iftoggle{markingITAR}{\itarwarning}
-~\\
-    \noindent\iftoggle{markingProprietary}{\raypropwarning}
-~\\
-    \noindent\iftoggle{markingFOUO}{\fouowarning}
-~\\
-    \noindent\iftoggle{markingDestroy}{\destructwarning}
-~\\
-    \noindent\iftoggle{programWarning}{\programwarning}
-~\\
-    \noindent\iftoggle{markingCopyright}{\copywarning}
+	\noindent\iftoggle{markingDistribution}{\distwarning}
+	~\\
+	\noindent\iftoggle{markingITAR}{\itarwarning}
+	~\\
+	\noindent\iftoggle{markingProprietary}{\raypropwarning}
+	~\\
+	\noindent\iftoggle{markingFOUO}{\fouowarning}
+	~\\
+	\noindent\iftoggle{markingDestroy}{\destructwarning}
+	~\\
+	\noindent\iftoggle{programWarning}{\programwarning}
+	~\\
+	\noindent\iftoggle{markingCopyright}{\copywarning}
 }
 
 \providecommand{\codelistings}{}
 
 \newcommand{\metapages}{
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    %%%%        Table of Contents
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	%%%%        Table of Contents
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-    \normalsize
-    \newpage
-    % Required to prevent tocloft package dicking with header style
-    % Can alternatively pass tocloft the [titles] option, but then it falls back to latex macros
-    \tocloftpagestyle{fancy}
-    \pagestyle{default}
+	\normalsize
+	\newpage
+	% Required to prevent tocloft package dicking with header style
+	% Can alternatively pass tocloft the [titles] option, but then it falls back to latex macros
+	\tocloftpagestyle{fancy}
+	\pagestyle{default}
 
-    \renewcommand{\sectionmark}[1]{\markright{\MakeUppercase{##1}}}
+	\renewcommand{\sectionmark}[1]{\markright{\MakeUppercase{##1}}}
 
-    \pagenumbering{arabic}
-    \setcounter{page}{2}
-    %\dosecttoc
+	\pagenumbering{arabic}
+	\setcounter{page}{2}
+	%\dosecttoc
 
-    \tableofcontents
-    %\addtocontents{toc}{~\hfill\textbf{Page}\par}
-    %\addtocontents{lof}{~\hfill\textbf{Page}\par}
-    %\addtocontents{lot}{~\hfill\textbf{Page}\par}
+	\tableofcontents
+	%\addtocontents{toc}{~\hfill\textbf{Page}\par}
+	%\addtocontents{lof}{~\hfill\textbf{Page}\par}
+	%\addtocontents{lot}{~\hfill\textbf{Page}\par}
 
-    %\newpage
-    \listoftables
-    \listoffigures
-    \iftoggle{codesnips}{\listoflistings}{}
-    \iftoggle{reqspec}{\listofrequirement}{}
+	%\newpage
+	\listoftables
+	\listoffigures
+	\iftoggle{codesnips}{\listoflistings}{}
+	\iftoggle{reqspec}{\listofrequirement}{}
 
-    \revisionblock
-    \newpage
+	\revisionblock
+	\newpage
 }
 
 % vim: nospell filetype=tex

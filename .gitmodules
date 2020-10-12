@@ -18,3 +18,7 @@
     url = https://github.com/salient/docudrama
     branch = Markings
     update = rebase
+[submodule "Connectors"]
+	path = Connectors
+	url = my:Docudrama
+	branch = Connectors

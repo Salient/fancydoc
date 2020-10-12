@@ -1,0 +1,315 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{core/fancyeicd}[2020/10/09 Fancy Electrical Interface Control Document Framework]
+
+\PackageInfo{fancyeicd}{Loading Framework for Electrical Interface Control Documents}
+
+\RequirePackage{marginnote}
+\RequirePackage{booktabs}
+\RequirePackage{xcolor}
+%  We don't really use this package, but we need cleveref, and it has to be loaded after amsmath if it's used, so we are going to preemptively atteck!
+\RequirePackage{amsmath}
+\RequirePackage[nameinlink]{cleveref}
+\RequirePackage{tocloft}
+
+% ==============================================
+% ==============================================
+% Initialize Framework
+
+% If run before, there will be things to remember
+\InputIfFileExists{pinData.tex}{
+	\PackageInfo{fancyeicd}{Reading in previous pin definitions.}
+} {
+	\PackageInfo{fancyeicd}{No previous pin definitions.}
+}
+
+% Record references for use anywhere in the document.
+\newwrite\fancyeicd@data
+\immediate\openout\fancyeicd@data=pinData.tex
+
+
+
+
+% Start framework definitions
+
+\tikzset{%
+	pinnode/.style = {inner sep = 2pt, minimum width=20pt, draw, circle},
+	type_power/.style = {fill = orange!50},
+	type_ground/.style = {fill = brown!30},
+	type_data/.style = {fill = green!30},
+	type_breakwire_ex/.style = {fill = yellow!50},
+	type_breakwire_sense/.style = {fill = yellow!50, pattern=dots,pattern color=orange},
+	type_discrete_in/.style = {fill = blue!40},
+	type_discrete_reference/.style = {fill = blue!20},
+	type_test_input/.style = {fill = purple!30},
+	res/.style = {fill = gray!10}
+}
+
+\newcommand{\placeLegend}{
+	% \vfill
+	% \resizebox{0.20\textwidth}{!}{
+	\begin{tikzpicture} [scale=0.60,transform shape, every node/.style = {node distance=10pt, outer sep = 0cm, inner sep = 0cm}, font = \sffamily]
+		% , transform shape, node distance = 0.5cm ]
+		\node[type_power, pinnode] (lpwr) {};                  \node[right = of lpwr] {POWER};
+		\node[type_ground, pinnode, below = of lpwr] (lgnd) {}; \node[right = of lgnd] {POWER RTN/type_ground};
+		\node[type_data_hi, pinnode, below = of lgnd] (lcom) {}; \node[right = of lcom] {DATA/COMM. POS. (+)};
+		\node[type_data_lo, pinnode, below = of lgnd] (lcom) {}; \node[right = of lcom] {DATA/COMM. NEG. (-)};
+		\node[type_discrete_in, pinnode, below = of lcom] (ldih) {}; \node[right = of ldih] {DISCRETE INPUT SIGNAL (+)};
+		\node[type_discrete_reference, pinnode, below = of ldih] (ldil) {}; \node[right = of ldil] {DISCRETE INPUT REF. (-)};
+		\node[type_breakwire_ex, pinnode, below = of ldil] (lbwh) {}; \node[right = of lbwh] {BREAK WIRE EXCITATION};
+		\node[type_breakwire_sense, pinnode, below = of lbwh] (lbwl) {}; \node[right = of lbwl] {BREAK WIRE INDICATE};
+		\node[type_test_input, pinnode, below = of lbwl] (ltst) {}; \node[right = of ltst] {NON-TACTICAL/TEST USE ONLY};
+		\node[type_reserved, pinnode, below = of ltst] (lres) {}; \node[right = of lres] {RESERVED/UNUSED};
+	\end{tikzpicture}
+	% }
+	% \vfill
+}
+
+\newcommand{\modcolor}{black}
+
+\newcommand{\labelPins}[1]{
+	% Draw pins with fill color specified, draw label and pin
+	\foreach \q/\p [count=\x] in {#1}{
+			\node[pinnode, \p] at (pin\x) (pin\x){\x}; % Label pin number
+
+			% Normal pins written in black
+			\renewcommand{\modcolor}{black}
+
+			% Unused/reserved pins in gray
+			\findwords[q]{\q}{type_reserved}
+			\ifnum\theresult > 0
+				\renewcommand{\modcolor}{gray}
+			\fi
+
+			% TODO: update code for different connector types
+			\ifnum\x>13
+				\node[\modcolor, anchor = east, minimum width=0cm, left = of pin\x, xshift=0.5in] (pinName\x) {\sig{\caseupper{\q}}};
+			\else
+				\node[\modcolor, anchor = west, minimum width = 0cm, right = of pin\x, xshift=-0.5in] (pinName\x){\sig{\caseupper{\q}}};
+			\fi
+			\draw[dashed,gray] (pinName\x) -- (pin\x);
+		}
+}
+
+\newcommand{\labelPinsByReference}[1]{
+	\foreach \q [count=\x] in {#1}{
+			\node[pinnode, \q] at (pin\x) (pin\x){\x};
+			\ifnum\x>13
+				\node[anchor = east, minimum width=0cm, left = of pin\x, xshift=0.5in] (pinName\x) {\useVal{pinName\x}};
+			\else
+				\node[anchor = west, minimum width = 0cm, right = of pin\x, xshift=-0.5in] (pinName\x) {\useVal{pinName\x}};
+			\fi
+			\draw[dashed,gray] (pinName\x) -- (pin\x);
+		}
+}
+
+\newcommand{\drawConnector}{
+	% Lay out pins of connector and draw boundary
+	\coordinate (pin0); % Establish name of origin
+	\foreach \x [remember=\x as \lastx (initially 0)] in {1,...,13}{% draw top row. Backwards because female
+			% \node[above  of = pin\lastx, yshift=-0.2cm] (pin\x) {\x};
+			\coordinate[above = 30pt of pin\lastx] (pin\x);
+		}
+	\coordinate (adjOff) at ($ (pin1)!0.5!(pin2) $);
+	\coordinate[left = 25pt of adjOff] (pin14);
+	\foreach \x [remember=\x as \lastx (initially 14)] in {15,...,25}{% draw top row. Backwards because female
+			% \node[above of = pin\lastx, yshift=-0.2cm] (pin\x) {\x};
+			\coordinate[above = 30pt of pin\lastx] (pin\x);
+		}
+
+	% Draw connector shell and fill
+
+	% mark the four corners
+	\coordinate[above right = of pin13, xshift=-10pt, yshift=2pt] (corn1);
+	\coordinate[below right = of pin1, xshift=-10pt, yshift=-2pt] (corn2);
+	\coordinate[below left = of pin15, xshift=10pt, yshift=-12pt] (corn3);
+	\coordinate[above left = of pin24, xshift=10pt, yshift=12pt] (corn4);
+
+	\draw[ultra thick, rounded corners = 1cm, name path = shell, fill=brown!50!gray, fill opacity=0.2] (corn1) -- (corn2) -- (corn3) -- (corn4) -- cycle;
+	\path[name path = cgnd] (corn3) ++(0cm, -0.75cm) ++(70:1cm) -- ++(-135:2cm);
+	\draw[name intersections={of=shell and cgnd, name=i}] (i-1) coordinate (xmark);
+	\draw[line width = 0.75pt] (xmark) -- ++(-145:0.5cm) -- ++(-1.75cm,0cm) -- ++(0cm, -0.5cm) coordinate(tc);
+	\draw[line width = 1.15pt] (tc)       -- +(-0.5cm,0cm) coordinate (t1) -- +(0.5cm,0cm) coordinate (t2);
+	\draw[line width = 1.15pt] (t1) -- +(-75:0.5cm);
+	\draw[line width = 1.15pt] (tc) -- +(-75:0.5cm);
+	\draw[line width = 1.15pt] (t2) -- +(-75:0.5cm);
+}
+
+
+% \begin{landscape}
+% \begin{minipage}{0.4\linewidth}
+% \begin{figure}[htpb]
+%     \centering
+% \resizebox{0.5\linewidth}{!}{
+
+
+% \caption{ACES Fuze Pinout}%
+% \end{figure}
+% \end{minipage}
+% \begin{minipage}{0.4\linewidth}
+% \begin{figure}[htpb]
+% \centering
+% \resizebox{!}{0.7\textheight}{
+
+\newcommand{\sref}[1]{{\smaller\sig{#1}}}
+\newcommand{\srefn}[1]{\useVal{pinName#1}}
+
+\newenvironment{pinout}{
+	%
+	% Inserts row in pinout definition
+	% First column will be pin number, taken care of automatically.  Second is
+	% Pin Name; will be formatted automatically (spaces not included) Third,
+
+	% TYPE Forth, PARAMS Fifth, DESC.
+	%
+	% So, four arguments.
+
+	% Declare row types and commands
+
+	\newcommand{\pin}[3]{
+		{\textbf{\thepincount}}
+		& \sig{\smaller ##1} & {\smaller ##3} \\
+		\defPin{\thepincount}{##1}{##2}
+		\defValwCount{pinName\thepincount}{\sig{##1}}
+		% \defValwCount{pinType\thepincount}{##2}
+		\stepcounter{pincount}
+		% \label{##1desc}
+	}
+
+	\newcommand{\resvpin}{
+		\textbf{\textcolor{gray}{\noindent\thepincount}} & \textcolor{gray}{\sig{\smaller{}RESERVED}} &\textcolor{gray}{\smaller{}Not used in \ac{CPS} tactical configuration.}  \\ % \hline{}
+		\defPin{\thepincount}{RESERVED}{resv}
+		\defValwCount{pinName\thepincount}{\color{gray}{\sig{reserved}}}
+		\stepcounter{pincount}
+	}
+
+
+	% Same as \pin, but formatted gray and replaces Pin Name with "RESERVED",
+	% but appends a fifth bolded statement why it is not used
+	% \newcommand{\resvpin}[5]{
+	%     \textcolor{gray}{\thepincount}
+	%     & \textcolor{gray}{\sig{\smaller{}\itshape##5}}
+	%     % & \textcolor{gray}{\itshape##1}
+	%       &
+	%       % {\itshape\textcolor{gray}{##3}}\newline
+	%       \textcolor{gray}{\bfseries##4}
+	%       \\ \hline{}
+	%       \defValwCount{pinName\thepincount}{\color{gray}{\sig{reserved}}}
+	%       \defValwCount{pinType\thepincount}{##1}
+	%       \stepcounter{pincount}
+	%       % \label{##5desc}
+	%   }
+
+	% Setup table and tabular env
+
+	% TODO, get around this hack properly
+	\table[h!]
+
+	\ifdef{\thepincount}{ % True \addtocounter{table}{-1}
+		\caption*{AFE Pin Descriptions (cont.)}
+	}{ % False
+		\newcounter{pincount}
+		\setcounter{pincount}{1}
+		\caption{AFE Pin Descriptions}
+	}
+
+	% \smaller{}
+	\label{pinlist}
+	% \smaller{}
+
+	\def\arraystretch{1.25}%  1 is the default, change whatever you need
+	\setlength{\tabcolsep}{0.5em} % for the horizontal padding
+	\noindent
+	\tabularx{\linewidth}{@{}r l X}
+	\toprule
+	\hspace{-0.5cm}\textsc{\larger\bfseries{}Pin} & \textsc{\larger\bfseries{}Name}
+	% & \textsc{\larger{}\bfseries{}Type}
+	& \textsc{\larger\bfseries{}Purpose}
+	\\ \midrule
+}{ % End pinout start block, start pinout end block
+	\endtabularx
+	\endtable}
+
+% Serial protocol drawing commands
+
+\newcommand{\bitlabel}[2]{%
+	\bitbox[]{#1}{%
+		\raisebox{5pt}[4ex][0pt]{%
+			\turnbox{45}{\fontsize{7}{7}\selectfont#2}%
+		}%
+
+	}}%
+
+\newcommand{\pdent}{0.7}
+\newcommand{\bitwidth}{2.1em}
+
+\newcommand{\fhex}[1]{{\bfseries\ttfamily#1}}
+\newcommand{\refpname}[1]{{\slshape\nameref{#1}}}
+\newcommand{\fmsg}[2]{\hyperref[#2]{\ttfamily#1}}
+
+\newcommand{\bitfield}[1]{#1}
+
+% \renewcommand{\baselinestretch}{1.5}
+\def\arraystretch{1}
+% \normalsize
+\newcommand{\msgid}[4]{
+	\subparagraph{Message ID}\hfill \begin{minipage}[t]{\pdent\linewidth}
+		#1 \refpname{#2} message {\should} be identified by the
+		\hyperref[dirbit]{\bitfield{DIR}} bit set to \fhex{#3}, and a value of
+		\fhex{0#4} in the \hyperref[msgbit]{\bitfield{MSG\_ID}} field.\end{minipage}
+}
+
+\newcommand{\nopayload}[2]{
+	\subparagraph{Payload}\hfill  \begin{minipage}[t]{\pdent\linewidth}
+		#1 \refpname{#2} message contains no data payload; the value of
+		both the {\bitfield{EXT}} bit and {\bitfield{SUB}} field shall be zero (0 and 00).
+	\end{minipage}
+}
+
+\newcommand{\expack}[9]{
+	Example packet:
+
+	\setlength{\tabcolsep}{0.25em} % for the horizontal padding
+	\begin{center}
+		% hex char of 4 bits (dir + id) 
+		% hex char of 4 bits (data words count)
+
+		% bit - direction
+		% 3 bits - msg
+		% 4 bits - data word count, binary
+
+		% 2 hex char -  byte checksum 1
+		% 2 hex char -  byte checksum 2
+
+		% 8 bits - checksum byte 1
+		% 8 bits - checksum byte 
+
+		\begin{tabular}{rccccccc}
+			\normalsize  {Hexadecimal: } & \fhex{0xAA 0xAA}
+			                             & \fhex{0x#1}
+			                             & \fhex{0x00}
+			                             & \fhex{0x#2}
+			                             & \fhex{0x{#6} 0x{#7}}
+			\\
+			\normalsize  {Binary: }      & $\underbracket{1010101010101010}_{\text{Sync}}$
+			                             & $\underbracket{#3}_{\text{\rotatebox{90}{DIR}}}
+				\underbracket{#4}_{\text{ID}}$
+			                             & $\underbracket{00000000}_{\text{Reserved}}$
+			                             & $\underbracket{0}_{\text{\rotatebox{90}{EXT}}}
+				\underbracket{000}_{\text{SUB}}$
+			                             & $\underbracket{#8#9}_{\text{Check bytes}} $
+			\\
+		\end{tabular}
+	\end{center}
+}
+
+% \newcommand{\packer}[11]{
+%     \expack{#1}{#2}{#3}{#4}{#5}{#6}{#7}{#8}{#9}
+%     \msgid{#10}{#11}{#3}{#4}
+% }
+
+\definecolor{lightgray}{gray}{0.8}
+\newcommand{\colorbitbox}[3]{%
+	\rlap{\bitbox{#2}{\color{#1}\rule{\width}{\height}}}%
+	\bitbox{#2}{#3}
+}
+% vim: nospell
