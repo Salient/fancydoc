@@ -27,27 +27,27 @@
 \newsavebox{\fmbox}
 \newenvironment{fmpage}[1]
 {\begin{lrbox}{\fmbox}\begin{minipage}{#1}}
-{\end{minipage}\end{lrbox}\fbox{\usebox{\fmbox}}}
+			{\end{minipage}\end{lrbox}\fbox{\usebox{\fmbox}}}
 
 \newenvironment{boldlist}[2]{\newcommand{\captiontemp}{#1~}\newcommand{\labeltemp}{#2}
-    %   \begin{table}[h!]
-    \newcommand{\entry}[3]{\textbf{##1} & {\scshape ##2} \newline {\textsl{##3}}\\}
+	%   \begin{table}[h!]
+	\newcommand{\entry}[3]{\textbf{##1} & {\scshape ##2} \newline {\textsl{##3}}\\}
 
-    \begin{center}
-        \begin{tabular}{ B@{~\textbf{\textendash~}}p{0.6\linewidth}}}{
-            %       \end{tabular}\protect\caption{\captiontemp}\protect\label{\labeltemp}
-        \end{tabular}\protect\label{\labeltemp}
-    \end{center}
-    %   \end{table}
+	\begin{center}
+		\begin{tabular}{ B@{~\textbf{\textendash~}}p{0.6\linewidth}}}{
+			%       \end{tabular}\protect\caption{\captiontemp}\protect\label{\labeltemp}
+		\end{tabular}\protect\label{\labeltemp}
+	\end{center}
+	%   \end{table}
 }
 
 \newenvironment{customboldlist}[3]{\newcommand{\captiontemp}{#1~}\newcommand{\labeltemp}{#2}
-    \begin{table}[h!]\centering
-        \begin{tabular}{| B@{~\textbf{\textendash~}}p{#3}|}}{
-        \end{tabular}
-        %\protect\caption{\captiontemp}\protect\label{\labeltemp}
-    \end{tabular}\protect\label{\labeltemp}
-\end{table}
+	\begin{table}[h!]\centering
+		\begin{tabular}{| B@{~\textbf{\textendash~}}p{#3}|}}{
+		\end{tabular}
+		%\protect\caption{\captiontemp}\protect\label{\labeltemp}
+		\end{tabular}\protect\label{\labeltemp}
+	\end{table}
 }
 
 
@@ -70,201 +70,201 @@
 \gdef\patternnumber{0}
 
 \pgfkeys{/tikz/.cd,
-    zoombox paths/.style={
-        draw=orange,
-        very thick
-    },
-    black and white/.is choice,
-    black and white/.default=static,
-    black and white/static/.style={
-        draw=white,
-        zoombox paths/.append style={
-            draw=white,
-            postaction={
-                draw=black,
-                loosely dashed
-            }
-        }
-    },
-    black and white/static/.code={
-        \gdef\patternnumber{1}
-    },
-    black and white/cycle/.code={
-        \blackandwhitecycletrue
-        \gdef\patternnumber{1}
-    },
-    black and white pattern/.is choice,
-    black and white pattern/0/.style={},
-    black and white pattern/1/.style={
-        draw=white,
-        postaction={
-            draw=black,
-            dash pattern=on 2pt off 2pt
-        }
-    },
-    black and white pattern/2/.style={
-        draw=white,
-        postaction={
-            draw=black,
-            dash pattern=on 4pt off 4pt
-        }
-    },
-    black and white pattern/3/.style={
-        draw=white,
-        postaction={
-            draw=black,
-            dash pattern=on 4pt off 4pt on 1pt off 4pt
-        }
-    },
-    black and white pattern/4/.style={
-        draw=white,
-        postaction={
-            draw=black,
-            dash pattern=on 4pt off 2pt on 2 pt off 2pt on 2 pt off 2pt
-        }
-    },
-    zoomboxarray inner gap/.initial=5pt,
-    zoomboxarray columns/.initial=2,
-    zoomboxarray rows/.initial=2,
-    subfigurename/.initial={},
-    figurename/.initial={zoombox},
-    zoomboxarray/.style={
-        execute at begin picture={
-            \begin{scope}[
-                spy using outlines={%
-                    zoombox paths,
-                    width=\imagewidth / \pgfkeysvalueof{/tikz/zoomboxarray columns} - (\pgfkeysvalueof{/tikz/zoomboxarray columns} - 1) / \pgfkeysvalueof{/tikz/zoomboxarray columns} * \pgfkeysvalueof{/tikz/zoomboxarray inner gap} -\pgflinewidth,
-                    height=\imageheight / \pgfkeysvalueof{/tikz/zoomboxarray rows} - (\pgfkeysvalueof{/tikz/zoomboxarray rows} - 1) / \pgfkeysvalueof{/tikz/zoomboxarray rows} * \pgfkeysvalueof{/tikz/zoomboxarray inner gap}-\pgflinewidth,
-                    magnification=3,
-                    every spy on node/.style={
-                        zoombox paths
-                    },
-                    every spy in node/.style={
-                        zoombox paths
-                    }
-                }
-                ]
-            },
-            execute at end picture={
-            \end{scope}
-            \node at (image.north) [anchor=north,inner sep=0pt] {\subcaptionbox{\label{\pgfkeysvalueof{/tikz/figurename}-image}}{\phantomimage}};
-            \node at (zoomboxes container.north) [anchor=north,inner sep=0pt] {\subcaptionbox{\label{\pgfkeysvalueof{/tikz/figurename}-zoom}}{\phantomimage}};
-            \gdef\patternnumber{0}
-        },
-        spymargin/.initial=0.5em,
-        zoomboxes xshift/.initial=1,
-        zoomboxes right/.code=\pgfkeys{/tikz/zoomboxes xshift=1},
-        zoomboxes left/.code=\pgfkeys{/tikz/zoomboxes xshift=-1},
-        zoomboxes yshift/.initial=0,
-        zoomboxes above/.code={
-            \pgfkeys{/tikz/zoomboxes yshift=1},
-            \pgfkeys{/tikz/zoomboxes xshift=0}
-        },
-        zoomboxes below/.code={
-            \pgfkeys{/tikz/zoomboxes yshift=-1},
-            \pgfkeys{/tikz/zoomboxes xshift=0}
-        },
-        caption margin/.initial=4ex,
-    },
-    adjust caption spacing/.code={},
-    image container/.style={
-        inner sep=0pt,
-        at=(image.north),
-        anchor=north,
-        adjust caption spacing
-    },
-    zoomboxes container/.style={
-        inner sep=0pt,
-        at=(image.north),
-        anchor=north,
-        name=zoomboxes container,
-        xshift=\pgfkeysvalueof{/tikz/zoomboxes xshift}*(\imagewidth+\pgfkeysvalueof{/tikz/spymargin}),
-        yshift=\pgfkeysvalueof{/tikz/zoomboxes yshift}*(\imageheight+\pgfkeysvalueof{/tikz/spymargin}+\pgfkeysvalueof{/tikz/caption margin}),
-        adjust caption spacing
-    },
-    calculate dimensions/.code={
-        \pgfpointdiff{\pgfpointanchor{image}{south west} }{\pgfpointanchor{image}{north east} }
-        \pgfgetlastxy{\imagewidth}{\imageheight}
-        \global\let\imagewidth=\imagewidth
-        \global\let\imageheight=\imageheight
-        \gdef\columncount{1}
-        \gdef\rowcount{1}
-        \gdef\zoomboxcount{1}
-    },
-    image node/.style={
-        inner sep=0pt,
-        name=image,
-        anchor=south west,
-        append after command={
-            [calculate dimensions]
-            node [image container,subfigurename=\pgfkeysvalueof{/tikz/figurename}-image] {\phantomimage}
-            node [zoomboxes container,subfigurename=\pgfkeysvalueof{/tikz/figurename}-zoom] {\phantomimage}
-        }
-    },
-    color code/.style={
-        zoombox paths/.append style={draw=#1}
-    },
-    connect zoomboxes/.style={
-        spy connection path={\draw[draw=none,zoombox paths] (tikzspyonnode) -- (tikzspyinnode);}
-    },
-    help grid code/.code={
-        \begin{scope}[
-            x={(image.south east)},
-            y={(image.north west)},
-            font=\footnotesize,
-            help lines,
-            overlay
-            ]
-            \foreach \x in {0,1,...,9} {
-                \draw(\x/10,0) -- (\x/10,1);
-                \node [anchor=north] at (\x/10,0) {0.\x};
-            }
-            \foreach \y in {0,1,...,9} {
-                \draw(0,\y/10) -- (1,\y/10);                        \node [anchor=east] at (0,\y/10) {0.\y};
-            }
-        \end{scope}
-    },
-    help grid/.style={
-        append after command={
-            [help grid code]
-        }
-    },
+	zoombox paths/.style={
+			draw=orange,
+			very thick
+		},
+	black and white/.is choice,
+	black and white/.default=static,
+	black and white/static/.style={
+			draw=white,
+			zoombox paths/.append style={
+					draw=white,
+					postaction={
+							draw=black,
+							loosely dashed
+						}
+				}
+		},
+	black and white/static/.code={
+			\gdef\patternnumber{1}
+		},
+	black and white/cycle/.code={
+			\blackandwhitecycletrue
+			\gdef\patternnumber{1}
+		},
+	black and white pattern/.is choice,
+	black and white pattern/0/.style={},
+	black and white pattern/1/.style={
+			draw=white,
+			postaction={
+					draw=black,
+					dash pattern=on 2pt off 2pt
+				}
+		},
+	black and white pattern/2/.style={
+			draw=white,
+			postaction={
+					draw=black,
+					dash pattern=on 4pt off 4pt
+				}
+		},
+	black and white pattern/3/.style={
+			draw=white,
+			postaction={
+					draw=black,
+					dash pattern=on 4pt off 4pt on 1pt off 4pt
+				}
+		},
+	black and white pattern/4/.style={
+			draw=white,
+			postaction={
+					draw=black,
+					dash pattern=on 4pt off 2pt on 2 pt off 2pt on 2 pt off 2pt
+				}
+		},
+	zoomboxarray inner gap/.initial=5pt,
+	zoomboxarray columns/.initial=2,
+	zoomboxarray rows/.initial=2,
+	subfigurename/.initial={},
+	figurename/.initial={zoombox},
+	zoomboxarray/.style={
+			execute at begin picture={
+					\begin{scope}[
+							spy using outlines={%
+									zoombox paths,
+									width=\imagewidth / \pgfkeysvalueof{/tikz/zoomboxarray columns} - (\pgfkeysvalueof{/tikz/zoomboxarray columns} - 1) / \pgfkeysvalueof{/tikz/zoomboxarray columns} * \pgfkeysvalueof{/tikz/zoomboxarray inner gap} -\pgflinewidth,
+									height=\imageheight / \pgfkeysvalueof{/tikz/zoomboxarray rows} - (\pgfkeysvalueof{/tikz/zoomboxarray rows} - 1) / \pgfkeysvalueof{/tikz/zoomboxarray rows} * \pgfkeysvalueof{/tikz/zoomboxarray inner gap}-\pgflinewidth,
+									magnification=3,
+									every spy on node/.style={
+											zoombox paths
+										},
+									every spy in node/.style={
+											zoombox paths
+										}
+								}
+						]
+						},
+						execute at end picture={
+					\end{scope}
+					\node at (image.north) [anchor=north,inner sep=0pt] {\subcaptionbox{\label{\pgfkeysvalueof{/tikz/figurename}-image}}{\phantomimage}};
+					\node at (zoomboxes container.north) [anchor=north,inner sep=0pt] {\subcaptionbox{\label{\pgfkeysvalueof{/tikz/figurename}-zoom}}{\phantomimage}};
+					\gdef\patternnumber{0}
+				},
+			spymargin/.initial=0.5em,
+			zoomboxes xshift/.initial=1,
+			zoomboxes right/.code=\pgfkeys{/tikz/zoomboxes xshift=1},
+			zoomboxes left/.code=\pgfkeys{/tikz/zoomboxes xshift=-1},
+			zoomboxes yshift/.initial=0,
+			zoomboxes above/.code={
+					\pgfkeys{/tikz/zoomboxes yshift=1},
+					\pgfkeys{/tikz/zoomboxes xshift=0}
+				},
+			zoomboxes below/.code={
+					\pgfkeys{/tikz/zoomboxes yshift=-1},
+					\pgfkeys{/tikz/zoomboxes xshift=0}
+				},
+			caption margin/.initial=4ex,
+		},
+	adjust caption spacing/.code={},
+	image container/.style={
+			inner sep=0pt,
+			at=(image.north),
+			anchor=north,
+			adjust caption spacing
+		},
+	zoomboxes container/.style={
+			inner sep=0pt,
+			at=(image.north),
+			anchor=north,
+			name=zoomboxes container,
+			xshift=\pgfkeysvalueof{/tikz/zoomboxes xshift}*(\imagewidth+\pgfkeysvalueof{/tikz/spymargin}),
+			yshift=\pgfkeysvalueof{/tikz/zoomboxes yshift}*(\imageheight+\pgfkeysvalueof{/tikz/spymargin}+\pgfkeysvalueof{/tikz/caption margin}),
+			adjust caption spacing
+		},
+	calculate dimensions/.code={
+			\pgfpointdiff{\pgfpointanchor{image}{south west} }{\pgfpointanchor{image}{north east} }
+			\pgfgetlastxy{\imagewidth}{\imageheight}
+			\global\let\imagewidth=\imagewidth
+			\global\let\imageheight=\imageheight
+			\gdef\columncount{1}
+			\gdef\rowcount{1}
+			\gdef\zoomboxcount{1}
+		},
+	image node/.style={
+			inner sep=0pt,
+			name=image,
+			anchor=south west,
+			append after command={
+					[calculate dimensions]
+					node [image container,subfigurename=\pgfkeysvalueof{/tikz/figurename}-image] {\phantomimage}
+					node [zoomboxes container,subfigurename=\pgfkeysvalueof{/tikz/figurename}-zoom] {\phantomimage}
+				}
+		},
+	color code/.style={
+			zoombox paths/.append style={draw=#1}
+		},
+	connect zoomboxes/.style={
+			spy connection path={\draw[draw=none,zoombox paths] (tikzspyonnode) -- (tikzspyinnode);}
+		},
+	help grid code/.code={
+			\begin{scope}[
+					x={(image.south east)},
+					y={(image.north west)},
+					font=\footnotesize,
+					help lines,
+					overlay
+				]
+				\foreach \x in {0,1,...,9} {
+						\draw(\x/10,0) -- (\x/10,1);
+						\node [anchor=north] at (\x/10,0) {0.\x};
+					}
+				\foreach \y in {0,1,...,9} {
+						\draw(0,\y/10) -- (1,\y/10);                        \node [anchor=east] at (0,\y/10) {0.\y};
+					}
+			\end{scope}
+		},
+	help grid/.style={
+			append after command={
+					[help grid code]
+				}
+		},
 }
 
 \newcommand{\Dotfill}[1]{\leavevmode \cleaders \hb@xt@ #1{\hss .\hss }\hfill \kern \z@}
 
 \newcommand\phantomimage{%
-    \phantom{%
-        \rule{\imagewidth}{\imageheight}%
-    }%
+	\phantom{%
+		\rule{\imagewidth}{\imageheight}%
+	}%
 }
 \newcommand\zoombox[2][]{
-    \begin{scope}[zoombox paths]
-        \pgfmathsetmacro\xpos{
-            (\columncount-1)*(\imagewidth / \pgfkeysvalueof{/tikz/zoomboxarray columns} + \pgfkeysvalueof{/tikz/zoomboxarray inner gap} / \pgfkeysvalueof{/tikz/zoomboxarray columns} ) + \pgflinewidth
-        }
-        \pgfmathsetmacro\ypos{
-            (\rowcount-1)*( \imageheight / \pgfkeysvalueof{/tikz/zoomboxarray rows} + \pgfkeysvalueof{/tikz/zoomboxarray inner gap} / \pgfkeysvalueof{/tikz/zoomboxarray rows} ) + 0.5*\pgflinewidth
-        }
-        \edef\dospy{\noexpand\spy [
-            #1,
-            zoombox paths/.append style={
-                black and white pattern=\patternnumber
-            },
-            every spy on node/.append style={#1},
-            x=\imagewidth,
-            y=\imageheight
-        ] on (#2) in node [anchor=north west] at ($(zoomboxes container.north west)+(\xpos pt,-\ypos pt)$);}
-        \dospy
-        \pgfmathtruncatemacro\pgfmathresult{ifthenelse(\columncount==\pgfkeysvalueof{/tikz/zoomboxarray columns},\rowcount+1,\rowcount)}
-        \global\let\rowcount=\pgfmathresult
-        \pgfmathtruncatemacro\pgfmathresult{ifthenelse(\columncount==\pgfkeysvalueof{/tikz/zoomboxarray columns},1,\columncount+1)}
-        \global\let\columncount=\pgfmathresult
-        \ifblackandwhitecycle
-            \pgfmathtruncatemacro{\newpatternnumber}{\patternnumber+1}
-            \global\edef\patternnumber{\newpatternnumber}
-        \fi
-    \end{scope}
+	\begin{scope}[zoombox paths]
+		\pgfmathsetmacro\xpos{
+			(\columncount-1)*(\imagewidth / \pgfkeysvalueof{/tikz/zoomboxarray columns} + \pgfkeysvalueof{/tikz/zoomboxarray inner gap} / \pgfkeysvalueof{/tikz/zoomboxarray columns} ) + \pgflinewidth
+		}
+		\pgfmathsetmacro\ypos{
+			(\rowcount-1)*( \imageheight / \pgfkeysvalueof{/tikz/zoomboxarray rows} + \pgfkeysvalueof{/tikz/zoomboxarray inner gap} / \pgfkeysvalueof{/tikz/zoomboxarray rows} ) + 0.5*\pgflinewidth
+		}
+		\edef\dospy{\noexpand\spy [
+				#1,
+				zoombox paths/.append style={
+						black and white pattern=\patternnumber
+					},
+				every spy on node/.append style={#1},
+				x=\imagewidth,
+				y=\imageheight
+			] on (#2) in node [anchor=north west] at ($(zoomboxes container.north west)+(\xpos pt,-\ypos pt)$);}
+		\dospy
+		\pgfmathtruncatemacro\pgfmathresult{ifthenelse(\columncount==\pgfkeysvalueof{/tikz/zoomboxarray columns},\rowcount+1,\rowcount)}
+		\global\let\rowcount=\pgfmathresult
+		\pgfmathtruncatemacro\pgfmathresult{ifthenelse(\columncount==\pgfkeysvalueof{/tikz/zoomboxarray columns},1,\columncount+1)}
+		\global\let\columncount=\pgfmathresult
+		\ifblackandwhitecycle
+			\pgfmathtruncatemacro{\newpatternnumber}{\patternnumber+1}
+			\global\edef\patternnumber{\newpatternnumber}
+		\fi
+	\end{scope}
 }
 
 
@@ -276,33 +276,33 @@
 % https://tex.stackexchange.com/questions/4736/what-is-the-difference-between-fragile-and-robust-commands
 %\makeatletter
 \newcommand{\useVal}[1]{%
-    \ifcsname useVal@#1\endcsname
-        \csname useVal@#1\endcsname
-    \else
-        ??%
-    \fi
+	\ifcsname useVal@#1\endcsname
+		\csname useVal@#1\endcsname
+	\else
+		??%
+	\fi
 }
 
 \newcommand{\defVal}[2]{%
-    \ifcsname useVal@#1@defined\endcsname
-        \PackageError{useVal}{Value "#1" already defined}{}
-    \else
-        \immediate\write\@auxout{%
-            \unexpanded{\global\@namedef{useVal@#1}}{#2}%
-        }%
-        \global\@namedef{useVal@#1@defined}{}%
-    \fi%
+	\ifcsname useVal@#1@defined\endcsname
+		\PackageError{useVal}{Value "#1" already defined}{}
+	\else
+		\immediate\write\@auxout{%
+			\unexpanded{\global\@namedef{useVal@#1}}{#2}%
+		}%
+		\global\@namedef{useVal@#1@defined}{}%
+	\fi%
 }
 
 \newcommand{\defValwCount}[2]{%
-    \ifcsname useVal@herpaderp#1@defined\endcsname
-        \PackageError{useVal}{Value "#1" already defined}{}
-    \else
-        \immediate\write\@auxout{%
-            \unexpanded{\global\@namedef}{useVal@#1}\unexpanded{{#2}}%
-        }%
-        \global\@namedef{useVal@#1@defined}{}%
-    \fi%
+	\ifcsname useVal@herpaderp#1@defined\endcsname
+		\PackageError{useVal}{Value "#1" already defined}{}
+	\else
+		\immediate\write\@auxout{%
+			\unexpanded{\global\@namedef}{useVal@#1}\unexpanded{{#2}}%
+		}%
+		\global\@namedef{useVal@#1@defined}{}%
+	\fi%
 }
 %\makeatother
 
@@ -316,67 +316,6 @@
 % Electrical Connector Definition Framework
 
 
-% Right now only supports one global connector namespace
-% easy enough to add more
-\newcommand{\defPin}[3]{
-    %   Arguments should be {number/counterreference}
-    %                       {Signal name (underscores escaped....need to figure out how to do that )}
-    %                       {shortname}
-
-    \ifcsname fancy@pinDefn@#1@defined\endcsname
-        \PackageError{fancy}{Connector Pin definition '#1' is defined twice}{}
-    \else
-        \immediate\write\@auxout{%
-            \unexpanded{\global\@namedef}{fancy@pinDef@numToName@#1}\unexpanded{{\sig{#2}}}%
-        }
-        \immediate\write\@auxout{%
-            \unexpanded{\global\@namedef}{fancy@pinDef@numToAlias@#1}\unexpanded{{#3}}%
-        }
-        \immediate\write\@auxout{%
-            \unexpanded{\global\@namedef}{fancy@pinDef@aliasToName@#3}\unexpanded{{\sig{#2}}}%
-        }
-        \immediate\write\@auxout{%
-            \unexpanded{\global\@namedef}{fancy@pinDef@aliasToNum@#3}{#1}%
-        }
-        % \unexpanded{\global\@namedef}{fancy@pinDef@#1@defined}{}
-        \global\@namedef{fancy@pinDef@#1@defined}{}%
-    \fi
-}
-% TODO - stream line above
-
-\newcommand{\pinNumName}[1]{%
-    \ifcsname fancy@pinDef@numToName@#1\endcsname
-        \csname fancy@pinDef@numToName@#1\endcsname
-    \else
-        ??%
-    \fi
-}
-
-\newcommand{\pinAliasNum}[1]{%
-        \ifcsname fancy@pinDef@aliasToNum@#1\endcsname%
-            \csname fancy@pinDef@aliasToNum@#1\endcsname%
-        \else
-        ??%
-    \fi
-}
-
-\newcommand{\pinAliasName}[1]{%
-    \ifcsname fancy@pinDef@aliasToName@#1\endcsname
-        \csname fancy@pinDef@aliasToName@#1\endcsname
-    \else
-        ??%
-    \fi
-}
-
-\newcommand{\pinAliasRef}[1]{%
-\edef\thispin{\pinAliasNum{#1}}%
-{\smaller\sig{\sloppy\sloppy\pinNumName{\thispin}} (\textbf{\textsc{\smaller{}Pin \thispin})}}}
-
-\newcommand{\pinsig}[1]{%
-\edef\thispin{\pinAliasNum{#1}}%
-{\smaller\sig{\pinNumName{\thispin}}}}
-\newcommand{\state}[1]{\sloppy\fbox{\sig{#1}}\xspace}
-
 
 
 % Formatting of References
@@ -385,89 +324,89 @@
 
 % Only bother loading if we are going to use it
 \iftoggle{suppliersow}{
-    \newwrite\tempfile
-    \immediate\openout\tempfile=sdrl-table.tex
+\newwrite\tempfile
+\immediate\openout\tempfile=sdrl-table.tex
 
-    \newcommand{\recsdrl}[6]{\immediate\write\tempfile{
-    \unexpanded{&&&\\\hyperref[}#2\unexpanded{]}\@charlb\unexpanded{\bfseries[SDRL }#1\unexpanded{]}\@charrb\unexpanded{ &\hyperref[}#2\unexpanded{]}\@charlb\unexpanded{\bfseries }#4\@charrb\unexpanded{& \hyperref[}#2\unexpanded{]}\@charlb\unexpanded{ }#3\@charrb \unexpanded{ & \hyperref[}#2\unexpanded{]}\@charlb\unexpanded{ }#6\@charrb \unexpanded{ & \bfseries} #5 \unexpanded{\\}}}
-    %\unexpanded{\\[-12pt]\hline\cline{2-4}\\[12pt]}}}
+\newcommand{\recsdrl}[6]{\immediate\write\tempfile{
+\unexpanded{&&&\\\hyperref[}#2\unexpanded{]}\@charlb\unexpanded{\bfseries[SDRL }#1\unexpanded{]}\@charrb\unexpanded{ &\hyperref[}#2\unexpanded{]}\@charlb\unexpanded{\bfseries }#4\@charrb\unexpanded{& \hyperref[}#2\unexpanded{]}\@charlb\unexpanded{ }#3\@charrb \unexpanded{ & \hyperref[}#2\unexpanded{]}\@charlb\unexpanded{ }#6\@charrb \unexpanded{ & \bfseries} #5 \unexpanded{\\}}}
+%\unexpanded{\\[-12pt]\hline\cline{2-4}\\[12pt]}}}
 
-    \newcommand{\subrecsdrl}[3]{\immediate\write\tempfile{\unexpanded{& \qquad Part } #1\unexpanded{ - }#2 \unexpanded{ &&& } #3 \unexpanded{\\}}}
+\newcommand{\subrecsdrl}[3]{\immediate\write\tempfile{\unexpanded{& \qquad Part } #1\unexpanded{ - }#2 \unexpanded{ &&& } #3 \unexpanded{\\}}}
 
 % \reqitem{requirement title}{desired label for requirement}{something}
 % \subreqitem{subreq title}{expected time due}
 
-    % {\textbf{[ESAD \string{\thereqitem}]} (\textit{#1})}
+% {\textbf{[ESAD \string{\thereqitem}]} (\textit{#1})}
 
-    % If this comes up again, look into \usepackage{arrayjobx}
+% If this comes up again, look into \usepackage{arrayjobx}
 
-    % Set little shortcut alias to refer back to entries
-    % \newcommand\reqref[1]{\protect\csname reqpair#1\endcsname}
-    % \newcommand\setreq[2]{\expandafter\def\csname reqpair#1\endcsname{#2}}
+% Set little shortcut alias to refer back to entries
+% \newcommand\reqref[1]{\protect\csname reqpair#1\endcsname}
+% \newcommand\setreq[2]{\expandafter\def\csname reqpair#1\endcsname{#2}}
 
-    \newcommand{\listreqs}{Summary List of Supplier Data Requirements}
+\newcommand{\listreqs}{Summary List of Supplier Data Requirements}
 
-    \newlistof{reqitem}{rqs}{\listreqs}
-    \newcommand{\reqitem}[3]{
-        \refstepcounter{reqitem}
-        \label{#2}
-        \defVal{#2-num}{\thereqitem}
-        \defVal{#2-name}{#1}
-        \recsdrl{\thereqitem}{#2}{\whereamisafe}{#1}{#3}{\thepage}
+\newlistof{reqitem}{rqs}{\listreqs}
+\newcommand{\reqitem}[3]{
+	\refstepcounter{reqitem}
+	\label{#2}
+	\defVal{#2-num}{\thereqitem}
+	\defVal{#2-name}{#1}
+	\recsdrl{\thereqitem}{#2}{\whereamisafe}{#1}{#3}{\thepage}
 
-        ~\\\noindent\framebox[\linewidth]{\strut\textsc{\textbf{Data Requirement:} #1}}{\normalmarginpar\raisebox{4pt}{\marginnote{\large\textbf{[SDRL \thereqitem]}}}}{\rule{1in}{0.5pt}}\\
+	~\\\noindent\framebox[\linewidth]{\strut\textsc{\textbf{Data Requirement:} #1}}{\normalmarginpar\raisebox{4pt}{\marginnote{\large\textbf{[SDRL \thereqitem]}}}}{\rule{1in}{0.5pt}}\\
 
-        \addcontentsline{rqs}{reqitem}{\protect\numberline{\thereqitem}\quad
-            %       \makebox[0.6\linewidth][l]{ --- \quad\textbf{#1}\Dotfill{0.8 em}}
-            %       \slshape Paragraph \thesubparagraph,\quad Page }}
-            \qquad --- \enspace\textbf{#1}\Dotfill{0.8 em} \hfil
-        \slshape Section \whereami \quad Page }
-    }
+	\addcontentsline{rqs}{reqitem}{\protect\numberline{\thereqitem}\quad
+		%       \makebox[0.6\linewidth][l]{ --- \quad\textbf{#1}\Dotfill{0.8 em}}
+		%       \slshape Paragraph \thesubparagraph,\quad Page }}
+		\qquad --- \enspace\textbf{#1}\Dotfill{0.8 em} \hfil
+		\slshape Section \whereami \quad Page }
+}
 
-    \renewcommand{\cftreqitemfont}{\scshape}
-    %    \renewcommand{\cftreqitemleader}{\bfseries\cftdotfill{\cftreqitemdotsep}}
-    \renewcommand{\cftreqitemleader}{}
-    \renewcommand{\cftreqitempagefont}{}
-    \renewcommand{\cftreqitempresnum}{[SDRL }
-    \renewcommand{\cftreqitemaftersnum}{]}
+\renewcommand{\cftreqitemfont}{\scshape}
+%    \renewcommand{\cftreqitemleader}{\bfseries\cftdotfill{\cftreqitemdotsep}}
+\renewcommand{\cftreqitemleader}{}
+\renewcommand{\cftreqitempagefont}{}
+\renewcommand{\cftreqitempresnum}{[SDRL }
+\renewcommand{\cftreqitemaftersnum}{]}
 
-    \newlength{\mylen}   % a "scratch" length
-    \settowidth{\mylen}{0.5} % extra space
-    \addtolength{\cftreqitemnumwidth}{\mylen} % add the extra space
+\newlength{\mylen}   % a "scratch" length
+\settowidth{\mylen}{0.5} % extra space
+\addtolength{\cftreqitemnumwidth}{\mylen} % add the extra space
 
-    %    \renewcommand{\cftreqitemaftersnumb}{}
+%    \renewcommand{\cftreqitemaftersnumb}{}
 
-    \newcommand{\refreq}[1]{\hyperref[#1]{\textbf{[SDRL \useVal{#1-num}]} (\textsc{\useVal{#1-name}})}}
+\newcommand{\refreq}[1]{\hyperref[#1]{\textbf{[SDRL \useVal{#1-num}]} (\textsc{\useVal{#1-name}})}}
 
-    %
-    %
-    \newlistentry[reqitem]{subreqitem}{rqs}{1}
-    \cftsetindents{subreqitem}{1.5em}{3.0em}
-    \renewcommand{\thesubreqitem}{\thereqitem.\alph{subreqitem}}
+%
+%
+\newlistentry[reqitem]{subreqitem}{rqs}{1}
+\cftsetindents{subreqitem}{1.5em}{3.0em}
+\renewcommand{\thesubreqitem}{\thereqitem.\alph{subreqitem}}
 
-    \newcommand{\subreqitem}[2]{%
-        \refstepcounter{subreqitem}
-        %   \par\textbf{\thesubreqitem) #1}
-        %   \addcontentsline{rqs}{subreqitem}{\protect\numberline{\thesubreqitem}#1}
-        \subrecsdrl{\Alph{subreqitem}}{#1}{#2}
-    }
-    \setcounter{rqsdepth}{2}
+\newcommand{\subreqitem}[2]{%
+	\refstepcounter{subreqitem}
+	%   \par\textbf{\thesubreqitem) #1}
+	%   \addcontentsline{rqs}{subreqitem}{\protect\numberline{\thesubreqitem}#1}
+	\subrecsdrl{\Alph{subreqitem}}{#1}{#2}
+}
+\setcounter{rqsdepth}{2}
 }{}
 
 
 \newcounter{@arrayLen}
 \usepackage{xstring}
 \newcommand{\getArrayLen}[1]{
-    \setcounter{@arrayLen}{0}
-    \foreach \x in #1 {%
-        \IfStrEq{\x}{}{}{% only increment when non-empty
-            \stepcounter{@arrayLen}%
-        }%
-    }%
-    \arabic{@arrayLen}
+	\setcounter{@arrayLen}{0}
+	\foreach \x in #1 {%
+			\IfStrEq{\x}{}{}{% only increment when non-empty
+				\stepcounter{@arrayLen}%
+			}%
+		}%
+	\arabic{@arrayLen}
 }
 \newcommand{\repeatArrayLen}{
-    \arabic{@arrayLen}
+	\arabic{@arrayLen}
 }
 % \newcommand{\getArrayLength}{\arabic{@arrayLen}}%
 % \newcommand*{\SetArrayLength}[1]{%
@@ -484,25 +423,25 @@
 
 \newcommand{\whereami}{%
 	\ifnum\c@section=0 %
-	\thechapter
+		\thechapter
 	\else
-	\ifnum\c@subsection=0 %
-	\thesection
-	\else
-	\ifnum\c@subsubsection=0 %
-	\thesubsection
-	\else
-	\ifnum\c@paragraph=0 %
-	\thesubsubsection
-	\else
-	\ifnum\c@subparagraph=0 %
-	\theparagraph%
-	\else
-	\thesubparagraph %
-	\fi
-	\fi
-	\fi
-	\fi
+		\ifnum\c@subsection=0 %
+			\thesection
+		\else
+			\ifnum\c@subsubsection=0 %
+				\thesubsection
+			\else
+				\ifnum\c@paragraph=0 %
+					\thesubsubsection
+				\else
+					\ifnum\c@subparagraph=0 %
+						\theparagraph%
+					\else
+						\thesubparagraph %
+					\fi
+				\fi
+			\fi
+		\fi
 	\fi
 }
 \makeatother

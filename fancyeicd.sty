@@ -27,38 +27,118 @@
 \immediate\openout\fancyeicd@data=pinData.tex
 
 
+% Right now only supports one global connector namespace
+% easy enough to add more
+\newcommand{\defPin}[4]{
+	%   Arguments should be {number/counterreference}
+	%                       {Signal name (underscores escaped....need to figure out how to do that )}
+	%                       {shortname}
+
+	\ifcsname fancy@pinDefn@#1@defined\endcsname
+		\PackageError{fancy}{Connector Pin definition '#1' is defined twice}{}
+	\else
+		\immediate\write\@auxout{%
+			\unexpanded{\global\@namedef}{fancy@pinDef@numToName@#1}\unexpanded{{\sig{#2}}}%
+		}
+		\immediate\write\@auxout{%
+			\unexpanded{\global\@namedef}{fancy@pinDef@numToAlias@#1}\unexpanded{{#3}}%
+		}
+		\immediate\write\@auxout{%
+			\unexpanded{\global\@namedef}{fancy@pinDef@numToType@#1}\unexpanded{{#4}}%
+		}
+		\immediate\write\@auxout{%
+			\unexpanded{\global\@namedef}{fancy@pinDef@aliasToName@#3}\unexpanded{{\sig{#2}}}%
+		}
+		\immediate\write\@auxout{%
+			\unexpanded{\global\@namedef}{fancy@pinDef@aliasToNum@#3}{#1}%
+		}
+		% \unexpanded{\global\@namedef}{fancy@pinDef@#1@defined}{}
+		\global\@namedef{fancy@pinDef@#1@defined}{}%
+	\fi
+}
+% TODO - stream line above
+
+\newcommand{\pinNumName}[1]{%
+	\ifcsname fancy@pinDef@numToName@#1\endcsname
+		\csname fancy@pinDef@numToName@#1\endcsname
+	\else
+		??%
+	\fi
+}
+
+\newcommand{\pinNumType}[1]{%
+	\ifcsname fancy@pinDef@numToType@#1\endcsname
+		\csname fancy@pinDef@numToType@#1\endcsname
+	\else
+		red%
+	\fi
+}
+
+\newcommand{\pinAliasNum}[1]{%
+	\ifcsname fancy@pinDef@aliasToNum@#1\endcsname%
+		\csname fancy@pinDef@aliasToNum@#1\endcsname%
+	\else
+		??%
+	\fi
+}
+
+\newcommand{\pinAliasName}[1]{%
+	\ifcsname fancy@pinDef@aliasToName@#1\endcsname
+		\csname fancy@pinDef@aliasToName@#1\endcsname
+	\else
+		??%
+	\fi
+}
+
+\newcommand{\pinAliasRef}[1]{%
+	\edef\thispin{\pinAliasNum{#1}}%
+	% {\smaller\sig{\sloppy\sloppy\pinNumName{\thispin}} (\textbf{\textsc{\smaller{}Pin \thispin})}}}
+	{\sig{\sloppy\sloppy\pinNumName{\thispin}} (\textbf{\textsc{\smaller{}Pin \thispin})}}}
+
+\newcommand{\pinsig}[1]{%
+	\edef\thispin{\pinAliasNum{#1}}%
+	% {\smaller\sig{\pinNumName{\thispin}}}}
+	{\sig{\pinNumName{\thispin}}}}
+\newcommand{\state}[1]{\sloppy\fbox{\sig{#1}}\xspace}
+
 
 
 % Start framework definitions
 
 \tikzset{%
 	pinnode/.style = {inner sep = 2pt, minimum width=20pt, draw, circle},
-	type_power/.style = {fill = orange!50},
-	type_ground/.style = {fill = brown!30},
-	type_data/.style = {fill = green!30},
-	type_breakwire_ex/.style = {fill = yellow!50},
-	type_breakwire_sense/.style = {fill = yellow!50, pattern=dots,pattern color=orange},
-	type_discrete_in/.style = {fill = blue!40},
-	type_discrete_reference/.style = {fill = blue!20},
-	type_test_input/.style = {fill = purple!30},
-	res/.style = {fill = gray!10}
+	typePower/.style = {fill = red!80},
+	typeAnalogIn/.style = {fill = brown!60},
+	typeAnalogOut/.style = {fill = cyan!30},
+	typeGround/.style = {fill = green!20},
+	typeDataHi/.style = {fill = blue!50},
+	typeDiscreteIn/.style = {fill = yellow!60},
+	typeDiscreteOut/.style = {fill = orange!60},
+	typeIsoDiffGnd/.style = {fill = blue!20},
+	typeBreakwireEx/.style = {fill = brown!70},
+	% typeBreakwireSense/.style = {fill = orange, pattern=dots,pattern color=yellow},
+	typeBreakwireSense/.style = {fill = brown!40},
+	typeTestInput/.style = {fill = purple!30},
+	typeReserved/.style = {fill = gray!10, font=\color{gray}}
 }
 
 \newcommand{\placeLegend}{
 	% \vfill
 	% \resizebox{0.20\textwidth}{!}{
-	\begin{tikzpicture} [scale=0.60,transform shape, every node/.style = {node distance=10pt, outer sep = 0cm, inner sep = 0cm}, font = \sffamily]
+	\begin{tikzpicture} [scale=0.50,transform shape, every node/.style = {node distance=10pt, outer sep = 0cm, inner sep = 0cm}, font = \sffamily]
 		% , transform shape, node distance = 0.5cm ]
-		\node[type_power, pinnode] (lpwr) {};                  \node[right = of lpwr] {POWER};
-		\node[type_ground, pinnode, below = of lpwr] (lgnd) {}; \node[right = of lgnd] {POWER RTN/type_ground};
-		\node[type_data_hi, pinnode, below = of lgnd] (lcom) {}; \node[right = of lcom] {DATA/COMM. POS. (+)};
-		\node[type_data_lo, pinnode, below = of lgnd] (lcom) {}; \node[right = of lcom] {DATA/COMM. NEG. (-)};
-		\node[type_discrete_in, pinnode, below = of lcom] (ldih) {}; \node[right = of ldih] {DISCRETE INPUT SIGNAL (+)};
-		\node[type_discrete_reference, pinnode, below = of ldih] (ldil) {}; \node[right = of ldil] {DISCRETE INPUT REF. (-)};
-		\node[type_breakwire_ex, pinnode, below = of ldil] (lbwh) {}; \node[right = of lbwh] {BREAK WIRE EXCITATION};
-		\node[type_breakwire_sense, pinnode, below = of lbwh] (lbwl) {}; \node[right = of lbwl] {BREAK WIRE INDICATE};
-		\node[type_test_input, pinnode, below = of lbwl] (ltst) {}; \node[right = of ltst] {NON-TACTICAL/TEST USE ONLY};
-		\node[type_reserved, pinnode, below = of ltst] (lres) {}; \node[right = of lres] {RESERVED/UNUSED};
+		\node[typePower, pinnode] (lpwr) {};                  \node[right = of lpwr] {POWER};
+		\node[typeGround, pinnode, below = of lpwr] (lgnd) {}; \node[right = of lgnd] {POWER RTN/BOARD GND};
+		\node[typeDataHi, pinnode, below = of lgnd] (lcom) {}; \node[right = of lcom] {DATA/COMM. POS. (+)};
+		\node[typeIsoDiffGnd, pinnode, below = of lcom] (ldil) {}; \node[right = of ldil] {ISOLATED/DIFFERENTIAL REF. (-)};
+		\node[typeDiscreteIn, pinnode, below = of ldil] (ldih) {}; \node[right = of ldih] {DISCRETE INPUT SIGNAL (+)};
+		\node[typeDiscreteOut, pinnode, below = of ldih] (dout) {}; \node[right = of dout] {DISCRETE OUTPUT SIGNAL (+)};
+		% \node[typeAnalogIn, pinnode, below = of dout] (anin) {}; \node[right = of anin] {ANALOG INPUT SIGNAL (+)};
+		\node[typeAnalogOut, pinnode, below = of dout] (anout) {}; \node[right = of anout] {ANALOG OUTPUT SIGNAL (+)};
+		% \node[typeBreakwireEx, pinnode, below = of anout] (lbwh) {}; \node[right = of lbwh] {BREAK WIRE EXCITATION};
+		% \node[typeBreakwireSense, pinnode, below = of lbwh] (lbwl) {}; \node[right = of lbwl] {BREAK WIRE INDICATE};
+		\node[typeTestInput, pinnode, below = of anout] (ltst) {}; \node[right = of ltst] {NON-TACTICAL/TEST USE ONLY};
+		\node[typeReserved, pinnode, below = of ltst, font=\color{black}] (lres) {}; \node[right = of lres] {RESERVED/UNUSED};
 	\end{tikzpicture}
 	% }
 	% \vfill
@@ -90,9 +170,9 @@
 		}
 }
 
-\newcommand{\labelPinsByReference}[1]{
-	\foreach \q [count=\x] in {#1}{
-			\node[pinnode, \q] at (pin\x) (pin\x){\x};
+\newcommand{\labelPinsByReference}{
+	\foreach \q [count=\x] in {1,...,25}{
+			\node[pinnode, \pinNumType{\q}] at (pin\x) (pin\x){\x};
 			\ifnum\x>13
 				\node[anchor = east, minimum width=0cm, left = of pin\x, xshift=0.5in] (pinName\x) {\useVal{pinName\x}};
 			\else
@@ -134,6 +214,21 @@
 	\draw[line width = 1.15pt] (t2) -- +(-75:0.5cm);
 }
 
+\newcommand{\renderConnector}{
+	\begin{figure}[htb]
+		\centering
+		\resizebox{!}{0.5\textheight}{
+			\begin{tikzpicture}% [every node/.style ={ minimum width = 0in}]
+				\drawConnector{}
+				\labelPinsByReference
+				% \node[below = of pin1,yshift=0.5cm] {ACES \ac{ESAD} Pinout};
+			\end{tikzpicture}}
+		\hspace{1cm}\placeLegend
+		\vspace{0.5cm}
+		\caption{Pinout Diagram of \ac{ESAD} Electrical Interface}%
+		\label{pinout}
+	\end{figure}
+}
 
 % \begin{landscape}
 % \begin{minipage}{0.4\linewidth}
@@ -165,10 +260,10 @@
 
 	% Declare row types and commands
 
-	\newcommand{\pin}[3]{
+	\newcommand{\pin}[5]{
 		{\textbf{\thepincount}}
-		& \sig{\smaller ##1} & {\smaller ##3} \\
-		\defPin{\thepincount}{##1}{##2}
+		& \sig{\smaller ##1} & {\sffamily\smaller\smaller \MakeUppercase{##4}} & {\smaller ##5} \\
+		\defPin{\thepincount}{##1}{##2}{##3}
 		\defValwCount{pinName\thepincount}{\sig{##1}}
 		% \defValwCount{pinType\thepincount}{##2}
 		\stepcounter{pincount}
@@ -176,9 +271,10 @@
 	}
 
 	\newcommand{\resvpin}{
-		\textbf{\textcolor{gray}{\noindent\thepincount}} & \textcolor{gray}{\sig{\smaller{}RESERVED}} &\textcolor{gray}{\smaller{}Not used in \ac{CPS} tactical configuration.}  \\ % \hline{}
-		\defPin{\thepincount}{RESERVED}{resv}
-		\defValwCount{pinName\thepincount}{\color{gray}{\sig{reserved}}}
+		\textbf{\textcolor{gray}{\noindent\thepincount}} & \textcolor{gray}{\sig{\smaller{}N/C}} & \textcolor{gray}{\sig{\smaller{}RESERVED}} &\textcolor{gray}{\smaller{}Not used in  tactical configuration.}  \\ % \hline{}
+
+		\defPin{\thepincount}{RESERVED}{resv}{typeReserved}
+		\defValwCount{pinName\thepincount}{\color{gray}{\sig{}}}
 		\stepcounter{pincount}
 	}
 
@@ -202,7 +298,7 @@
 	% Setup table and tabular env
 
 	% TODO, get around this hack properly
-	\table[h!]
+	\table[htbp!]
 
 	\ifdef{\thepincount}{ % True \addtocounter{table}{-1}
 		\caption*{AFE Pin Descriptions (cont.)}
@@ -216,17 +312,18 @@
 	\label{pinlist}
 	% \smaller{}
 
-	\def\arraystretch{1.25}%  1 is the default, change whatever you need
+	\def\arraystretch{1.15}%  1 is the default, change whatever you need
 	\setlength{\tabcolsep}{0.5em} % for the horizontal padding
 	\noindent
-	\tabularx{\linewidth}{@{}r l X}
+	\tabularx{\linewidth}{@{}r r p{1.4in} X}
 	\toprule
-	\hspace{-0.5cm}\textsc{\larger\bfseries{}Pin} & \textsc{\larger\bfseries{}Name}
+	\hspace{-0.5cm}\textsc{\larger\bfseries{}Pin} & \textsc{\larger\bfseries{}Signal} & \textsc{\larger\bfseries{}Function}
 	% & \textsc{\larger{}\bfseries{}Type}
-	& \textsc{\larger\bfseries{}Purpose}
+	& \textsc{\larger\bfseries{}Description}
 	\\ \midrule
 }{ % End pinout start block, start pinout end block
 	\endtabularx
+	\noindent\makebox[\linewidth]{\rule{\linewidth}{0.6pt}}
 	\endtable}
 
 % Serial protocol drawing commands
@@ -243,6 +340,7 @@
 \newcommand{\bitwidth}{2.1em}
 
 \newcommand{\fhex}[1]{{\bfseries\ttfamily#1}}
+
 \newcommand{\refpname}[1]{{\slshape\nameref{#1}}}
 \newcommand{\fmsg}[2]{\hyperref[#2]{\ttfamily#1}}
 
@@ -312,4 +410,48 @@
 	\rlap{\bitbox{#2}{\color{#1}\rule{\width}{\height}}}%
 	\bitbox{#2}{#3}
 }
+
+
+\newcommand{\donames}[3]{
+	% \vspace{-1.5\baselineskip}
+	% \paragraph*{Signal Designation}
+	% \vspace*{-0.5\baselineskip}\hrule\vspace{0.8\baselineskip} %{{{
+	% \vspace{-1.8\baselineskip}
+	% \begin{minipage}[t][][t]{0.47\linewidth}%
+	%     \vspace{0pt}
+	%     #5
+	% \end{minipage}
+	% % \hspace{0.02\linewidth}
+	% \hfill
+	% \vspace*{\baselineskip}
+	% \begin{wrapfigure}{r}{0.6\linewidth}
+	% \vspace{-.5\baselineskip}
+	% \fbox{
+	~\\~\\
+	\noindent\begin{tabularx}{0.75\linewidth}{p{0.01cm} r @{:~} X r@{~~} c }
+		           & Signal name      & \useVal{pinName#1} & PIN & \textbf{#1} \\
+		~\newline~ & Signal reference & \useVal{pinName#2} & PIN & \textbf{#2} \\
+		           & Source           & \bfseries{}#3      &     &             \\
+		% \multicolumn{3}{l}{\bfseries{}#3}                     \\
+	\end{tabularx}
+	\\
+
+	% }
+	% \vspace{-.5\baselineskip}
+	% \end{wrapfigure}
+}
+
+
+\newcommand{\scon}[4]{
+	\paragraph*{Signal Convention}
+	\begin{equation*}
+		\text{\pinsig{#1}} = \begin{cases}
+			\text{Logic \textbf{HIGH}}, & \text{if~~} \Delta #3_{\text{\textsc{Pin} \pinAliasNum{#1}}},#3_{\text{\textsc{Pin} \pinAliasNum{#2}}} \geq \text{#4} \\
+			\text{Logic \textbf{LOW}},  & \text{otherwise}
+		\end{cases}
+	\end{equation*}
+}
+
+
+
 % vim: nospell
