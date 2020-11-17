@@ -138,7 +138,7 @@
 
 	\newcommand{\roughmark}{
 		\tikzset{
-			rough/.style = { scale = 1.5, rotate=40, opacity=0.02,  node distance = 1.5in, font=\LARGE\sffamily}
+			rough/.style = { scale = 1.5, rotate=40, opacity=0.03,  node distance = 1.5in, font=\LARGE\sffamily}
 			%   shadow/.style = {append after command={
 			%                           \pgfextra{\node[at = (\tikzlastnode),below left = of \tikzlastnode, gray, rough]{ROUGH DRAFT};}}}
 		}
