@@ -15,6 +15,17 @@
 % ==============================================
 % Initialize Framework
 
+% Tweak page geometry
+
+% \geometry{left=1.00in,right=1.00in,top=0.75in, bottom=1.00in}
+\geometry{margin=1in, right=0.5in}
+
+% Techinical docs are better in sans
+\renewcommand{\familydefault}{\sfdefault}
+% \usepackage{helvet}
+% \usepackage{avant}
+% \smaller\smaller
+
 % If run before, there will be things to remember
 \InputIfFileExists{pinData.tex}{
 	\PackageInfo{fancyeicd}{Reading in previous pin definitions.}
@@ -271,7 +282,7 @@
 	}
 
 	\newcommand{\resvpin}{
-		\textbf{\textcolor{gray}{\noindent\thepincount}} & \textcolor{gray}{\sig{\smaller{}N/C}} & \textcolor{gray}{\sig{\smaller{}RESERVED}} &\textcolor{gray}{\smaller{}Not used in  tactical configuration.}  \\ % \hline{}
+		\textbf{\textcolor{gray}{\noindent\thepincount}} & \textcolor{gray}{\sig{\smaller{}N/C}} & \textcolor{gray}{\smaller Reserved} &\textcolor{gray}{\smaller{}Not used in  tactical configuration.}  \\ % \hline{}
 
 		\defPin{\thepincount}{RESERVED}{resv}{typeReserved}
 		\defValwCount{pinName\thepincount}{\color{gray}{\sig{}}}
@@ -312,7 +323,7 @@
 	\label{pinlist}
 	% \smaller{}
 
-	\def\arraystretch{1.15}%  1 is the default, change whatever you need
+	\def\arraystretch{1.00}%  1 is the default, change whatever you need
 	\setlength{\tabcolsep}{0.5em} % for the horizontal padding
 	\noindent
 	\tabularx{\linewidth}{@{}r r p{1.4in} X}
