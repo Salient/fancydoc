@@ -18,7 +18,8 @@
 % Tweak page geometry
 
 % \geometry{left=1.00in,right=1.00in,top=0.75in, bottom=1.00in}
-\geometry{margin=1in, right=0.5in}
+\geometry{left=1.25in,right=1.25in,top=1.25in, bottom=1.25in}
+% \geometry{margin=1in, right=0.75in}
 
 % Techinical docs are better in sans
 \renewcommand{\familydefault}{\sfdefault}
@@ -26,91 +27,6 @@
 % \usepackage{avant}
 % \smaller\smaller
 
-% If run before, there will be things to remember
-\InputIfFileExists{pinData.tex}{
-	\PackageInfo{fancyeicd}{Reading in previous pin definitions.}
-} {
-	\PackageInfo{fancyeicd}{No previous pin definitions.}
-}
-
-% Record references for use anywhere in the document.
-\newwrite\fancyeicd@data
-\immediate\openout\fancyeicd@data=pinData.tex
-
-
-% Right now only supports one global connector namespace
-% easy enough to add more
-\newcommand{\defPin}[4]{
-	%   Arguments should be {number/counterreference}
-	%                       {Signal name (underscores escaped....need to figure out how to do that )}
-	%                       {shortname}
-
-	\ifcsname fancy@pinDefn@#1@defined\endcsname
-		\PackageError{fancy}{Connector Pin definition '#1' is defined twice}{}
-	\else
-		\immediate\write\@auxout{%
-			\unexpanded{\global\@namedef}{fancy@pinDef@numToName@#1}\unexpanded{{\sig{#2}}}%
-		}
-		\immediate\write\@auxout{%
-			\unexpanded{\global\@namedef}{fancy@pinDef@numToAlias@#1}\unexpanded{{#3}}%
-		}
-		\immediate\write\@auxout{%
-			\unexpanded{\global\@namedef}{fancy@pinDef@numToType@#1}\unexpanded{{#4}}%
-		}
-		\immediate\write\@auxout{%
-			\unexpanded{\global\@namedef}{fancy@pinDef@aliasToName@#3}\unexpanded{{\sig{#2}}}%
-		}
-		\immediate\write\@auxout{%
-			\unexpanded{\global\@namedef}{fancy@pinDef@aliasToNum@#3}{#1}%
-		}
-		% \unexpanded{\global\@namedef}{fancy@pinDef@#1@defined}{}
-		\global\@namedef{fancy@pinDef@#1@defined}{}%
-	\fi
-}
-% TODO - stream line above
-
-\newcommand{\pinNumName}[1]{%
-	\ifcsname fancy@pinDef@numToName@#1\endcsname
-		\csname fancy@pinDef@numToName@#1\endcsname
-	\else
-		??%
-	\fi
-}
-
-\newcommand{\pinNumType}[1]{%
-	\ifcsname fancy@pinDef@numToType@#1\endcsname
-		\csname fancy@pinDef@numToType@#1\endcsname
-	\else
-		red%
-	\fi
-}
-
-\newcommand{\pinAliasNum}[1]{%
-	\ifcsname fancy@pinDef@aliasToNum@#1\endcsname%
-		\csname fancy@pinDef@aliasToNum@#1\endcsname%
-	\else
-		??%
-	\fi
-}
-
-\newcommand{\pinAliasName}[1]{%
-	\ifcsname fancy@pinDef@aliasToName@#1\endcsname
-		\csname fancy@pinDef@aliasToName@#1\endcsname
-	\else
-		??%
-	\fi
-}
-
-\newcommand{\pinAliasRef}[1]{%
-	\edef\thispin{\pinAliasNum{#1}}%
-	% {\smaller\sig{\sloppy\sloppy\pinNumName{\thispin}} (\textbf{\textsc{\smaller{}Pin \thispin})}}}
-	{\sig{\sloppy\sloppy\pinNumName{\thispin}} (\textbf{\textsc{\smaller{}Pin \thispin})}}}
-
-\newcommand{\pinsig}[1]{%
-	\edef\thispin{\pinAliasNum{#1}}%
-	% {\smaller\sig{\pinNumName{\thispin}}}}
-	{\sig{\pinNumName{\thispin}}}}
-\newcommand{\state}[1]{\sloppy\fbox{\sig{#1}}\xspace}
 
 
 
@@ -118,19 +34,21 @@
 
 \tikzset{%
 	pinnode/.style = {inner sep = 2pt, minimum width=20pt, draw, circle},
-	typePower/.style = {fill = red!80},
+	typePower/.style = {fill = red!60!white},
 	typeAnalogIn/.style = {fill = brown!60},
 	typeAnalogOut/.style = {fill = cyan!30},
-	typeGround/.style = {fill = green!20},
-	typeDataHi/.style = {fill = blue!50},
+	typeGround/.style = {fill = black, text=white, font=\bfseries},
+	typeDataHi/.style = {fill = cyan!50!white},
+	typeDataLo/.style = {fill = green!50!white},
 	typeDiscreteIn/.style = {fill = yellow!60},
 	typeDiscreteOut/.style = {fill = orange!60},
 	typeIsoDiffGnd/.style = {fill = blue!20},
 	typeBreakwireEx/.style = {fill = brown!70},
 	% typeBreakwireSense/.style = {fill = orange, pattern=dots,pattern color=yellow},
 	typeBreakwireSense/.style = {fill = brown!40},
-	typeTestInput/.style = {fill = purple!30},
-	typeReserved/.style = {fill = gray!10, font=\color{gray}}
+	typeTestInput/.style = {fill = purple!30 },
+	typeReserved/.style = {fill = gray!10, font=\color{gray}},
+	typeUsed/.style = {fill = gray!30, font=\color{gray}}
 }
 
 \newcommand{\placeLegend}{
@@ -157,9 +75,54 @@
 
 \newcommand{\modcolor}{black}
 
+
+\newcommand{\pinNumName}[2]{%
+	\ifcsname fancy@conn@#1@pinDef@numToName@#2\endcsname
+		\csname fancy@conn@#1@pinDef@numToName@#2\endcsname
+	\else
+		??%
+	\fi
+}
+
+\newcommand{\pinNumType}[2]{%
+	\ifcsname fancy@conn@#1@pinDef@numToType@#2\endcsname
+		\csname fancy@conn@#1@pinDef@numToType@#2\endcsname
+	\else
+		red%
+	\fi
+}
+
+\newcommand{\pinAliasNum}[2]{%
+	\ifcsname fancy@conn@#1@pinDef@aliasToNum@#2\endcsname%
+		\csname fancy@conn@#1@pinDef@aliasToNum@#2\endcsname%
+	\else
+		??%
+	\fi
+}
+
+\newcommand{\pinAliasName}[2]{%
+	\ifcsname fancy@conn@#1@pinDef@aliasToName@#2\endcsname
+		\csname fancy@conn@#1@pinDef@aliasToName@#2\endcsname
+	\else
+		??%
+	\fi
+}
+
+\newcommand{\pinAliasRef}[2]{%
+	\edef\thispin{\pinAliasNum{#1}{#2}}%
+	% {\smaller\sig{\sloppy\sloppy\pinNumName{\thispin}} (\textbf{\textsc{\smaller{}Pin \thispin})}}}
+	{\sig{\sloppy\sloppy\pinNumName{#1}{\thispin}} (\textbf{\textsc{\smaller{}Pin \thispin})}}}
+
+\newcommand{\pinsig}[2]{%
+	\edef\thispin{\pinAliasNum{#1}{#2}}%
+	% {\smaller\sig{\pinNumName{\thispin}}}}
+	{\sig{\pinNumName{#1}{\thispin}}}}
+\newcommand{\state}[1]{\sloppy\fbox{\sig{#1}}\xspace}
+
+
 \newcommand{\labelPins}[1]{
 	% Draw pins with fill color specified, draw label and pin
-	\foreach \q/\p [count=\x] in {#1}{
+	\foreach \q/\p [count=\x] in {##1}{
 			\node[pinnode, \p] at (pin\x) (pin\x){\x}; % Label pin number
 
 			% Normal pins written in black
@@ -181,39 +144,39 @@
 		}
 }
 
-\newcommand{\labelPinsByReference}{
+\newcommand{\labelPinsByReference}[1]{
 	\foreach \q [count=\x] in {1,...,25}{
-			\node[pinnode, \pinNumType{\q}] at (pin\x) (pin\x){\x};
+			\node[pinnode, \pinNumType{#1}{\q}] at (#1 pin\x) (#1 pin\x){\x};
 			\ifnum\x>13
-				\node[anchor = east, minimum width=0cm, left = of pin\x, xshift=0.5in] (pinName\x) {\useVal{pinName\x}};
+				\node[anchor = east, minimum width=0cm, left = of #1 pin\x, xshift=0.5in] (#1 pinName\x) {\pinNumName{#1}{\x}};
 			\else
-				\node[anchor = west, minimum width = 0cm, right = of pin\x, xshift=-0.5in] (pinName\x) {\useVal{pinName\x}};
+				\node[anchor = west, minimum width = 0cm, right = of #1 pin\x, xshift=-0.5in] (#1 pinName\x) {\pinNumName{#1}{\x}};
 			\fi
-			\draw[dashed,gray] (pinName\x) -- (pin\x);
+			\draw[dashed,gray] (#1 pinName\x) -- (#1 pin\x);
 		}
 }
 
-\newcommand{\drawConnector}{
+\newcommand{\drawConnector}[1]{
 	% Lay out pins of connector and draw boundary
-	\coordinate (pin0); % Establish name of origin
+	\coordinate (#1 pin0); % Establish name of origin
 	\foreach \x [remember=\x as \lastx (initially 0)] in {1,...,13}{% draw top row. Backwards because female
 			% \node[above  of = pin\lastx, yshift=-0.2cm] (pin\x) {\x};
-			\coordinate[above = 30pt of pin\lastx] (pin\x);
+			\coordinate[above = 30pt of #1 pin\lastx] (#1 pin\x);
 		}
-	\coordinate (adjOff) at ($ (pin1)!0.5!(pin2) $);
-	\coordinate[left = 25pt of adjOff] (pin14);
+	\coordinate (adjOff) at ($ (#1 pin1)!0.5!(#1 pin2) $);
+	\coordinate[left = 25pt of adjOff] (#1 pin14);
 	\foreach \x [remember=\x as \lastx (initially 14)] in {15,...,25}{% draw top row. Backwards because female
 			% \node[above of = pin\lastx, yshift=-0.2cm] (pin\x) {\x};
-			\coordinate[above = 30pt of pin\lastx] (pin\x);
+			\coordinate[above = 30pt of #1 pin\lastx] (#1 pin\x);
 		}
 
 	% Draw connector shell and fill
 
 	% mark the four corners
-	\coordinate[above right = of pin13, xshift=-10pt, yshift=2pt] (corn1);
-	\coordinate[below right = of pin1, xshift=-10pt, yshift=-2pt] (corn2);
-	\coordinate[below left = of pin15, xshift=10pt, yshift=-12pt] (corn3);
-	\coordinate[above left = of pin24, xshift=10pt, yshift=12pt] (corn4);
+	\coordinate[above right = of #1 pin13, xshift=-10pt, yshift=2pt] (corn1);
+	\coordinate[below right = of #1 pin1, xshift=-10pt, yshift=-2pt] (corn2);
+	\coordinate[below left = of #1 pin15, xshift=10pt, yshift=-12pt] (corn3);
+	\coordinate[above left = of #1 pin24, xshift=10pt, yshift=12pt] (corn4);
 
 	\draw[ultra thick, rounded corners = 1cm, name path = shell, fill=brown!50!gray, fill opacity=0.2] (corn1) -- (corn2) -- (corn3) -- (corn4) -- cycle;
 	\path[name path = cgnd] (corn3) ++(0cm, -0.75cm) ++(70:1cm) -- ++(-135:2cm);
@@ -225,19 +188,34 @@
 	\draw[line width = 1.15pt] (t2) -- +(-75:0.5cm);
 }
 
-\newcommand{\renderConnector}{
+\newcommand{\renderConnector}[1]{
 	\begin{figure}[htb]
 		\centering
 		\resizebox{!}{0.5\textheight}{
 			\begin{tikzpicture}% [every node/.style ={ minimum width = 0in}]
-				\drawConnector{}
-				\labelPinsByReference
+				\drawConnector{#1}
+				\labelPinsByReference{#1}
 				% \node[below = of pin1,yshift=0.5cm] {ACES \ac{ESAD} Pinout};
 			\end{tikzpicture}}
 		\hspace{1cm}\placeLegend
 		\vspace{0.5cm}
 		\caption{Pinout Diagram of \ac{ESAD} Electrical Interface}%
-		\label{pinout}
+		\label{pinout#1}
+	\end{figure}
+}
+
+\newcommand{\renderConnectorWoLegend}[1]{
+	\begin{figure}[htb]
+		\centering
+		\resizebox{!}{0.5\textheight}{
+			\begin{tikzpicture}% [every node/.style ={ minimum width = 0in}]
+				\drawConnector{#1}
+				\labelPinsByReference{#1}
+				% \node[below = of pin1,yshift=0.5cm] {ACES \ac{ESAD} Pinout};
+			\end{tikzpicture}}
+		\vspace{0.5cm}
+		\caption{Pinout Diagram of \ac{ESAD} Electrical Interface}%
+		\label{pinout#1}
 	\end{figure}
 }
 
@@ -257,9 +235,70 @@
 % \resizebox{!}{0.7\textheight}{
 
 \newcommand{\sref}[1]{{\smaller\sig{#1}}}
-\newcommand{\srefn}[1]{\useVal{pinName#1}}
+% \newcommand{\srefn}[1]{\useVal{pinName#1}}
 
-\newenvironment{pinout}{
+
+\providetoggle{printtable}
+\toggletrue{printtable}
+
+\newenvironment{pinout}[1]{
+
+
+	\newtoggle{continuing}
+
+	\ifdef{\thefancy@conn@#1@pincount}{ % True \addtocounter{table}{-1}
+		\toggletrue{continuing}
+	}{ % False
+		\newcounter{fancy@conn@#1@pincount}
+		\setcounter{fancy@conn@#1@pincount}{1}
+		\togglefalse{continuing} % not strictly necessary, but readability yo
+	}
+
+	\newcommand{\safecounter}{\csname thefancy@conn@#1@pincount\endcsname}
+	\newcommand{\safename}{#1}
+
+
+	% If run before, there will be things to remember
+	\InputIfFileExists{pinData_\unexpanded{#1}.tex}{
+		\PackageInfo{fancyeicd}{Reading in previous pin definitions for connector \unexpanded{#1}.}
+	} {
+		\PackageInfo{fancyeicd}{No previous pin definitions.}
+	}
+
+	% Record references for use anywhere in the document.
+	\newwrite\fancyeicd@conndefs
+	\immediate\openout\fancyeicd@conndefs=pinData_#1.tex
+
+
+
+	\newcommand{\defPin}[4]{
+		%   Arguments should be {number/counterreference}
+		%                       {Signal name (underscores escaped....need to figure out how to do that )}
+		%                       {shortname}
+
+		\ifcsname fancy@conn@#1@pinDef@##1@definedx\endcsname
+			\PackageError{fancy}{Connector '#1' Pin ##1 is defined twice}{}
+		\else
+			\immediate\write\@auxout{%
+				\unexpanded{\global\@namedef}{fancy@conn@#1@pinDef@numToName@##1}\unexpanded{{\sig{##2}}}%
+			}
+			\immediate\write\@auxout{%
+				\unexpanded{\global\@namedef}{fancy@conn@#1@pinDef@numToAlias@##1}\unexpanded{{##3}}%
+			}
+			\immediate\write\@auxout{%
+				\unexpanded{\global\@namedef}{fancy@conn@#1@pinDef@numToType@##1}\unexpanded{{##4}}%
+			}
+			\immediate\write\@auxout{%
+				\unexpanded{\global\@namedef}{fancy@conn@#1@pinDef@aliasToName@##3}\unexpanded{{\sig{##2}}}%
+			}
+			\immediate\write\@auxout{%
+				\unexpanded{\global\@namedef}{fancy@conn@#1@pinDef@aliasToNum@##3}{##1}%
+			}
+			% \unexpanded{\global\@namedef}{fancy@conn@#1@pinDef@##1@defined}{}
+			\global\@namedef{fancy@conn@#1@pinDef@##1@defined}{}%
+		\fi
+	}
+	% TODO - stream line above
 	%
 	% Inserts row in pinout definition
 	% First column will be pin number, taken care of automatically.  Second is
@@ -271,22 +310,23 @@
 
 	% Declare row types and commands
 
+	% pin is [5]; pin name, alias, type, function, desc
+	% defPin is [4]; pin num, name, alias, type
 	\newcommand{\pin}[5]{
-		{\textbf{\thepincount}}
-		& \sig{\smaller ##1} & {\smaller##4} & {\smaller ##5} \\
-		\defPin{\thepincount}{##1}{##2}{##3}
-		\defValwCount{pinName\thepincount}{\sig{##1}}
+		\defPin{\safecounter}{##1}{##2}{##3}%
+		% \defValwCount{fancy@conn@#1@pinName\thepincount}{\sig{##1}}%
 		% \defValwCount{pinType\thepincount}{##2}
-		\stepcounter{pincount}
+		\stepcounter{fancy@conn@#1@pincount}%
 		% \label{##1desc}
+		{\textbf{}}
+		& \sig{\smaller ##1} & {\smaller##4} & {\smaller ##5} \\
 	}
 
 	\newcommand{\resvpin}{
-		\textbf{\textcolor{gray}{\noindent\thepincount}} & \textcolor{gray}{\sig{\smaller{}N/C}} & \textcolor{gray}{\smaller Reserved} &\textcolor{gray}{\smaller{}Not used in  tactical configuration.}  \\ % \hline{}
-
-		\defPin{\thepincount}{RESERVED}{resv}{typeReserved}
-		\defValwCount{pinName\thepincount}{\color{gray}{\sig{}}}
-		\stepcounter{pincount}
+		\defPin{\safecounter}{RESERVED}{resv}{typeReserved}%
+		% \defValwCount{fancy@conn@#1@pinName\thepincount}{\color{gray}{\sig{}}}%
+		\stepcounter{fancy@conn@#1@pincount}%
+		\textbf{\textcolor{gray}{}} & \textcolor{gray}{\sig{\smaller{}N/C}} & \textcolor{gray}{\smaller Reserved} &\textcolor{gray}{\smaller{}Not used in  tactical configuration.}  \\ % \hline{}
 	}
 
 
@@ -311,24 +351,23 @@
 	% TODO, get around this hack properly
 	\table[htbp!]
 
-	\ifdef{\thepincount}{ % True \addtocounter{table}{-1}
-		\caption*{AFE Pin Descriptions (cont.)}
+	\iftoggle{continuing}{ % True 
+		\addtocounter{table}{-1}
+		\caption*{Fuze Pin Descriptions (cont.)}
 	}{ % False
-		\newcounter{pincount}
-		\setcounter{pincount}{1}
-		\caption{AFE Pin Descriptions}
+		\caption{Fuze Pin Descriptions}
 	}
 
 	% \smaller{}
-	\label{pinlist}
+	\label{pinlist#1}
 	% \smaller{}
 
 	\def\arraystretch{1.00}%  1 is the default, change whatever you need
 	\setlength{\tabcolsep}{0.5em} % for the horizontal padding
 	\noindent
-	\tabularx{\linewidth}{@{}r r p{1.4in} X}
+	\tabularx{\linewidth}{@{}r r p{1in} X}
 	\toprule
-	\hspace{-0.5cm}\textsc{\larger\bfseries{}Pin} & \textsc{\larger\bfseries{}Signal} & \textsc{\larger\bfseries{}Function}
+	\textsc{\larger\bfseries{}Pin} & \textsc{\larger\bfseries{}Signal Name} & \textsc{\larger\bfseries{}Details}
 	% & \textsc{\larger{}\bfseries{}Type}
 	& \textsc{\larger\bfseries{}Description}
 	\\ \midrule
@@ -340,7 +379,7 @@
 % Serial protocol drawing commands
 
 \newcommand{\bitlabel}[2]{%
-	\bitbox[]{#1}{%
+	\bitbox[]{##1}{%
 		\raisebox{5pt}[4ex][0pt]{%
 			\turnbox{45}{\fontsize{7}{7}\selectfont#2}%
 		}%
@@ -440,9 +479,9 @@
 	% \fbox{
 	~\\~\\
 	\noindent\begin{tabularx}{0.75\linewidth}{p{0.01cm} r @{:~} X r@{~~} c }
-		           & Signal name      & \useVal{pinName#1} & PIN & \textbf{#1} \\
-		~\newline~ & Signal reference & \useVal{pinName#2} & PIN & \textbf{#2} \\
-		           & Source           & \bfseries{}#3      &     &             \\
+		           & Signal name      & \pinNumName{#1} & PIN & \textbf{#1} \\
+		~\newline~ & Signal reference & \pinNumName{#2} & PIN & \textbf{#2} \\
+		           & Source           & \bfseries{}#3   &     &             \\
 		% \multicolumn{3}{l}{\bfseries{}#3}                     \\
 	\end{tabularx}
 	\\

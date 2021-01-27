@@ -379,25 +379,16 @@
 \newtoggle{markingSafetyCritical}
 \newtoggle{customBumper}
 
-% There may be a space required between these?
+% Set toggle defaults
 \togglefalse{markingHazOp}
-
 \toggletrue{markingDistribution}
-
 \toggletrue{markingITAR}
-
 \toggletrue{markingProprietary}
-
 \toggletrue{markingDestroy}
-
 \toggletrue{markingSafetyCritical}
-
 \togglefalse{markingCopyright}
-
 \toggletrue{programWarning}
-
 \togglefalse{markingFOUO}
-
 \togglefalse{customBumper}
 
 
@@ -428,11 +419,11 @@
 \renewcommand{\cfttabpresnum}{\bfseries Table\ }
 
 %\renewcommand{\cftmarktoc}{\fontfamily{qhv}\selectfont !!}
-\renewcommand{\cfttoctitlefont}{\bfseries\scshape\Large\fontfamily{qhv}\selectfont}
-\renewcommand{\cftlottitlefont}{\vspace*{1cm}\bfseries\scshape\Large\fontfamily{qhv}\selectfont}
-\renewcommand{\cftloftitlefont}{\vspace*{1cm}\bfseries\scshape\Large\fontfamily{qhv}\selectfont}
+\renewcommand{\cfttoctitlefont}{\bfseries\scshape\large}
+\renewcommand{\cftlottitlefont}{\vspace*{1cm}\bfseries\scshape\large}
+\renewcommand{\cftloftitlefont}{\vspace*{1cm}\bfseries\scshape\large}
 
-\renewcommand{\contentsname}{Table of Contents}
+\renewcommand{\contentsname}{Contents}
 %\renewcommand{\cftaftertoctitle}{%
 %   \\[\baselineskip]\mbox{}\hfill Page}
 %\renewcommand\cfttoctitlefont{\Large\bfseries Table of }
@@ -656,19 +647,22 @@
 	\fancyfoot[L]{\unselectable
 		\scriptsize\topfooterleft\vspace{0.1cm}\hrule\vspace{0.1cm}
 		\ifboolexpr{togl{markingITAR}}{\textsc{Export Controlled}}{}
-		\ifboolexpr{ togl{markingDistribution} and togl{markingITAR}}{ \textbf{ // } }{}
+		\ifboolexpr{togl{markingDistribution} and togl{markingITAR}}{ \textbf{ // } }{}
 		\ifboolexpr{togl{markingDistribution}}{\textsc{Distribution} \distribution}{}
 	}
 
 	\fancyfoot[C]{\unselectable
-		\scriptsize~\vspace{0.2cm}\\
-		\iftoggle{markingProprietary}{\scriptsize\textsc{Raytheon Proprietary}\\[0.2cm]}~
-		\iftoggle{markingHazOp}{ \small\color{red}\textbf{PROCEDURE CONTAINS HAZARDOUS OPERATIONS }}
+		\scriptsize{
+			\vspace{0.5cm}
+			\iftoggle{markingProprietary}{\scriptsize\textsc{Raytheon Proprietary}{}%
+				\\[0.2cm]}~
+			\iftoggle{markingHazOp}{ \small\color{red}\textbf{PROCEDURE CONTAINS HAZARDOUS OPERATIONS}}{}%
+		}
 	}
 
 	\fancyfoot[R]{\unselectable{
 			\iftoggle{markingSafetyCritical}{\formatting\scriptsize\textbf{\textsc{Safety Critical Item}}}
-			~\vspace{0.1cm}\\
+			% ~\vspace{0.1cm}\\
 			\scriptsize\textbf{UNCLASSIFIED}
 			\iftoggle{markingFOUO}{\textbf{ // ~FOUO}}}
 	}
@@ -709,13 +703,14 @@
 
 \fancyfoot[C]{
 	\unselectable{
-		\scriptsize
-		\iftoggle{markingSafetyCritical}{\formatting\scriptsize\textbf{\textsc{Safety Critical Item}}}{}
-		% \\~\vspace{2\baselineskip}
-		% \vspace{0.2cm}% \hrule\vspace{0.1cm}
-		\\[0.1cm]~
-		\iftoggle{markingProprietary}{\scriptsize\color{black}\textsc{Raytheon Proprietary}{}\\[0.2cm]}~
-		\iftoggle{markingHazOp}{ \small\color{red}\textbf{PROCEDURE CONTAINS HAZARDOUS OPERATIONS}}{}
+		\scriptsize{
+			\iftoggle{markingSafetyCritical}{\formatting\scriptsize\textbf{\textsc{Safety Critical Item}}}{}}
+		\scriptsize{\vspace{0.5cm}
+			% \\~\vspace{2\baselineskip}
+			% \vspace{0.2cm}% \hrule\vspace{0.1cm}
+			\iftoggle{markingProprietary}{\scriptsize\color{black}\textsc{Raytheon Proprietary}{}\\[0.2cm]}~
+			\iftoggle{markingHazOp}{ \small\color{red}\textbf{PROCEDURE CONTAINS HAZARDOUS OPERATIONS}}{}
+		}
 	}
 }
 %
@@ -723,14 +718,14 @@
 \fancyfoot[R]{
 \unselectable{
 \scriptsize{% \floorbar
-\vspace{-0.2\baselineskip}
+% \vspace{-0.2\baselineskip}
 % \rule[.3\baselineskip]{0pt}{0.3\baselineskip}
 % \raisebox{0.3\baselineskip}
 \floorbar~~Page {\thepage\ of \pageref{LastPage}~~}\floorbar
 }
-\\ %\vspace{0.1cm}
+\\ \vspace{0.1cm}
 \scriptsize\textbf{UNCLASSIFIED}
-\iftoggle{markingFOUO}{\textbf{ // ~FOUO}}}
+\iftoggle{markingFOUO}{\textbf{ // ~FOUO}}}%
 }
 }
 
@@ -739,10 +734,12 @@
 \fancyfoot[R]{
 \setcounter{appage}{\theCurrentPage-\arabic{sappage}+1}
 % \unselectable{\scriptsize Page \arabic{appage}~of~~\textbf{Appendix \thesection}~~\vrule~~\thepage~of \pageref{LastPage} 
-\unselectable{\scriptsize\vspace{-0.2\baselineskip}\textbf{Appendix \thesection}~~\floorbar~~Page {\thepage~of \pageref{LastPage}~~}\floorbar~~
+\unselectable{\scriptsize%
+% \vspace{-0.2\baselineskip}%
+\textbf{Appendix \thesection}~~\floorbar~~Page {\thepage~of \pageref{LastPage}~~}\floorbar~~
 ~\vspace{0.1cm}\\
 \scriptsize\textbf{UNCLASSIFIED}
-\iftoggle{markingFOUO}{\textbf{ // ~FOUO}}}
+\iftoggle{markingFOUO}{\textbf{ // ~FOUO}}}%
 }
 \fancyfoot[C]{
 	\unselectable{
@@ -848,7 +845,7 @@
 
 \newcommand{\fouo}{{\marginnote{\textbf{\small\formatting(FOUO)}}}}
 
-\newcommand{\note}[1]{\reversemarginpar\medskip\par\marginnote{\textbf{NOTE:}}\noindent{#1}\par}
+\newcommand{\note}[1]{\reversemarginpar\medskip\par\marginnote{\textbf{NOTE:}}\noindent{\textbf{#1}}\par\medskip}
 
 \newcommand{\marku}{~\\\marginnote{(U)\\}}
 
@@ -1103,7 +1100,8 @@
 
 	\vspace*{0.25cm}
 	\noindent\hrule
-	\vfill
+	\vspace*{0.75cm}
+	% \vfill
 	%\small~\\[0.15cm]
 	%\normalsize
 	%\end{center}
@@ -1143,8 +1141,8 @@
 			\textsc{Prepared By}                                 & James Heller\newline {Fuzing, Initiator Safety}\newline             \\
 			\textsc{Classification}                              & UNCLASSIFIED\iftoggle{markingFOUO}{, FOUO \\} \\
 			\iftoggle{markingDistribution}{\textsc{Distribution} & \distribution\\}
-			\newline{\scshape\projectdesignation}                & \textsc{\contractname}                                              \\
-			\textsc{Contract \#}                                 & \textsc{\contract}
+			\newline{\scshape\projectdesignation}                & \contractname                                                       \\
+			\textsc{Contract \#}                                 & \contract
 			{\newline}                                                                                                                 \\
 
 			\textsc{Originating Facility}                        & Raytheon Missiles\newline~and Defense                               \\
@@ -1158,23 +1156,18 @@
 	\end{minipage}
 	%
 	%\vspace{0.25cm}
-	~\\\vfill
-
+	% ~\\
+	\vfill
 	\footnotesize
 
-	\noindent\iftoggle{markingDistribution}{\distwarning}
-	~\\
-	\noindent\iftoggle{markingITAR}{\itarwarning}
-	~\\
-	\noindent\iftoggle{markingProprietary}{\raypropwarning}
-	~\\
-	\noindent\iftoggle{markingFOUO}{\fouowarning}
-	~\\
-	\noindent\iftoggle{markingDestroy}{\destructwarning}
-	~\\
-	\noindent\iftoggle{programWarning}{\programwarning}
-	~\\
-	\noindent\iftoggle{markingCopyright}{\copywarning}
+	{\noindent\iftoggle{markingDistribution}{\newline\distwarning}{}}
+	{\noindent\iftoggle{markingITAR}{\newline\itarwarning}{}}
+	{\noindent\iftoggle{markingProprietary}{\newline\raypropwarning}{}}
+	{\noindent\iftoggle{markingFOUO}{\newline\fouowarning}{}}
+	{\noindent\iftoggle{markingDestroy}{\newline\destructwarning}{}}
+	{\noindent\iftoggle{programWarning}{\newline\programwarning}{}}
+	{\noindent\iftoggle{markingCopyright}{\newline\copywarning}{}}
+
 }
 
 \providecommand{\codelistings}{}
