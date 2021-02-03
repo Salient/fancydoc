@@ -6,6 +6,7 @@
 \RequirePackage{marginnote}
 \RequirePackage{booktabs}
 \RequirePackage{xcolor}
+\RequirePackage{environ}
 %  We don't really use this package, but we need cleveref, and it has to be loaded after amsmath if it's used, so we are going to preemptively atteck!
 \RequirePackage{amsmath}
 \RequirePackage[nameinlink]{cleveref}
@@ -27,23 +28,40 @@
 % \usepackage{avant}
 % \smaller\smaller
 
+\definecolor{lightgray}{gray}{0.8}
+\colorlet{lightblue}{blue!40!white}
+\colorlet{lightgreen}{green!40!white}
+\colorlet{lightyellow}{yellow!40!white}
+\colorlet{lightorange}{orange!40!white}
+\colorlet{lightpurple}{purple!40!white}
 
+% If run before, there will be things to remember
+\InputIfFileExists{fancyPinData.tex}{
+	\PackageInfo{fancyeicd}{Reading in previous pin definitions for connectors.}
+} {
+	\PackageInfo{fancyeicd}{No previous pin definitions.}
+}
+
+% Record references for use anywhere in the document.
+\newwrite\fancyeicd@conndefs
+\immediate\openout\fancyeicd@conndefs=fancyPinData.tex
 
 
 % Start framework definitions
 
 \tikzset{%
 	pinnode/.style = {inner sep = 2pt, minimum width=20pt, draw, circle},
-	typePower/.style = {fill = red!60!white},
+	typePower/.style = {fill = red!70!white, font=\bfseries},
 	typeAnalogIn/.style = {fill = brown!60},
 	typeAnalogOut/.style = {fill = cyan!30},
-	typeGround/.style = {fill = black, text=white, font=\bfseries},
+	% typeGround/.style = {fill = black, text=white, font=\bfseries},
+	typeGround/.style = {fill = green!50!white, text=black},
 	typeDataHi/.style = {fill = cyan!50!white},
-	typeDataLo/.style = {fill = green!50!white},
+	typeDataLo/.style = {fill = cyan!20!white},
 	typeDiscreteIn/.style = {fill = yellow!60},
 	typeDiscreteOut/.style = {fill = orange!60},
-	typeIsoDiffGnd/.style = {fill = blue!20},
-	typeBreakwireEx/.style = {fill = brown!70},
+	typeIsoDiffGnd/.style = {fill = green!20},
+	typeBreakwireEx/.style = {fill = orange!70},
 	% typeBreakwireSense/.style = {fill = orange, pattern=dots,pattern color=yellow},
 	typeBreakwireSense/.style = {fill = brown!40},
 	typeTestInput/.style = {fill = purple!30 },
@@ -51,23 +69,32 @@
 	typeUsed/.style = {fill = gray!30, font=\color{gray}}
 }
 
-\newcommand{\placeLegend}{
+
+
+\def\legendContents{
+	POWER/typePower,
+	POWER RTN\/BOARD GND/typeGround,
+	DATA\/COMM. POS. (+)/typeDataHi,
+	DATA\/COMM. NEG. (-)/typeDataLo,
+	% ISOLATED\/DIFFERENTIAL REF. (-)/typeIsoDiffGnd,
+	DISCRETE INPUT SIGNAL (+)/typeDiscreteIn,
+	% DISCRETE OUPUT SIGNAL (+)/typeDiscreteOut,
+	% ANALOG INPUT SGNAL (+)/typeAnalogIn,
+	% ANALOG OUTPT SIGNAL (+)/typeAnalogOut,
+	BREAK WIRE LOOP/typeBreakwireEx,
+	NON-TACTICAL\/TEST USE ONLY/typeTestInput,
+	RESERVED\/UNUSED/typeReserved}
+
+\newcommand{\placeLegend}[1]{
 	% \vfill
 	% \resizebox{0.20\textwidth}{!}{
 	\begin{tikzpicture} [scale=0.50,transform shape, every node/.style = {node distance=10pt, outer sep = 0cm, inner sep = 0cm}, font = \sffamily]
-		% , transform shape, node distance = 0.5cm ]
-		\node[typePower, pinnode] (lpwr) {};                  \node[right = of lpwr] {POWER};
-		\node[typeGround, pinnode, below = of lpwr] (lgnd) {}; \node[right = of lgnd] {POWER RTN/BOARD GND};
-		\node[typeDataHi, pinnode, below = of lgnd] (lcom) {}; \node[right = of lcom] {DATA/COMM. POS. (+)};
-		\node[typeIsoDiffGnd, pinnode, below = of lcom] (ldil) {}; \node[right = of ldil] {ISOLATED/DIFFERENTIAL REF. (-)};
-		\node[typeDiscreteIn, pinnode, below = of ldil] (ldih) {}; \node[right = of ldih] {DISCRETE INPUT SIGNAL (+)};
-		\node[typeDiscreteOut, pinnode, below = of ldih] (dout) {}; \node[right = of dout] {DISCRETE OUTPUT SIGNAL (+)};
-		% \node[typeAnalogIn, pinnode, below = of dout] (anin) {}; \node[right = of anin] {ANALOG INPUT SIGNAL (+)};
-		\node[typeAnalogOut, pinnode, below = of dout] (anout) {}; \node[right = of anout] {ANALOG OUTPUT SIGNAL (+)};
-		% \node[typeBreakwireEx, pinnode, below = of anout] (lbwh) {}; \node[right = of lbwh] {BREAK WIRE EXCITATION};
-		% \node[typeBreakwireSense, pinnode, below = of lbwh] (lbwl) {}; \node[right = of lbwl] {BREAK WIRE INDICATE};
-		\node[typeTestInput, pinnode, below = of anout] (ltst) {}; \node[right = of ltst] {NON-TACTICAL/TEST USE ONLY};
-		\node[typeReserved, pinnode, below = of ltst, font=\color{black}] (lres) {}; \node[right = of lres] {RESERVED/UNUSED};
+
+		% prime the pump
+		\coordinate (lentry0);
+		\foreach \n/\c [count=\x, remember=\x as \last (initially 0)] in #1 {
+				\node[\c, pinnode, below = of lentry\last] (lentry\x)  {}; \node[right = of lentry\x] {\n};
+			}
 	\end{tikzpicture}
 	% }
 	% \vfill
@@ -80,7 +107,7 @@
 	\ifcsname fancy@conn@#1@pinDef@numToName@#2\endcsname
 		\csname fancy@conn@#1@pinDef@numToName@#2\endcsname
 	\else
-		??%
+		?#1#2?%
 	\fi
 }
 
@@ -111,7 +138,7 @@
 \newcommand{\pinAliasRef}[2]{%
 	\edef\thispin{\pinAliasNum{#1}{#2}}%
 	% {\smaller\sig{\sloppy\sloppy\pinNumName{\thispin}} (\textbf{\textsc{\smaller{}Pin \thispin})}}}
-	{\sig{\sloppy\sloppy\pinNumName{#1}{\thispin}} (\textbf{\textsc{\smaller{}Pin \thispin})}}}
+	{\pinNumName{#1}{\thispin} (\textbf{\textsc{\smaller{}Pin \thispin})}}}
 
 \newcommand{\pinsig}[2]{%
 	\edef\thispin{\pinAliasNum{#1}{#2}}%
@@ -119,6 +146,25 @@
 	{\sig{\pinNumName{#1}{\thispin}}}}
 \newcommand{\state}[1]{\sloppy\fbox{\sig{#1}}\xspace}
 
+
+% TODO: refactor for arbitrary pin counts
+\newcommand{\labelPinsByList}[2]{ % #1 = connid, #2 tikz style for pin comma separated list
+	% Draw pins with fill color specified, draw label and pin
+	\foreach \q [count=\x] in #2 {
+			\node[pinnode, \q] at (#1 pin\x) (#1 pin\x){\x}; % Label pin number
+
+			% Normal pins written in black
+			\renewcommand{\modcolor}{black}
+
+			% TODO: update code for different connector types
+			\ifnum\x>13
+				\node[\q, fill=none,  anchor = east, minimum width=0cm, left = of #1 pin\x, xshift=0.5in] (#1 pinName\x) {\pinNumName{#1}{\x}};
+			\else
+				\node[\q, fill=none,anchor = west, minimum width = 0cm, right = of #1 pin\x, xshift=-0.5in] (#1 pinName\x){\pinNumName{#1}{\x}};
+			\fi
+			\draw[dashed,gray] (#1 pinName\x) -- (#1 pin\x);
+		}
+}
 
 \newcommand{\labelPins}[1]{
 	% Draw pins with fill color specified, draw label and pin
@@ -188,7 +234,7 @@
 	\draw[line width = 1.15pt] (t2) -- +(-75:0.5cm);
 }
 
-\newcommand{\renderConnector}[1]{
+\newcommand{\renderConnector}[2]{
 	\begin{figure}[htb]
 		\centering
 		\resizebox{!}{0.5\textheight}{
@@ -197,14 +243,14 @@
 				\labelPinsByReference{#1}
 				% \node[below = of pin1,yshift=0.5cm] {ACES \ac{ESAD} Pinout};
 			\end{tikzpicture}}
-		\hspace{1cm}\placeLegend
+		\hspace{1cm}\placeLegend{\legendContents}
 		\vspace{0.5cm}
-		\caption{Pinout Diagram of \ac{ESAD} Electrical Interface}%
-		\label{pinout#1}
+		\caption{#2}%
+		\label{conndiag#1}
 	\end{figure}
 }
 
-\newcommand{\renderConnectorWoLegend}[1]{
+\newcommand{\renderConnectorWoLegend}[2]{
 	\begin{figure}[htb]
 		\centering
 		\resizebox{!}{0.5\textheight}{
@@ -214,10 +260,57 @@
 				% \node[below = of pin1,yshift=0.5cm] {ACES \ac{ESAD} Pinout};
 			\end{tikzpicture}}
 		\vspace{0.5cm}
-		\caption{Pinout Diagram of \ac{ESAD} Electrical Interface}%
-		\label{pinout#1}
+		\caption{#2}%
+		\label{#1pinout}
 	\end{figure}
 }
+
+
+% \renderConnectorWithColorList{pinListName}{% of page height to be}{caption text}{How to label pin names}{colors for each pin as list}{unique id}
+\newcommand{\renderConnectorWithColorList}[6]{
+	\begin{figure}[htb]
+		\centering
+		\resizebox{!}{#2\textheight}{
+			\begin{tikzpicture}% [every node/.style ={ minimum width = 0in}]
+				\drawConnector{#1}
+				#4{#1}{#5}
+			\end{tikzpicture}}
+		\vspace{0.5cm}
+		\caption{#3}%
+		\label{conndiag#1#6}
+	\end{figure}
+}
+
+
+% \renderConnectorWithColorList{pinListName}{% of page height to be}{caption text}{How to label pin names}{colors for each pin as list}{unique id}
+\newcommand{\renderWrappedConnectorWithColorList}[7]{
+	\begin{wrapfigure}{r}{0.4\linewidth}
+		\centering
+		\resizebox{!}{#2\textheight}{
+			\begin{tikzpicture}% [every node/.style ={ minimum width = 0in}]
+				\drawConnector{#1}
+				#4{#1}{#5}
+			\end{tikzpicture}}
+		\vspace{0.15 cm}
+		\caption{#3}%
+		\label{conndiag#1#6}
+		\vspace{#7 cm}
+	\end{wrapfigure}
+}
+
+% \NewEnviron{connector}[5]{
+% 	\begin{figure}[htb]
+% 		\centering
+% 		\resizebox{!}{#2\textheight}{\begin{tikzpicture}% [every node/.style ={ minimum width = 0in}]
+% 				\drawConnector{#1}
+% 				#4{#1}{#5}
+% 				\BODY%
+% 			\end{tikzpicture}}
+% 		\vspace{0.5cm}
+% 		\caption{#3}%
+% 		\label{pinout#1}
+% 	\end{figure}
+% }
 
 % \begin{landscape}
 % \begin{minipage}{0.4\linewidth}
@@ -258,16 +351,6 @@
 	\newcommand{\safename}{#1}
 
 
-	% If run before, there will be things to remember
-	\InputIfFileExists{pinData_\unexpanded{#1}.tex}{
-		\PackageInfo{fancyeicd}{Reading in previous pin definitions for connector \unexpanded{#1}.}
-	} {
-		\PackageInfo{fancyeicd}{No previous pin definitions.}
-	}
-
-	% Record references for use anywhere in the document.
-	\newwrite\fancyeicd@conndefs
-	\immediate\openout\fancyeicd@conndefs=pinData_#1.tex
 
 
 
@@ -279,19 +362,19 @@
 		\ifcsname fancy@conn@#1@pinDef@##1@definedx\endcsname
 			\PackageError{fancy}{Connector '#1' Pin ##1 is defined twice}{}
 		\else
-			\immediate\write\@auxout{%
+			\immediate\write\fancyeicd@conndefs{%
 				\unexpanded{\global\@namedef}{fancy@conn@#1@pinDef@numToName@##1}\unexpanded{{\sig{##2}}}%
 			}
-			\immediate\write\@auxout{%
+			\immediate\write\fancyeicd@conndefs{%
 				\unexpanded{\global\@namedef}{fancy@conn@#1@pinDef@numToAlias@##1}\unexpanded{{##3}}%
 			}
-			\immediate\write\@auxout{%
+			\immediate\write\fancyeicd@conndefs{%
 				\unexpanded{\global\@namedef}{fancy@conn@#1@pinDef@numToType@##1}\unexpanded{{##4}}%
 			}
-			\immediate\write\@auxout{%
+			\immediate\write\fancyeicd@conndefs{%
 				\unexpanded{\global\@namedef}{fancy@conn@#1@pinDef@aliasToName@##3}\unexpanded{{\sig{##2}}}%
 			}
-			\immediate\write\@auxout{%
+			\immediate\write\fancyeicd@conndefs{%
 				\unexpanded{\global\@namedef}{fancy@conn@#1@pinDef@aliasToNum@##3}{##1}%
 			}
 			% \unexpanded{\global\@namedef}{fancy@conn@#1@pinDef@##1@defined}{}
@@ -316,17 +399,17 @@
 		\defPin{\safecounter}{##1}{##2}{##3}%
 		% \defValwCount{fancy@conn@#1@pinName\thepincount}{\sig{##1}}%
 		% \defValwCount{pinType\thepincount}{##2}
-		\stepcounter{fancy@conn@#1@pincount}%
 		% \label{##1desc}
-		{\textbf{}}
+		{\textbf{\smaller\safecounter}}
 		& \sig{\smaller ##1} & {\smaller##4} & {\smaller ##5} \\
+		\stepcounter{fancy@conn@#1@pincount}%
 	}
 
 	\newcommand{\resvpin}{
 		\defPin{\safecounter}{RESERVED}{resv}{typeReserved}%
 		% \defValwCount{fancy@conn@#1@pinName\thepincount}{\color{gray}{\sig{}}}%
+		\textbf{\textcolor{gray}{\smaller\safecounter}} & \textcolor{gray}{\sig{\smaller{}N/C}} & \textcolor{gray}{\smaller Reserved} &\textcolor{gray}{\smaller{}Not used in  tactical configuration.}  \\ % \hline{}
 		\stepcounter{fancy@conn@#1@pincount}%
-		\textbf{\textcolor{gray}{}} & \textcolor{gray}{\sig{\smaller{}N/C}} & \textcolor{gray}{\smaller Reserved} &\textcolor{gray}{\smaller{}Not used in  tactical configuration.}  \\ % \hline{}
 	}
 
 
@@ -373,6 +456,8 @@
 	\\ \midrule
 }{ % End pinout start block, start pinout end block
 	\endtabularx
+
+
 	\noindent\makebox[\linewidth]{\rule{\linewidth}{0.6pt}}
 	\endtable}
 
@@ -455,7 +540,6 @@
 %     \msgid{#10}{#11}{#3}{#4}
 % }
 
-\definecolor{lightgray}{gray}{0.8}
 \newcommand{\colorbitbox}[3]{%
 	\rlap{\bitbox{#2}{\color{#1}\rule{\width}{\height}}}%
 	\bitbox{#2}{#3}
@@ -502,6 +586,25 @@
 	\end{equation*}
 }
 
+% \bitregister{address}{contents}{initial values}
+\newcommand{\bitregister}[3]{
+
+	\begin{figure}[hptb]
+		\centering
+		\begin{bytefield}[leftcurly=., leftcurlyspace=0pt, rightlabelspace=5pt, leftlabelspace=15pt, endianness=big, bitwidth=0.085\linewidth, bitformatting={\scriptsize\slshape}]{8}
+			\bitheader[lsb=0]{0-7} \\
+			\begin{leftwordgroup}{\ttfamily Byte #1}
+				\bitboxes{1}{#2}
+			\end{leftwordgroup} \\
+
+			\begin{leftwordgroup}{Initial Values}
+				\bitboxes{1}[t]{#3}
+			\end{leftwordgroup} \\
+		\end{bytefield}
+		% \caption{Bitfield Description of REQUEST\_STATUS Response, Byte #1}
+		\label{statuspack#1}
+	\end{figure}
+}
 
 
 % vim: nospell

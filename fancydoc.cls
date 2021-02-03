@@ -545,7 +545,7 @@
 \RequirePackage{enumitem}[itemsep = 0.08cm, parsep=0in]
 % Adjust indents/margins of lists. Provided by [enumitem]
 \setlist[enumerate]{leftmargin=0.7in, label=(\alph*)}
-\setlist[itemize]{leftmargin=0.7in, rightmargin=0.7in}
+\setlist[itemize]{leftmargin=0.7in, rightmargin=0.0in}
 \setlist[description]{leftmargin=0.25in, labelwidth=0.7in, labelindent=\parindent}
 
 %  leave space around whole list
@@ -845,7 +845,8 @@
 
 \newcommand{\fouo}{{\marginnote{\textbf{\small\formatting(FOUO)}}}}
 
-\newcommand{\note}[1]{\reversemarginpar\medskip\par\marginnote{\textbf{NOTE:}}\noindent{\textbf{#1}}\par\medskip}
+\newcommand{\note}[1]{\reversemarginpar\medskip\par\marginnote{\textbf{NOTE:}}\noindent{{#1}}\par\medskip}
+% \newcommand{\warning}[1]{\reversemarginpar\medskip\par\marginnote{\color{red}\textbf{WARNING:}}\noindent{{#1}}\par\medskip}
 
 \newcommand{\marku}{~\\\marginnote{(U)\\}}
 
@@ -1090,7 +1091,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 \renewcommand{\titlepage}{
-	\thispagestyle{firststyle}\vspace*{-1cm}
+	\thispagestyle{firststyle}\vspace*{-0.4cm}
 	%\begin{center}
 
 	\noindent\Large{\textbf{\sffamily\scshape\doctype}}
