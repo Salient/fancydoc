@@ -308,15 +308,35 @@
 
 	% Setup table and tabular env
 
+}{ % End pinout start block, start pinout end block
+	\endtabularx
+	\noindent\makebox[\linewidth]{\rule{\linewidth}{0.6pt}}
+	\endtable}
+
+% Serial protocol drawing commands
+
+\newcommand{\bitlabel}[2]{%
+	\bitbox[]{#1}{%
+		\raisebox{5pt}[4ex][0pt]{%
+			\turnbox{45}{\fontsize{7}{7}\selectfont#2}%
+		}%
+
+	}}%
+
+\newcommand{\placePinList}[2]{
+
+	% Arg one - connector designation
+	%Arg two - number of pins
+
 	% TODO, get around this hack properly
 	\table[htbp!]
 
 	\ifdef{\thepincount}{ % True \addtocounter{table}{-1}
-		\caption*{AFE Pin Descriptions (cont.)}
+		\caption*{Connector Pin Descriptions (cont.)}
 	}{ % False
 		\newcounter{pincount}
 		\setcounter{pincount}{1}
-		\caption{AFE Pin Descriptions}
+		\caption{Connector Pin Descriptions}
 	}
 
 	% \smaller{}
@@ -332,20 +352,9 @@
 	% & \textsc{\larger{}\bfseries{}Type}
 	& \textsc{\larger\bfseries{}Description}
 	\\ \midrule
-}{ % End pinout start block, start pinout end block
-	\endtabularx
-	\noindent\makebox[\linewidth]{\rule{\linewidth}{0.6pt}}
-	\endtable}
 
-% Serial protocol drawing commands
+}
 
-\newcommand{\bitlabel}[2]{%
-	\bitbox[]{#1}{%
-		\raisebox{5pt}[4ex][0pt]{%
-			\turnbox{45}{\fontsize{7}{7}\selectfont#2}%
-		}%
-
-	}}%
 
 \newcommand{\pdent}{0.7}
 \newcommand{\bitwidth}{2.1em}

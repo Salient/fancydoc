@@ -1096,9 +1096,10 @@
 	\thispagestyle{firststyle}\vspace*{-1cm}
 	%\begin{center}
 
+	\medskip
 	\noindent\Large{\textbf{\sffamily\scshape\doctype}}
 
-	\noindent\Large{\sffamily \titlelong}\smallskip
+	\noindent\Large{\sffamily \titlelong}%\smallskip
 
 
 	\vspace*{0.25cm}
