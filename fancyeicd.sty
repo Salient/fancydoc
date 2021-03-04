@@ -52,14 +52,14 @@
 \tikzset{%
 	pinnode/.style = {inner sep = 2pt, minimum width=20pt, draw, circle},
 	typePower/.style = {fill = red!70!white, font=\bfseries},
-	typeAnalogIn/.style = {fill = brown!60},
+	typeAnalogIn/.style = {fill = yellow!60},
 	typeAnalogOut/.style = {fill = cyan!30},
 	% typeGround/.style = {fill = black, text=white, font=\bfseries},
 	typeGround/.style = {fill = green!50!white, text=black},
 	typeDataHi/.style = {fill = cyan!50!white},
 	typeDataLo/.style = {fill = cyan!20!white},
-	typeDiscreteIn/.style = {fill = yellow!60},
-	typeDiscreteOut/.style = {fill = orange!60},
+	typeDiscreteIn/.style = {fill = orange!60},
+	typeDiscreteOut/.style = {fill = orange!30},
 	typeIsoDiffGnd/.style = {fill = green!20},
 	typeBreakwireEx/.style = {fill = orange!70},
 	% typeBreakwireSense/.style = {fill = orange, pattern=dots,pattern color=yellow},
@@ -74,17 +74,18 @@
 
 \def\legendContents{
 	POWER/typePower,
-	POWER RTN\/BOARD GND/typeGround,
-	DATA\/COMM. POS. (+)/typeDataHi,
-	DATA\/COMM. NEG. (-)/typeDataLo,
+	POWER RTN\slash BOARD GND/typeGround,
+	DISCRETE DIFFERENTIAL INPUT (+)/typeDataHi,
+	DISCRETE DIFFERENTIAL INPUT (-)/typeDataLo,
+	% DATA\/COMM. NEG. (-)/typeDataLo,
 	% ISOLATED\/DIFFERENTIAL REF. (-)/typeIsoDiffGnd,
-	DISCRETE INPUT SIGNAL (+)/typeDiscreteIn,
-	% DISCRETE OUPUT SIGNAL (+)/typeDiscreteOut,
-	% ANALOG INPUT SGNAL (+)/typeAnalogIn,
-	% ANALOG OUTPT SIGNAL (+)/typeAnalogOut,
-	BREAK WIRE LOOP/typeBreakwireEx,
-	NON-TACTICAL\/TEST USE ONLY/typeTestInput,
-	RESERVED\/UNUSED/typeReserved}
+	DISCRETE DIFFERENTIAL OUPUT (+)/typeDiscreteIn,
+	DISCRETE DIFFERENTIAL OUPUT (-)/typeDiscreteOut,
+	DISCRETE LOGIC INPUT/typeAnalogIn,
+	% ANALOG OUTPUT SIGNAL/typeAnalogOut,
+	% BREAK WIRE LOOP/typeBreakwireEx,
+	NON-TACTICAL\slash TEST USE ONLY/typeTestInput,
+	RESERVED\slash UNUSED/typeReserved}
 
 \newcommand{\placeLegend}[1]{
 	% \vfill
@@ -108,7 +109,7 @@
 	\ifcsname fancy@conn@#1@pinDef@numToName@#2\endcsname
 		\csname fancy@conn@#1@pinDef@numToName@#2\endcsname
 	\else
-		?#1#2?%
+		? #1:#2 ?%
 	\fi
 }
 
@@ -167,29 +168,6 @@
 		}
 }
 
-\newcommand{\placeLegend}{
-	% \vfill
-	% \resizebox{0.20\textwidth}{!}{
-	\begin{tikzpicture} [scale=0.50,transform shape, every node/.style = {node distance=10pt, outer sep = 0cm, inner sep = 0cm}, font = \sffamily]
-		% , transform shape, node distance = 0.5cm ]
-		\node[typePower, pinnode] (lpwr) {};                  \node[right = of lpwr] {POWER};
-		\node[typeGround, pinnode, below = of lpwr] (lgnd) {}; \node[right = of lgnd] {POWER RTN/BOARD GND};
-		\node[typeDataHi, pinnode, below = of lgnd] (lcom) {}; \node[right = of lcom] {DATA/COMM. POS. (+)};
-		\node[typeIsoDiffGnd, pinnode, below = of lcom] (ldil) {}; \node[right = of ldil] {ISOLATED/DIFFERENTIAL REF. (-)};
-		\node[typeDiscreteIn, pinnode, below = of ldil] (ldih) {}; \node[right = of ldih] {DISCRETE INPUT SIGNAL (+)};
-		\node[typeDiscreteOut, pinnode, below = of ldih] (dout) {}; \node[right = of dout] {DISCRETE OUTPUT SIGNAL (+)};
-		% \node[typeAnalogIn, pinnode, below = of dout] (anin) {}; \node[right = of anin] {ANALOG INPUT SIGNAL (+)};
-		\node[typeAnalogOut, pinnode, below = of dout] (anout) {}; \node[right = of anout] {ANALOG OUTPUT SIGNAL (+)};
-		% \node[typeBreakwireEx, pinnode, below = of anout] (lbwh) {}; \node[right = of lbwh] {BREAK WIRE EXCITATION};
-		% \node[typeBreakwireSense, pinnode, below = of lbwh] (lbwl) {}; \node[right = of lbwl] {BREAK WIRE INDICATE};
-		\node[typeTestInput, pinnode, below = of anout] (ltst) {}; \node[right = of ltst] {NON-TACTICAL/TEST USE ONLY};
-		\node[typeReserved, pinnode, below = of ltst, font=\color{black}] (lres) {}; \node[right = of lres] {RESERVED/UNUSED};
-	\end{tikzpicture}
-	% }
-	% \vfill
-}
-
-\newcommand{\modcolor}{black}
 
 \newcommand{\labelPins}[1]{
 	% Draw pins with fill color specified, draw label and pin
@@ -200,7 +178,7 @@
 			\renewcommand{\modcolor}{black}
 
 			% Unused/reserved pins in gray
-			\findwords[q]{\q}{type_reserved}
+			\findwords[q]{\q}{typeReserved}
 			\ifnum\theresult > 0
 				\renewcommand{\modcolor}{gray}
 			\fi
@@ -219,9 +197,9 @@
 	\foreach \q [count=\x] in {1,...,25}{
 			\node[pinnode, \pinNumType{#1}{\q}] at (#1 pin\x) (#1 pin\x){\x};
 			\ifnum\x>13
-				\node[anchor = east, minimum width=0cm, left = of #1 pin\x, xshift=0.5in] (#1 pinName\x) {\pinNumName{#1}{\x}};
+				\node[\pinNumType{#1}{\q}, fill=none, anchor = east, minimum width=0cm, left = of #1 pin\x, xshift=0.5in] (#1 pinName\x) {\pinNumName{#1}{\x}};
 			\else
-				\node[anchor = west, minimum width = 0cm, right = of #1 pin\x, xshift=-0.5in] (#1 pinName\x) {\pinNumName{#1}{\x}};
+				\node[\pinNumType{#1}{\q}, fill=none, anchor = west, minimum width = 0cm, right = of #1 pin\x, xshift=-0.5in] (#1 pinName\x) {\pinNumName{#1}{\x}};
 			\fi
 			\draw[dashed,gray] (#1 pinName\x) -- (#1 pin\x);
 		}
@@ -424,17 +402,19 @@
 		\defPin{\safecounter}{##1}{##2}{##3}%
 		% \defValwCount{fancy@conn@#1@pinName\thepincount}{\sig{##1}}%
 		% \defValwCount{pinType\thepincount}{##2}
-		\stepcounter{pincount}
+		% \stepcounter{fancy@conn@#1@pincount}
 		% \label{##1desc}
 		{\textbf{\smaller\safecounter}}
-		& \sig{\smaller ##1} & {\smaller##4} & {\smaller ##5} \\
+		& \sig{\smaller ##1} & % {\smaller##4} 
+		& {\smaller ##5} \\
 		\stepcounter{fancy@conn@#1@pincount}%
 	}
 
 	\newcommand{\resvpin}{
 		\defPin{\safecounter}{RESERVED}{resv}{typeReserved}%
 		% \defValwCount{fancy@conn@#1@pinName\thepincount}{\color{gray}{\sig{}}}%
-		\textbf{\textcolor{gray}{\smaller\safecounter}} & \textcolor{gray}{\sig{\smaller{}N/C}} & \textcolor{gray}{\smaller Reserved} &\textcolor{gray}{\smaller{}Not used in  tactical configuration.}  \\ % \hline{}
+		\textbf{\textcolor{gray}{\smaller\safecounter}} & \textcolor{gray}{\sig{\smaller{}N/C}} & % \textcolor{gray}{\smaller Reserved} 
+		&\textcolor{gray}{\smaller{}Not used in  tactical configuration.}  \\ % \hline{}
 		\stepcounter{fancy@conn@#1@pincount}%
 	}
 
@@ -474,9 +454,9 @@
 	\def\arraystretch{1.00}%  1 is the default, change whatever you need
 	\setlength{\tabcolsep}{0.5em} % for the horizontal padding
 	\noindent
-	\tabularx{\linewidth}{@{}r r p{1in} X}
+	\tabularx{\linewidth}{@{}r r p{0in} X}
 	\toprule
-	\textsc{\larger\bfseries{}Pin} & \textsc{\larger\bfseries{}Signal Name} & \textsc{\larger\bfseries{}Details}
+	\textsc{\larger\bfseries{}Pin} & \textsc{\larger\bfseries{}Signal Name} & % \textsc{\larger\bfseries{}Details}
 	% & \textsc{\larger{}\bfseries{}Type}
 	& \textsc{\larger\bfseries{}Description}
 	\\ \midrule

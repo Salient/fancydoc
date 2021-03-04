@@ -704,8 +704,8 @@
 \fancyfoot[C]{
 	\unselectable{
 		\scriptsize{
-			\iftoggle{markingSafetyCritical}{\formatting\scriptsize\textbf{\textsc{Safety Critical Item}}}{}}
-		\scriptsize{\vspace{0.5cm}
+			\iftoggle{markingSafetyCritical}{\formatting\scriptsize\textbf{\textsc{Safety Critical Item}}}{}
+			\vspace{0.5cm}
 			% \\~\vspace{2\baselineskip}
 			% \vspace{0.2cm}% \hrule\vspace{0.1cm}
 			\iftoggle{markingProprietary}{\scriptsize\color{black}\textsc{Raytheon Proprietary}{}\\[0.2cm]}~
@@ -884,8 +884,12 @@
 \def\revisionlist{}
 \newcommand{\addrevision}[2]{
 	\ifnum\therevcount=0
-		\renewcommand{\revision}{-}
+		\renewcommand{\revision}{--}
 	\else\edef\revision{\Alph{revcount}}\fi
+
+
+	\iftoggle{rough}{\edef\revision{DRAFT \revision{}}}{}
+
 	% This is a neat trick. Expand macro -once-
 	\edef\revisionlist{\unexpanded\expandafter{\revisionlist}\revision \unexpanded{&} #1 \unexpanded{&} #2 \unexpanded{\\\hline}}
 	\stepcounter{revcount}
