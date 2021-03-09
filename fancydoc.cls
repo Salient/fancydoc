@@ -343,7 +343,7 @@
 \providecommand{\distwarning}{\textbf{\color{red}[Please set the Distribution Warning text.]}}
 \providecommand{\itarwarning}{\textbf{\color{red}[Please set the ITAR Warning text.]}}
 \providecommand{\raypropwarning}{\textbf{\color{red}[Please set the Proprietary Warning text.]}}
-\providecommand{\fouowarning}{\textbf{\color{red}[Please set the FOUO Warning text.]}}
+\providecommand{\cuiwarning}{\textbf{\color{red}[Please set the CUI Warning text.]}}
 \providecommand{\destructwarning}{\textbf{\color{red}[Please set the Destruction Warning text.]}}
 \providecommand{\copywarning}{\textbf{\color{red}[Please set the Copyright Warning text.]}}
 \providecommand{\programwarning}{\textbf{\color{red}[Please set the Program Warning text.]}}
@@ -374,7 +374,7 @@
 \newtoggle{markingProprietary}
 \newtoggle{markingDestroy}
 \newtoggle{markingCopyright}
-\newtoggle{markingFOUO}
+\newtoggle{markingCUI}
 \newtoggle{programWarning}
 \newtoggle{markingSafetyCritical}
 \newtoggle{customBumper}
@@ -388,7 +388,7 @@
 \toggletrue{markingSafetyCritical}
 \togglefalse{markingCopyright}
 \toggletrue{programWarning}
-\togglefalse{markingFOUO}
+\togglefalse{markingCUI}
 \togglefalse{customBumper}
 
 
@@ -419,9 +419,9 @@
 \renewcommand{\cfttabpresnum}{\bfseries Table\ }
 
 %\renewcommand{\cftmarktoc}{\fontfamily{qhv}\selectfont !!}
-\renewcommand{\cfttoctitlefont}{\bfseries\scshape\large}
-\renewcommand{\cftlottitlefont}{\vspace*{1cm}\bfseries\scshape\large}
-\renewcommand{\cftloftitlefont}{\vspace*{1cm}\bfseries\scshape\large}
+\renewcommand{\cfttoctitlefont}{\bfseries\Large}
+\renewcommand{\cftlottitlefont}{\bfseries\Large}
+\renewcommand{\cftloftitlefont}{\bfseries\Large}
 
 \renewcommand{\contentsname}{Contents}
 %\renewcommand{\cftaftertoctitle}{%
@@ -441,10 +441,10 @@
 % % Table of Contents Entries
 % Make Entries in the ToC in Small Caps
 % Format Sec headers
-\renewcommand{\cftsecfont}{\scshape\sffamily}
+\renewcommand{\cftsecfont}{\sffamily}
 \renewcommand{\cftsecleader}{\hfill}
 \renewcommand{\cftsecpagefont}{\bfseries\sffamily\color{sectcolor}}
-\renewcommand{\cftsecpresnum}{Section }
+\renewcommand{\cftsecpresnum}{\large \bfseries Section }
 \renewcommand{\cftsecaftersnum}{\hspace*{0.2cm}}
 \renewcommand{\cftsecaftersnumb}{\bfseries}
 
@@ -591,7 +591,7 @@
 	\crefalias{section}{appendix}
 
 	% Put a correctly formatted title in for the Appendices (if present)
-	\addtocontents{toc}{\protecting{\vspace*{1cm}{\bfseries\scshape\Large\fontfamily{qhv}\selectfont  Appendices}}}
+	\addtocontents{toc}{\protecting{\vspace*{1cm}{\Large\bfseries Appendices}}}
 	\addtocontents{toc}{~\hfill Page\par}
 	% Need this to remove any extra words added for the other sections.
 	% Has to be done like this, because it would be expanded during typesetting of ToC
@@ -629,43 +629,42 @@
 \RequirePackage{fancyhdr}
 \renewcommand{\headrulewidth}{1pt}
 
-\newcommand{\topfooterleft}{\textsc{For \textbf{\contractname} \projectdesignation\xspace Only}}
+\newcommand{\topfooterleft}{\scriptsize{For \textbf{\contractname} \projectdesignation\xspace Only}}
 \newcommand{\cornermark}{
 	\tikz[remember picture, overlay, anchor=west]\node at (current page.135)
 	[xshift=0.65cm, yshift=-2.75cm, rotate=90]{\scriptsize \docnumber, Rev. (\revision)};
 	%\marginnote{\rotatebox{90}{\raisebox{0.5in}{\qquad\scriptsize\textbf{\docnumber (\revision)}}}}
 }
-\newcommand{\floorbar}{\rule[-0.5\baselineskip]{1pt}{1.25\baselineskip}}
+\newcommand{\floorbar}{\rule[-0.5\baselineskip]{1pt}{1.1\baselineskip}}
 
 \RequirePackage{rotating}
 
 
 \fancypagestyle{firststyle} {
 
-	\fancyhead[L]{\unselectable\cornermark}
+	\fancyhead[L]{\unselectable{\cornermark}}
 
 	\fancyfoot[L]{\unselectable
 		\scriptsize\topfooterleft\vspace{0.1cm}\hrule\vspace{0.1cm}
-		\ifboolexpr{togl{markingITAR}}{\textsc{Export Controlled}}{}
+		\ifboolexpr{togl{markingITAR}}{\scriptsize{Export Controlled}}{}
 		\ifboolexpr{togl{markingDistribution} and togl{markingITAR}}{ \textbf{ // } }{}
-		\ifboolexpr{togl{markingDistribution}}{\textsc{Distribution} \distribution}{}
+		\ifboolexpr{togl{markingDistribution}}{\scriptsize{Distribution} \distribution}{}
 	}
 
 	\fancyfoot[C]{\unselectable
 		\scriptsize{
 			\vspace{0.5cm}
-			\iftoggle{markingProprietary}{\scriptsize\textsc{Raytheon Proprietary}{}%
+			\iftoggle{markingProprietary}{\scriptsize\scriptsize{Raytheon Proprietary}{}%
 				\\[0.2cm]}~
 			\iftoggle{markingHazOp}{ \small\color{red}\textbf{PROCEDURE CONTAINS HAZARDOUS OPERATIONS}}{}%
 		}
 	}
 
 	\fancyfoot[R]{\unselectable{
-			\iftoggle{markingSafetyCritical}{\formatting\scriptsize\textbf{\textsc{Safety Critical Item}}}
-			% ~\vspace{0.1cm}\\
-			\scriptsize\textbf{UNCLASSIFIED}
-			\iftoggle{markingFOUO}{\textbf{ // ~FOUO}}}
-	}
+			\iftoggle{markingSafetyCritical}{\normalfont \formatting\scriptsize\textbf{\scriptsize{Safety Critical Item}}}{}
+			\\\vspace*{0.2cm}
+			\scriptsize{UNCLASSIFIED}
+			\iftoggle{markingCUI}{\textbf{ // ~CUI}}}}% 
 
 	%   \fancyhead[C]{\iftoggle{markingHazOp}{ \small\color{red}\textbf{HAZARDOUS OPERATIONS PROCEDURE}} }
 	%   \fancyfoot[C]{\vspace{0.1cm}\HRule \\[0.1cm] \scriptsize
@@ -681,10 +680,10 @@
 %   {\color{red}\colorbox{yellow}{\textbf{NOT RELEASABLE TO JAPAN}}}}
 
 
-\fancyhead[L]{\unselectable\cornermark\raggedright\small\rightmark
+\fancyhead[L]{\unselectable\cornermark\raggedright\small\rightmark%
 	%\iftoggle{rough}{\roughmark}
 }
-\fancyhead[C]{\unselectable{\textsc{\small\headingcenter}}}
+\fancyhead[C]{\unselectable{\scriptsize{\small\headingcenter}}}
 %   \expandafter\fancyhead[R]{\includegraphics[scale=0.4]{\headerlogo}}
 \fancyhead[R]{}
 %
@@ -692,11 +691,11 @@
 	\unselectable{
 		\scriptsize
 		\topfooterleft
-		\vspace{0.1cm}\hrule\vspace{0.1cm}
-		\ifboolexpr{togl{markingITAR}}{\textsc{Export Controlled}}{}
+		\vspace{0.1cm}\hrule\vspace*{0.15cm}
+		\ifboolexpr{togl{markingITAR}}{\scriptsize{Export Controlled}}{}
 		\ifboolexpr{ togl{markingDistribution} and togl{markingITAR}}{ \textbf{ // } }{}
-		\ifboolexpr{togl{markingDistribution}}{\textsc{Distribution} \distribution}{}
-		\ifboolexpr{ togl{markingDistribution} or togl{markingITAR}}{{\newline}\textsc{\textbf{See Cover Page}}}{}
+		\ifboolexpr{togl{markingDistribution}}{\scriptsize{Distribution} \distribution}{}
+		\ifboolexpr{ togl{markingDistribution} or togl{markingITAR}}{{\newline}\scriptsize{{See Cover Page}}}{}
 	}
 }
 
@@ -704,11 +703,13 @@
 \fancyfoot[C]{
 	\unselectable{
 		\scriptsize{
-			\iftoggle{markingSafetyCritical}{\formatting\scriptsize\textbf{\textsc{Safety Critical Item}}}{}
-			\vspace{0.5cm}
-			% \\~\vspace{2\baselineskip}
+			\iftoggle{markingSafetyCritical}{\formatting\scriptsize\textbf{\scriptsize{Safety Critical Item}}}{}
+			% \\[0.08cm] %~\vspace*{0.2cm}
+			\\\vspace*{0.15cm}
+			% ~\vspace{0.1cm}\\
+			% \\~\vspace{1.5\baselineskip}
 			% \vspace{0.2cm}% \hrule\vspace{0.1cm}
-			\iftoggle{markingProprietary}{\scriptsize\color{black}\textsc{Raytheon Proprietary}{}\\[0.2cm]}~
+			\iftoggle{markingProprietary}{\scriptsize\color{black}\scriptsize{Raytheon Proprietary}{}\\[0.2cm]}~
 			\iftoggle{markingHazOp}{ \small\color{red}\textbf{PROCEDURE CONTAINS HAZARDOUS OPERATIONS}}{}
 		}
 	}
@@ -717,17 +718,17 @@
 
 \fancyfoot[R]{
 \unselectable{
-\scriptsize{% \floorbar
+\scriptsize
+% \floorbar
 % \vspace{-0.2\baselineskip}
 % \rule[.3\baselineskip]{0pt}{0.3\baselineskip}
 % \raisebox{0.3\baselineskip}
-\floorbar~~Page {\thepage\ of \pageref{LastPage}~~}\floorbar
-}
-\\ \vspace{0.1cm}
-\scriptsize\textbf{UNCLASSIFIED}
-\iftoggle{markingFOUO}{\textbf{ // ~FOUO}}}%
-}
-}
+\floorbar~~Page {\thepage\ of \pageref{LastPage}~~}\floorbar%
+% \\ \vspace{0.1cm}
+% ~\vspace{0.1cm}\\
+\\\vspace*{0.05cm}
+\scriptsize{UNCLASSIFIED}
+\iftoggle{markingCUI}{\textbf{ // ~CUI}}}}}% 
 
 \fancypagestyle{appendices}{
 \fancyhead[L]{\unselectable{\cornermark\raggedright\small\rightmark}}
@@ -739,13 +740,13 @@
 \textbf{Appendix \thesection}~~\floorbar~~Page {\thepage~of \pageref{LastPage}~~}\floorbar~~
 ~\vspace{0.1cm}\\
 \scriptsize\textbf{UNCLASSIFIED}
-\iftoggle{markingFOUO}{\textbf{ // ~FOUO}}}%
+\iftoggle{markingCUI}{\textbf{ // ~CUI}}}%
 }
 \fancyfoot[C]{
 	\unselectable{
-		\iftoggle{markingSafetyCritical}{\scriptsize\textbf{\formatting\textsc{Safety Critical Item}}}
+		\iftoggle{markingSafetyCritical}{\scriptsize\textbf{\formatting\scriptsize{Safety Critical Item}}}
 		~\vspace{0.1cm}\\
-		\iftoggle{markingProprietary}{\scriptsize\color{black}\textsc{Raytheon Proprietary}\\[0.2cm]}~
+		\iftoggle{markingProprietary}{\scriptsize\color{black}\scriptsize{Raytheon Proprietary}\\[0.2cm]}~
 		\iftoggle{markingHazOp}{ \small\color{red}\textbf{PROCEDURE CONTAINS HAZARDOUS OPERATIONS}}
 	}
 }
@@ -757,12 +758,12 @@
 %%%%        Particular Annotations
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\newcommand{\fouofig}[1]{
+\newcommand{\cuifig}[1]{
 	%   \tikzstyle{background grid}=[draw, black!50,step=.5cm]
 	\begin{tikzpicture}[red] %[show background grid]
 		\node [anchor=north east, inner sep=0pt]  {#1};
-		\node (t1)[anchor=south] at (current bounding box.north west) {\scriptsize \textbf{(FOUO)}};
-		\node (t2)[anchor=north] at (current bounding box.south east) {\scriptsize \textbf{(FOUO)}};
+		\node (t1)[anchor=south] at (current bounding box.north west) {\scriptsize \textbf{(CUI)}};
+		\node (t2)[anchor=north] at (current bounding box.south east) {\scriptsize \textbf{(CUI)}};
 		%   \node (c1) at (current bounding box.north east) {};
 		%   \node (c2) at (current bounding box.south west) {};
 		\draw (current bounding box.north east) -- (current bounding box.north);
@@ -813,12 +814,12 @@
 
 % Classification Markings
 
-\newcommand{\fouofigleft}{
-	{\raggedright \scriptsize\textbf{\formatting(FOUO)}\\}
+\newcommand{\cuifigleft}{
+	{\raggedright \scriptsize\textbf{\formatting(CUI)}\\}
 }
-\newcommand{\fouofigright}{
+\newcommand{\cuifigright}{
 	\begin{minipage}{\linewidth}
-		\vspace{0.3em}  \raggedleft\scriptsize\textbf{\formatting(FOUO)}
+		\vspace{0.3em}  \raggedleft\scriptsize\textbf{\formatting(CUI)}
 	\end{minipage}%\vspace{-0.25cm}
 }
 
@@ -843,7 +844,7 @@
 % Add NOTE marker in margin
 \RequirePackage{marginnote}
 
-\newcommand{\fouo}{{\marginnote{\textbf{\small\formatting(FOUO)}}}}
+\newcommand{\cui}{{\marginnote{\textbf{\small\formatting(CUI)}}}}
 
 \newcommand{\note}[1]{\reversemarginpar\medskip\par\marginnote{\textbf{NOTE:}}\noindent{{#1}}\par\medskip}
 % \newcommand{\warning}[1]{\reversemarginpar\medskip\par\marginnote{\color{red}\textbf{WARNING:}}\noindent{{#1}}\par\medskip}
@@ -897,6 +898,7 @@
 }
 
 \newcommand{\revisionblock}{
+	\def\arraystretch{1.5}
 	\vfill
 	\section*{Revision History}
 	\begin{center}
@@ -1139,23 +1141,23 @@
 		\def\arraystretch{1}%  1 is the default, change whatever you need
 		\begin{tabular}{r @{ : } >{\raggedright\arraybackslash}p{1.3in}}
 			{\large \textsc{ Document }{\fontfamily{cmr}\selectfont\textnumero}}
-			                                                     & {\large\docnumber}  \newline                                        \\
-			\smaller    \textsc{{\newline}Current Revision}      & \revision                                                           \\
-			\textsc{Total Pages}                                 & \pageref{LastPage}                                                  \\
-			\textsc{Status}                                      & \documentstatus   \newline                                          \\
-			\textsc{Release Date}                                & \released                                                           \\
-			\textsc{Prepared By}                                 & James Heller\newline {Fuzing, Initiator Safety}\newline             \\
-			\textsc{Classification}                              & UNCLASSIFIED\iftoggle{markingFOUO}{, FOUO \\} \\
+			                                                     & {\large\docnumber}  \newline                                      \\
+			\smaller    \textsc{{\newline}Current Revision}      & \revision                                                         \\
+			\textsc{Total Pages}                                 & \pageref{LastPage}                                                \\
+			\textsc{Status}                                      & \documentstatus   \newline                                        \\
+			\textsc{Release Date}                                & \released                                                         \\
+			\textsc{Prepared By}                                 & James Heller\newline {Fuzing, Initiator Safety}\newline           \\
+			\textsc{Classification}                              & UNCLASSIFIED\iftoggle{markingCUI}{, CUI \\} \\
 			\iftoggle{markingDistribution}{\textsc{Distribution} & \distribution\\}
-			\newline{\scshape\projectdesignation}                & \contractname                                                       \\
+			\newline{\scshape\projectdesignation}                & \contractname                                                     \\
 			\textsc{Contract \#}                                 & \contract
-			{\newline}                                                                                                                 \\
+			{\newline}                                                                                                               \\
 
-			\textsc{Originating Facility}                        & Raytheon Missiles\newline~and Defense                               \\
+			\textsc{Originating Facility}                        & Raytheon Missiles\newline~and Defense                             \\
 			\textsc{Located}                                     &
 			1151 E. Hermans Rd\newline
-			Tucson, AZ 85756                                                                                                           \\
-			\textsc{CAGE Code}                                   & 15090                                                               \\
+			Tucson, AZ 85756                                                                                                         \\
+			\textsc{CAGE Code}                                   & 15090                                                             \\
 		\end{tabular}
 		\vfill
 		%\def\arraystretch{1.5}%  1 is the default, change whatever you need
@@ -1169,7 +1171,7 @@
 	{\noindent\iftoggle{markingDistribution}{\newline\distwarning}{}}
 	{\noindent\iftoggle{markingITAR}{\newline\itarwarning}{}}
 	{\noindent\iftoggle{markingProprietary}{\newline\raypropwarning}{}}
-	{\noindent\iftoggle{markingFOUO}{\newline\fouowarning}{}}
+	{\noindent\iftoggle{markingCUI}{\newline\cuiwarning}{}}
 	{\noindent\iftoggle{markingDestroy}{\newline\destructwarning}{}}
 	{\noindent\iftoggle{programWarning}{\newline\programwarning}{}}
 	{\noindent\iftoggle{markingCopyright}{\newline\copywarning}{}}
