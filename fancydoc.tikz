@@ -26,8 +26,8 @@
 \pgfplotsset{compat=1.16}
 \pdfmapfile{+sansmathaccent.map}
 \DeclareMathAlphabet{\mathpzc}{OT1}{pzc}{m}{it}
-\pgfdeclarelayer{bg}    % declare background layer
-\pgfsetlayers{bg,main}  % set the order of the layers (main is the standard layer)
+\pgfdeclarelayer{background}    % declare background layer
+\pgfsetlayers{background,main}  % set the order of the layers (main is the standard layer)
 
 %*********************%
 %* Node Types/Styles *%
