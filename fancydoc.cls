@@ -1142,7 +1142,7 @@
 		\begin{tabular}{r @{ : } >{\raggedright\arraybackslash}p{1.3in}}
 			{\large \textsc{ Document }{\fontfamily{cmr}\selectfont\textnumero}}
 			                                                     & {\large\docnumber}  \newline                                      \\
-			\smaller    \textsc{{\newline}Current Revision}      & \revision                                                         \\
+			\textsc{{\newline}Current Revision}                  & \revision                                                         \\
 			\textsc{Total Pages}                                 & \pageref{LastPage}                                                \\
 			\textsc{Status}                                      & \documentstatus   \newline                                        \\
 			\textsc{Release Date}                                & \released                                                         \\

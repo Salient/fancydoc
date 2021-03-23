@@ -52,15 +52,15 @@
 \tikzset{%
 	pinnode/.style = {inner sep = 2pt, minimum width=20pt, draw, circle},
 	typePower/.style = {fill = red!70!white, font=\bfseries},
-	typeAnalogIn/.style = {fill = yellow!60},
+	typeDiscreteIn/.style = {fill = yellow!60},
 	typeAnalogOut/.style = {fill = cyan!30},
 	% typeGround/.style = {fill = black, text=white, font=\bfseries},
 	typeGround/.style = {fill = green!50!white, text=black},
-	typeDataHi/.style = {fill = cyan!50!white},
-	typeDataLo/.style = {fill = cyan!20!white},
-	typeDiscreteIn/.style = {fill = orange!60},
-	typeDiscreteOut/.style = {fill = orange!30},
-	typeIsoDiffGnd/.style = {fill = green!20},
+	typeDiffOutHi/.style = {fill = cyan!50!white},
+	typeDiffOutLo/.style = {fill = cyan!20!white},
+	typeDiffInHi/.style = {fill = orange!60},
+	typeDiffInLo/.style = {fill = orange!30},
+	typeIsoDiffGnd/.style = {fill = brown!20},
 	typeBreakwireEx/.style = {fill = orange!70},
 	% typeBreakwireSense/.style = {fill = orange, pattern=dots,pattern color=yellow},
 	typeBreakwireSense/.style = {fill = brown!40},
@@ -75,13 +75,13 @@
 \def\legendContents{
 	POWER/typePower,
 	POWER RTN\slash BOARD GND/typeGround,
-	DISCRETE DIFFERENTIAL INPUT (+)/typeDataHi,
-	DISCRETE DIFFERENTIAL INPUT (-)/typeDataLo,
+	DISCRETE DIFFERENTIAL INPUT (+)/typeDiffInHi,
+	DISCRETE DIFFERENTIAL INPUT (-)/typeDiffInLo,
 	% DATA\/COMM. NEG. (-)/typeDataLo,
 	% ISOLATED\/DIFFERENTIAL REF. (-)/typeIsoDiffGnd,
-	DISCRETE DIFFERENTIAL OUPUT (+)/typeDiscreteIn,
-	DISCRETE DIFFERENTIAL OUPUT (-)/typeDiscreteOut,
-	DISCRETE LOGIC INPUT/typeAnalogIn,
+	DISCRETE DIFFERENTIAL OUPUT (+)/typeDiffOutHi,
+	DISCRETE DIFFERENTIAL OUPUT (-)/typeDiffOutLo,
+	DISCRETE LOGIC INPUT/typeDiscreteIn,
 	% ANALOG OUTPUT SIGNAL/typeAnalogOut,
 	% BREAK WIRE LOOP/typeBreakwireEx,
 	NON-TACTICAL\slash TEST USE ONLY/typeTestInput,
@@ -454,7 +454,7 @@
 	\def\arraystretch{1.00}%  1 is the default, change whatever you need
 	\setlength{\tabcolsep}{0.5em} % for the horizontal padding
 	\noindent
-	\tabularx{\linewidth}{@{}r r p{0in} X}
+	\tabularx{\linewidth}{@{}r l p{0in} X}
 	\toprule
 	\textsc{\larger\bfseries{}Pin} & \textsc{\larger\bfseries{}Signal Name} & % \textsc{\larger\bfseries{}Details}
 	% & \textsc{\larger{}\bfseries{}Type}
