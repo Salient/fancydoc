@@ -59,7 +59,7 @@
 % ---------------------------------------------------------------------------------------
 % Pull in packages we know we need
 
-\RequirePackage[dvipsnames,table]{xcolor}
+\RequirePackage[dvipsnames,table,xcdraw]{xcolor}
 \RequirePackage[printonlyused]{acronym}
 \RequirePackage{multicol}
 \RequirePackage{hyperref}
@@ -508,6 +508,18 @@
 \setlength{\abovecaptionskip}{0pt}
 
 \RequirePackage[left=1.25in,right=1.25in,top=1in, bottom=1in, marginparsep=7pt]{geometry}
+\RequirePackage{pdflscape}
+
+% Magic sorcery to support better landscaping
+\newcommand*{\gmshow@textheight}{\textheight}
+\newdimen\gmshow@@textheight
+\g@addto@macro\landscape{%
+  \gmshow@@textheight=\hsize
+  \renewcommand*{\gmshow@textheight}{\gmshow@@textheight}%
+}
+\def\Gm@vrule{%
+  \vrule width 0.2pt height\gmshow@textheight depth\z@
+}%
 
 \newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
 
@@ -585,9 +597,9 @@
 }
 
 \AtBeginEnvironment{appendices}{
-	\newpage
-	\cleardoublepage
-	\pagestyle{appendices}
+	% \newpage
+	% \cleardoublepage
+	% \pagestyle{appendices}
 	\crefalias{section}{appendix}
 
 	% Put a correctly formatted title in for the Appendices (if present)
@@ -731,25 +743,25 @@
 \iftoggle{markingCUI}{\textbf{ // ~CUI}}}}}% 
 
 \fancypagestyle{appendices}{
-\fancyhead[L]{\unselectable{\cornermark\raggedright\small\rightmark}}
-\fancyfoot[R]{
-\setcounter{appage}{\theCurrentPage-\arabic{sappage}+1}
-% \unselectable{\scriptsize Page \arabic{appage}~of~~\textbf{Appendix \thesection}~~\vrule~~\thepage~of \pageref{LastPage} 
-\unselectable{\scriptsize%
-% \vspace{-0.2\baselineskip}%
-\textbf{Appendix \thesection}~~\floorbar~~Page {\thepage~of \pageref{LastPage}~~}\floorbar~~
-~\vspace{0.1cm}\\
-\scriptsize\textbf{UNCLASSIFIED}
-\iftoggle{markingCUI}{\textbf{ // ~CUI}}}%
-}
-\fancyfoot[C]{
-	\unselectable{
-		\iftoggle{markingSafetyCritical}{\scriptsize\textbf{\formatting\scriptsize{Safety Critical Item}}}
-		~\vspace{0.1cm}\\
-		\iftoggle{markingProprietary}{\scriptsize\color{black}\scriptsize{Raytheon Proprietary}\\[0.2cm]}~
-		\iftoggle{markingHazOp}{ \small\color{red}\textbf{PROCEDURE CONTAINS HAZARDOUS OPERATIONS}}
-	}
-}
+% \fancyhead[L]{\unselectable{\cornermark\raggedright\small\rightmark}}
+% \fancyfoot[R]{
+% \setcounter{appage}{\theCurrentPage-\arabic{sappage}+1}
+% % \unselectable{\scriptsize Page \arabic{appage}~of~~\textbf{Appendix \thesection}~~\vrule~~\thepage~of \pageref{LastPage} 
+% \unselectable{\scriptsize%
+% % \vspace{-0.2\baselineskip}%
+% \textbf{Appendix \thesection}~~\floorbar~~Page {\thepage~of \pageref{LastPage}~~}\floorbar~~
+% ~\vspace{0.1cm}\\
+% \scriptsize\textbf{UNCLASSIFIED}
+% \iftoggle{markingCUI}{\textbf{ // ~CUI}}}%
+% }
+% \fancyfoot[C]{
+% 	\unselectable{
+% 		\iftoggle{markingSafetyCritical}{\scriptsize\textbf{\formatting\scriptsize{Safety Critical Item}}}
+% 		~\vspace{0.1cm}\\
+% 		\iftoggle{markingProprietary}{\scriptsize\color{black}\scriptsize{Raytheon Proprietary}\\[0.2cm]}~
+% 		\iftoggle{markingHazOp}{ \small\color{red}\textbf{PROCEDURE CONTAINS HAZARDOUS OPERATIONS}}
+% 	}
+% }
 
 }
 %=================== End Header and Footer Styling ================================
