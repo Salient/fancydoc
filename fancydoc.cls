@@ -18,7 +18,6 @@
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesClass{core/fancydoc}[2020/06/09 Make Overly Nice Technical Documents]
 
-
 % Setup conditional logic before processing Options
 \RequirePackage{etoolbox}
 
@@ -60,7 +59,7 @@
 % Pull in packages we know we need
 
 \RequirePackage[dvipsnames,table,xcdraw]{xcolor}
-\RequirePackage[printonlyused]{acronym}
+\RequirePackage[printonlyused,smaller]{acronym}
 \RequirePackage{multicol}
 \RequirePackage{hyperref}
 \RequirePackage{xspace}
@@ -119,7 +118,10 @@
 % -----------
 \iftoggle{rough}{
 
-	\RequirePackage{everypage}
+
+	% NOTE: Package below is obsolete
+	% \RequirePackage{everypage}
+
 	\usetikzlibrary{math, positioning}
 	%\SetWatermarkText{BIO-HAZARD}
 	%\SetWatermarkScale{4}
@@ -167,7 +169,14 @@
 		\end{tikzpicture}
 	}
 
-	\AddEverypageHook{\roughmark}
+	%%%%%%% Legacy everypage code 
+	% \AddEverypageHook{\roughmark}
+	%%%%%%
+	% supersceded by:
+	\AddToHook {shipout/background}{\roughmark}
+
+
+
 }{}
 
 % ---------------------------------------------------------------------------------------
@@ -184,11 +193,11 @@
 \setlength{\maxlogoheight}{1in}
 \iftoggle{hidebotlogo}{\setlength{\maxlogoheight}{3.5in}}{}
 
-\newcommand{\@toplogo}{\ClassError{fancydoc}{Top logo never defined. You must call \string\settoplogo{path/to/logo}, or disable by using option `notoplogo' in class options.}{do something pee pow poog}}
+\newcommand{\@toplogo}{\ClassError{fancydoc}{Top logo never defined. You must call \string\settoplogo{path/to/logo}, or disable by using option `notoplogo' in class options.}}%{do something pee pow poog}}
 
-\newcommand{\@botlogo}{\ClassError{fancydoc}{Bottom logo never defined. You must call \string\setbotlogo{path/to/logo}, or disable by using option `nobotlogo' in class options.}{do something pee pow poog}}
+\newcommand{\@botlogo}{\ClassError{fancydoc}{Bottom logo never defined. You must call \string\setbotlogo{path/to/logo}, or disable by using option `nobotlogo' in class options.}}%{do something pee pow poog}}
 
-\newcommand{\@headerlogo}{\ClassError{fancydoc}{Header logo never defined. You must call \string\setheaderlogo{path/to/logo}, or disable by using option `noheadlogo' in class options.}{do something pee pow poog}}
+\newcommand{\@headerlogo}{\ClassError{fancydoc}{Header logo never defined. You must call \string\setheaderlogo{path/to/logo}, or disable by using option `noheadlogo' in class options.}}%{do something pee pow poog}}
 
 \newcommand{\setheaderlogo}[1]{
 	\IfFileExists{#1}{
@@ -197,8 +206,8 @@
 
 		\renewcommand{\headrule}{
 			\hrule\@height\headrulewidth\@width\headwidth
-			\vspace{-0.9cm}
-			\raggedleft\includegraphics[height=0.75cm,keepaspectratio]{#1}\hspace*{1px}\vskip-\headrulewidth
+			\vspace{-0.7cm}
+			\raggedleft\includegraphics[height=0.55cm,keepaspectratio]{#1}\hspace*{1px}\vskip-\headrulewidth
 		}
 
 		\ClassWarning{fancydoc}{Header logo set to #1}
@@ -299,6 +308,19 @@
 	\input{\markingfile}
 }
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% General formatting of title page markings
+% inputs are {commandname}{title}{body}
+\newcommand{\marking}[3]{\long\expandafter\def\csname #1\endcsname{
+		\newline\noindent\textbf{\underline{#2}~~--~~}%\newline
+		\textsc{#3}}}%
+
+
+
+
+
+
+
 % Select the appropriate Marking Template (Must already exist....)
 
 % Should set the following
@@ -326,7 +348,7 @@
 \providecommand{\supplier}{L3-FOS}
 
 
-\providecommand{\headingcenter}{\textbf{CENTER HEADING [headingcenter]}}
+\newcommand{\fancydoc@centerheading}{\textbf{CENTER HEADING [headingcenter]}}
 \providecommand{\titleshort}{\textbf{[SHORT TITLE] - [titleshort]}}
 
 \providecommand{\projectdesignation}{\textbf{[projectdesignation] (Program/effort/etc.)}}
@@ -335,6 +357,8 @@
 
 % \providecommand{\sharedmedia}{C:/Users/1117384/Documents/Work/Utilities/Latex}
 
+\newcommand{\centerheading}[1]{\renewcommand{\fancydoc@centerheading}{#1}}
+
 
 
 % Use if draft or preview option is enabled
@@ -342,8 +366,10 @@
 
 \providecommand{\distwarning}{\textbf{\color{red}[Please set the Distribution Warning text.]}}
 \providecommand{\itarwarning}{\textbf{\color{red}[Please set the ITAR Warning text.]}}
-\providecommand{\raypropwarning}{\textbf{\color{red}[Please set the Proprietary Warning text.]}}
+\providecommand{\proprietarywarning}{\textbf{\color{red}[Please set the Proprietary Warning text.]}}
 \providecommand{\cuiwarning}{\textbf{\color{red}[Please set the CUI Warning text.]}}
+\providecommand{\markingCUIcontrol}{\textbf{\color{red}[Please set the CUI controller.]}}
+\providecommand{\markingCUIcat}{\textbf{\color{red}[Please set the CUI category.]}}
 \providecommand{\destructwarning}{\textbf{\color{red}[Please set the Destruction Warning text.]}}
 \providecommand{\copywarning}{\textbf{\color{red}[Please set the Copyright Warning text.]}}
 \providecommand{\programwarning}{\textbf{\color{red}[Please set the Program Warning text.]}}
@@ -507,18 +533,19 @@
 \RequirePackage[skip=5pt, textfont={footnotesize,sl},labelfont=footnotesize, labelsep=endash]{caption}
 \setlength{\abovecaptionskip}{0pt}
 
-\RequirePackage[left=1.25in,right=1.25in,top=1in, bottom=1in, marginparsep=7pt]{geometry}
+% \RequirePackage[left=1.25in,right=1.25in,top=1in, bottom=1in, marginparsep=7pt]{geometry}
+\RequirePackage[left=1in,right=1in,top=1in, bottom=1in, marginparsep=7pt]{geometry}
 \RequirePackage{pdflscape}
 
 % Magic sorcery to support better landscaping
 \newcommand*{\gmshow@textheight}{\textheight}
 \newdimen\gmshow@@textheight
 \g@addto@macro\landscape{%
-  \gmshow@@textheight=\hsize
-  \renewcommand*{\gmshow@textheight}{\gmshow@@textheight}%
+	\gmshow@@textheight=\hsize
+	\renewcommand*{\gmshow@textheight}{\gmshow@@textheight}%
 }
 \def\Gm@vrule{%
-  \vrule width 0.2pt height\gmshow@textheight depth\z@
+	\vrule width 0.2pt height\gmshow@textheight depth\z@
 }%
 
 \newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
@@ -531,9 +558,7 @@
 % Making \cellwidth the width of the tabularx cell we are currently in
 \RequirePackage{array}
 \newcolumntype{B}{>{\let\newline\\\arraybackslash\hspace{0pt}\arraybackslash\bfseries}r}
-\makeatletter
 \newcommand{\cellwidth}{\TX@col@width}
-\makeatother
 
 % Frequent Keyword aliases
 \newcommand{\gsw}{SM-3 BLK IIA G-Switch\xspace}
@@ -596,31 +621,31 @@
 	\renewcommand{\thepage}{\thesection-\arabic{page}}
 }
 
-\AtBeginEnvironment{appendices}{
-	% \newpage
-	% \cleardoublepage
-	% \pagestyle{appendices}
-	\crefalias{section}{appendix}
-
-	% Put a correctly formatted title in for the Appendices (if present)
-	\addtocontents{toc}{\protecting{\vspace*{1cm}{\Large\bfseries Appendices}}}
-	\addtocontents{toc}{~\hfill Page\par}
-	% Need this to remove any extra words added for the other sections.
-	% Has to be done like this, because it would be expanded during typesetting of ToC
-	% TODO - take advantage of this to list stuff in appendices correctly.
-	\addtocontents{toc}{\protecting{\renewcommand{\cftsecpresnum}{}}}
-	\addtocontents{toc}{\protecting{\addtolength{\cftsecnumwidth}{-\secheadlen}}}
-
-	\preto{\section}{
-		\clearpage
-		\setcounter{sappage}{\theCurrentPage}
-	}
-	\label{LastMainPage}
-}
-
-\AtEndEnvironment{appendices}{
-	\setcounter{sappage}{\theCurrentPage}
-}
+% \AtBeginEnvironment{appendices}{
+% 	% \newpage
+% 	% \cleardoublepage
+% 	% \pagestyle{appendices}
+% 	\crefalias{section}{appendix}
+%
+% 	% Put a correctly formatted title in for the Appendices (if present)
+% 	\addtocontents{toc}{\protecting{\vspace*{1cm}{\Large\bfseries Appendices}}}
+% 	\addtocontents{toc}{~\hfill Page\par}
+% 	% Need this to remove any extra words added for the other sections.
+% 	% Has to be done like this, because it would be expanded during typesetting of ToC
+% 	% TODO - take advantage of this to list stuff in appendices correctly.
+% 	\addtocontents{toc}{\protecting{\renewcommand{\cftsecpresnum}{}}}
+% 	\addtocontents{toc}{\protecting{\addtolength{\cftsecnumwidth}{-\secheadlen}}}
+%
+% 	\preto{\section}{
+% 		\clearpage
+% 		\setcounter{sappage}{\theCurrentPage}
+% 	}
+% 	\label{LastMainPage}
+% }
+%
+% \AtEndEnvironment{appendices}{
+% 	\setcounter{sappage}{\theCurrentPage}
+% }
 
 %=================== End General Dynaimc Referencing ==============================
 
@@ -641,7 +666,8 @@
 \RequirePackage{fancyhdr}
 \renewcommand{\headrulewidth}{1pt}
 
-\newcommand{\topfooterleft}{\scriptsize{For \textbf{\contractname} \projectdesignation\xspace Only}}
+% \newcommand{\topfooterleft}{\scriptsize{For \textbf{\contractname} \projectdesignation\xspace Only}}
+\newcommand{\topfooterleft}{\scriptsize{\projectdesignation: \textbf{\contractname}}}
 \newcommand{\cornermark}{
 	\tikz[remember picture, overlay, anchor=west]\node at (current page.135)
 	[xshift=0.65cm, yshift=-2.75cm, rotate=90]{\scriptsize \docnumber, Rev. (\revision)};
@@ -666,14 +692,14 @@
 	\fancyfoot[C]{\unselectable
 		\scriptsize{
 			\vspace{0.5cm}
-			\iftoggle{markingProprietary}{\scriptsize\scriptsize{Raytheon Proprietary}{}%
+			\iftoggle{markingProprietary}{\scriptsize\scriptsize{Corvid Technologies Proprietary}{}%
 				\\[0.2cm]}~
 			\iftoggle{markingHazOp}{ \small\color{red}\textbf{PROCEDURE CONTAINS HAZARDOUS OPERATIONS}}{}%
 		}
 	}
 
 	\fancyfoot[R]{\unselectable{
-			\iftoggle{markingSafetyCritical}{\normalfont \formatting\scriptsize\textbf{\scriptsize{Safety Critical Item}}}{}
+			\iftoggle{markingSafetyCritical}{\normalfont \formatting\scriptsize\textbf{\scriptsize{Safety Critical Item}}}{\phantom{o}}
 			\\\vspace*{0.2cm}
 			\scriptsize{UNCLASSIFIED}
 			\iftoggle{markingCUI}{\textbf{ // ~CUI}}}}% 
@@ -695,7 +721,7 @@
 \fancyhead[L]{\unselectable\cornermark\raggedright\small\rightmark%
 	%\iftoggle{rough}{\roughmark}
 }
-\fancyhead[C]{\unselectable{\scriptsize{\small\headingcenter}}}
+\fancyhead[C]{\unselectable{\scriptsize{\small\fancydoc@centerheading}}}
 %   \expandafter\fancyhead[R]{\includegraphics[scale=0.4]{\headerlogo}}
 \fancyhead[R]{}
 %
@@ -717,11 +743,11 @@
 		\scriptsize{
 			\iftoggle{markingSafetyCritical}{\formatting\scriptsize\textbf{\scriptsize{Safety Critical Item}}}{}
 			% \\[0.08cm] %~\vspace*{0.2cm}
-			\\\vspace*{0.15cm}
+			% \\\vspace*{0.15cm}
 			% ~\vspace{0.1cm}\\
 			% \\~\vspace{1.5\baselineskip}
 			% \vspace{0.2cm}% \hrule\vspace{0.1cm}
-			\iftoggle{markingProprietary}{\scriptsize\color{black}\scriptsize{Raytheon Proprietary}{}\\[0.2cm]}~
+			\iftoggle{markingProprietary}{\scriptsize\color{black}\scriptsize{Corvid Technologies Proprietary}{}\\[0.2cm]}~
 			\iftoggle{markingHazOp}{ \small\color{red}\textbf{PROCEDURE CONTAINS HAZARDOUS OPERATIONS}}{}
 		}
 	}
@@ -738,7 +764,8 @@
 \floorbar~~Page {\thepage\ of \pageref{LastPage}~~}\floorbar%
 % \\ \vspace{0.1cm}
 % ~\vspace{0.1cm}\\
-\\\vspace*{0.05cm}
+\\\vspace*{0.15cm}
+>>>>>>> HEAD@{1}
 \scriptsize{UNCLASSIFIED}
 \iftoggle{markingCUI}{\textbf{ // ~CUI}}}}}% 
 
@@ -762,6 +789,27 @@
 % 		\iftoggle{markingHazOp}{ \small\color{red}\textbf{PROCEDURE CONTAINS HAZARDOUS OPERATIONS}}
 % 	}
 % }
+=======
+	% \fancyhead[L]{\unselectable{\cornermark\raggedright\small\rightmark}}
+	% \fancyfoot[R]{
+	% \setcounter{appage}{\theCurrentPage-\arabic{sappage}+1}
+	% % \unselectable{\scriptsize Page \arabic{appage}~of~~\textbf{Appendix \thesection}~~\vrule~~\thepage~of \pageref{LastPage} 
+	% \unselectable{\scriptsize%
+	% % \vspace{-0.2\baselineskip}%
+	% \textbf{Appendix \thesection}~~\floorbar~~Page {\thepage~of \pageref{LastPage}~~}\floorbar~~
+	% ~\vspace{0.1cm}\\
+	% \scriptsize\textbf{UNCLASSIFIED}
+	% \iftoggle{markingCUI}{\textbf{ // ~CUI}}}%
+	% }
+	% \fancyfoot[C]{
+	% 	\unselectable{
+	% 		\iftoggle{markingSafetyCritical}{\scriptsize\textbf{\formatting\scriptsize{Safety Critical Item}}}
+	% 		~\vspace{0.1cm}\\
+	% 		\iftoggle{markingProprietary}{\scriptsize\color{black}\scriptsize{Raytheon Proprietary}\\[0.2cm]}~
+	% 		\iftoggle{markingHazOp}{ \small\color{red}\textbf{PROCEDURE CONTAINS HAZARDOUS OPERATIONS}}
+	% 	}
+	% }
+>>>>>>> HEAD@{1}
 
 }
 %=================== End Header and Footer Styling ================================
@@ -1096,8 +1144,37 @@
 %\newcommand{\ittysig}[1]{{\signalfont{\scriptsize #1}}}5
 %=================== End Font Configuration =======================================
 
+% Initialize some fields to default or messages 
 
+% \newcommand{\fancy@cagecode}{\ClassError{fancydoc}{Header logo never defined. You must call \string\setheaderlogo{path/to/logo}, or disable by using option `noheadlogo' in class options.}{do something pee pow poog}}
 
+\newcommand{\fancydoc@cagecode}{}
+\newcommand{\fancydoc@originfacility}{}
+
+\newtoggle{fancydoc@authors}
+
+\newcommand{\cagecode}[1]{
+	\ClassInfo{fancydoc}{Setting CAGE code to ##1}{}
+	\renewcommand{\fancydoc@cagecode}{CAGE Code&#1\newline\\}
+}
+
+\newcommand{\originfacility}[1]{\renewcommand{\fancydoc@originfacility}{\textsc{Originating Facility}&#1\\ }}
+
+\newcommand{\authors}[1]{
+	\newcommand{\fancydoc@authorlist}{#1}
+	\toggletrue{fancydoc@authors}
+	% this could be interesting
+	\renewcommand{\authors}{#1}
+}
+
+% \ifdef{@cagecode}{\textsc{CAGE Code} & 15090 \\}{}
+\newcommand{\fancydoc@authors}[1]{}
+% \foreach \x in \fancydoc@authorlist {
+%     \x\newline
+% }
+% }
+
+% \ClassWarning{fancydoc}{CAGE Code has not been defined, removing from title page. Use \string\cagecode\{<code> to define one.\}}
 
 %   \ifx\traceon\undefined \tracingall \else \traceon \fi
 %       \relscale{0.95} % or whatever scaling is desired.
@@ -1109,85 +1186,83 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 \renewcommand{\titlepage}{
-	\thispagestyle{firststyle}\vspace*{-0.4cm}
+	\thispagestyle{firststyle}\vspace*{-0.65cm}
 	%\begin{center}
 
-	\medskip
-	\noindent\Large{\textbf{\sffamily\scshape\doctype}}
 
-	\noindent\Large{\sffamily \titlelong}%\smallskip
+		% % \medskip
+		%     \noindent\Large{\textbf{\sffamily\scshape\doctype}}
+		% \begin{minipage}{0.80\linewidth}
+		% \noindent\Large{\sffamily \titlelong}\medskip
+		% \end{minipage}
 
+                \begin{tabularx}{0.9\linewidth}{l X}
+                    \Large{\textbf{\sffamily\scshape\doctype}} & \Large{\sffamily \titlelong} 
+                \end{tabularx}\hfill~
+		\vspace*{0.25cm}
+		\noindent\hrule
+		\vspace*{0.70cm}
+		% \vfill
+		%\small~\\[0.15cm]
+		%\normalsize
+		%\end{center}
+		%   \vspace{1cm}
 
-	\vspace*{0.25cm}
-	\noindent\hrule
-	\vspace*{0.75cm}
-	% \vfill
-	%\small~\\[0.15cm]
-	%\normalsize
-	%\end{center}
-	%   \vspace{1cm}
+		\begin{minipage}{0.45\linewidth}
+			% Place top logo, unless disabled
+			%\nottoggle{hidetoplogo}{\includegraphics[width=\linewidth]
+			\begin{center}
+				{\placetoplogo} {\placebotlogo}
+			\end{center}
 
-	\begin{minipage}{0.40\linewidth}
-		% Place top logo, unless disabled
-		%\nottoggle{hidetoplogo}{\includegraphics[width=\linewidth]
-		\begin{center}
-			{\placetoplogo} {\placebotlogo}
-		\end{center}
-
-	\end{minipage}
-	\hfill
-	\begin{minipage}{0.5\linewidth}
-		\small
-		%   \centering
-		%   \textsc{
-		%       \textbf{
-		%           {\large Record {\fontfamily{cmr}\selectfont\textnumero}:}
-		%           %               $\textnumero$
-		%           \LARGE
-		%           %           \underline{\docnumber}
-		%           \docnumber
-		%   }}
-		%   \\[0.25cm]
-		%       \small \vspace{0.5cm}
-		%       \vfill
-		\def\arraystretch{1}%  1 is the default, change whatever you need
-		\begin{tabular}{r @{ : } >{\raggedright\arraybackslash}p{1.3in}}
-			{\large \textsc{ Document }{\fontfamily{cmr}\selectfont\textnumero}}
-			                                                     & {\large\docnumber}  \newline                                      \\
-			\textsc{{\newline}Current Revision}                  & \revision                                                         \\
-			\textsc{Total Pages}                                 & \pageref{LastPage}                                                \\
-			\textsc{Status}                                      & \documentstatus   \newline                                        \\
-			\textsc{Release Date}                                & \released                                                         \\
-			\textsc{Prepared By}                                 & James Heller\newline {Fuzing, Initiator Safety}\newline           \\
-			\textsc{Classification}                              & UNCLASSIFIED\iftoggle{markingCUI}{, CUI \\} \\
-			\iftoggle{markingDistribution}{\textsc{Distribution} & \distribution\\}
-			\newline{\scshape\projectdesignation}                & \contractname                                                     \\
-			\textsc{Contract \#}                                 & \contract
-			{\newline}                                                                                                               \\
-
-			\textsc{Originating Facility}                        & Raytheon Missiles\newline~and Defense                             \\
-			\textsc{Located}                                     &
-			1151 E. Hermans Rd\newline
-			Tucson, AZ 85756                                                                                                         \\
-			\textsc{CAGE Code}                                   & 15090                                                             \\
-		\end{tabular}
+		\end{minipage}
+		\hfill
+		% \begin{minipage}{0.49\linewidth}
+			\footnotesize
+			%   \centering
+			%   \textsc{
+			%       \textbf{
+			%           {\large Record {\fontfamily{cmr}\selectfont\textnumero}:}
+			%           %               $\textnumero$
+			%           \LARGE
+			%           %           \underline{\docnumber}
+			%           \docnumber
+			%   }}
+			%                                                            \\ [0.25cm]
+			%       \small \vspace{0.5cm}
+			%       \vfill
+			\def\arraystretch{0.9}%  1 is the default, change whatever you need
+			\begin{tabular}{r @{ : } >{\raggedright\arraybackslash}p{1.5in}}
+				{\large \textsc{ Document }{\fontfamily{cmr}\selectfont\textnumero}}
+                                                                                      & {\large\docnumber}  {\small\newline}                                                  \\
+				\textsc{{\newline}Current Revision}                   & \revision                                                                     \\
+				\textsc{Total Pages}                                  & \pageref{LastPage}                                                            \\
+				\textsc{Status}                                       & \documentstatus                                                               \\
+				\textsc{Last Revised}                                 & \released\newline                                                                     \\
+				\iftoggle{fancydoc@authors}{\textsc{Prepared By}      & \foreach \x in \fancydoc@authorlist { \x\newline }\\}{}
+				\fancydoc@originfacility%
+				\fancydoc@cagecode
+				\iftoggle{markingDistribution}{\textsc{Distribution}  & \distribution\\}{}
+				\textsc{Sensitivity}                                  & UNCLASSIFIED\iftoggle{markingCUI}{, CUI \\}{\\}
+                                \iftoggle{markingCUI}{\textsc{CUI Category} & \markingCUIcat\\\textsc{Controlled By} & \markingCUIcontrol \\}{}
+				\newline{\scshape\projectdesignation}                 & \contractname                                                                 \\
+				\textsc{Contract \#}                                  & \contract \\
+			\end{tabular}
+			\vfill
+			%\def\arraystretch{1.5}%  1 is the default, change whatever you need
+		% \end{minipage} % \vspace{0.25cm}
+		% ~                                                                  \\
 		\vfill
-		%\def\arraystretch{1.5}%  1 is the default, change whatever you need
-	\end{minipage}
-	%
-	%\vspace{0.25cm}
-	% ~\\
-	\vfill
-	\footnotesize
+		\footnotesize
 
-	{\noindent\iftoggle{markingDistribution}{\newline\distwarning}{}}
-	{\noindent\iftoggle{markingITAR}{\newline\itarwarning}{}}
-	{\noindent\iftoggle{markingProprietary}{\newline\raypropwarning}{}}
-	{\noindent\iftoggle{markingCUI}{\newline\cuiwarning}{}}
-	{\noindent\iftoggle{markingDestroy}{\newline\destructwarning}{}}
-	{\noindent\iftoggle{programWarning}{\newline\programwarning}{}}
-	{\noindent\iftoggle{markingCopyright}{\newline\copywarning}{}}
-
+		{\noindent\iftoggle{markingDistribution}{\newline\distwarning}{}}
+		{\noindent\iftoggle{markingITAR}{\newline\itarwarning}{}}
+		{\noindent\iftoggle{markingProprietary}{\newline\proprietarywarning}{}}
+		{\noindent\iftoggle{markingCUI}{\newline\cuiwarning}{}}
+		{\noindent\iftoggle{markingDestroy}{\newline\destructwarning}{}}
+		{\noindent\iftoggle{programWarning}{\newline\programwarning}{}}
+		{\noindent\iftoggle{markingCopyright}{\newline\copywarning}{}}
+		\newpage
 }
 
 \providecommand{\codelistings}{}
@@ -1196,7 +1271,6 @@
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	%%%%        Table of Contents
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
 	\normalsize
 	\newpage
 	% Required to prevent tocloft package dicking with header style

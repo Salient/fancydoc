@@ -52,6 +52,19 @@
 
 
 
+% Slanted column headers for tables
+\RequirePackage{adjustbox,array}
+
+% Slanted column headers for tables
+\newcolumntype{R}[2]{%
+    >{\adjustbox{angle=#1,lap=\width-(#2)}\bgroup}%
+    l%
+    <{\egroup}%
+}
+
+\newcommand*\rot{\multicolumn{1}{R{30}{1em}}}
+
+
 
 % Handy constants
 
