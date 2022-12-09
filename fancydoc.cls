@@ -533,8 +533,8 @@
 \RequirePackage[skip=5pt, textfont={footnotesize,sl},labelfont=footnotesize, labelsep=endash]{caption}
 \setlength{\abovecaptionskip}{0pt}
 
-% \RequirePackage[left=1.25in,right=1.25in,top=1in, bottom=1in, marginparsep=7pt]{geometry}
-\RequirePackage[left=1in,right=1in,top=1in, bottom=1in, marginparsep=7pt]{geometry}
+\RequirePackage[left=1.25in,right=1.25in,top=1in, bottom=1in, marginparsep=7pt]{geometry}
+% \RequirePackage[left=1in,right=1in,top=1in, bottom=1in, marginparsep=7pt]{geometry}
 \RequirePackage{pdflscape}
 
 % Magic sorcery to support better landscaping
@@ -765,7 +765,6 @@
 % \\ \vspace{0.1cm}
 % ~\vspace{0.1cm}\\
 \\\vspace*{0.15cm}
->>>>>>> HEAD@{1}
 \scriptsize{UNCLASSIFIED}
 \iftoggle{markingCUI}{\textbf{ // ~CUI}}}}}% 
 
@@ -789,7 +788,6 @@
 % 		\iftoggle{markingHazOp}{ \small\color{red}\textbf{PROCEDURE CONTAINS HAZARDOUS OPERATIONS}}
 % 	}
 % }
-=======
 	% \fancyhead[L]{\unselectable{\cornermark\raggedright\small\rightmark}}
 	% \fancyfoot[R]{
 	% \setcounter{appage}{\theCurrentPage-\arabic{sappage}+1}
@@ -809,7 +807,6 @@
 	% 		\iftoggle{markingHazOp}{ \small\color{red}\textbf{PROCEDURE CONTAINS HAZARDOUS OPERATIONS}}
 	% 	}
 	% }
->>>>>>> HEAD@{1}
 
 }
 %=================== End Header and Footer Styling ================================

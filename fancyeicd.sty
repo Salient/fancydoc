@@ -13,8 +13,8 @@
 \RequirePackage{tocloft}
 
 % ==============================================
-% ==============================================
 % Initialize Framework
+% ==============================================
 
 % Tweak page geometry
 
@@ -28,13 +28,6 @@
 % \usepackage{avant}
 % \smaller\smaller
 
-\definecolor{lightgray}{gray}{0.8}
-\colorlet{lightblue}{blue!40!white}
-\colorlet{lightgreen}{green!40!white}
-\colorlet{lightyellow}{yellow!40!white}
-\colorlet{lightorange}{orange!40!white}
-\colorlet{lightpurple}{purple!40!white}
-
 % If run before, there will be things to remember
 \InputIfFileExists{fancyPinData.tex}{
 	\PackageInfo{fancyeicd}{Reading in previous pin definitions for connectors.}
@@ -46,31 +39,131 @@
 \newwrite\fancyeicd@conndefs
 \immediate\openout\fancyeicd@conndefs=fancyPinData.tex
 
+% Print the type of connector with given name 
+% Connector: #1
+\newcommand{\getConnectorType}[1]{%
+	\ifcsname fancy@conn@#1@connectorType\endcsname
+		\csname fancy@conn@#1@connectorType\endcsname
+		% \else
+		% 	NO%
+	\fi
+}
+
+% Print the gender of connector with given name 
+% Connector: #1
+\newcommand{\getConnectorGender}[1]{%
+	\ifcsname fancy@conn@#1@connectorGender\endcsname
+		\csname fancy@conn@#1@connectorGender\endcsname
+		% \else
+		% 	NO%
+	\fi
+}
+
+% Print the name of  pin N in a given connector
+% Connector: #1
+% Pin number: #2
+\newcommand{\pinNumName}[2]{%
+	\ifcsname fancy@conn@#1@pinDef@numToName@#2\endcsname
+		\csname fancy@conn@#1@pinDef@numToName@#2\endcsname
+	\else
+		? #1:#2 ?%
+	\fi
+}
+
+% Print the type of pin N in a given connector 
+% Connector: #1
+% Pin number: #2
+\newcommand{\pinNumType}[2]{%
+	\ifcsname fancy@conn@#1@pinDef@numToType@#2\endcsname
+		\csname fancy@conn@#1@pinDef@numToType@#2\endcsname
+	\else
+		red%
+	\fi
+}
+
+% TODO: enforce unique aliases?
+% Print the number of a pin in a given connector by alias
+% Connector: #1
+% Alias: #2
+\newcommand{\pinAliasNum}[2]{%
+	\ifcsname fancy@conn@#1@pinDef@aliasToNum@#2\endcsname%
+		\csname fancy@conn@#1@pinDef@aliasToNum@#2\endcsname%
+	\else
+		??%
+	\fi
+}
+
+% Print the name of a pin in a given connector by alias
+% Connector: #1
+% Alias: #2
+\newcommand{\pinAliasName}[2]{%
+	\ifcsname fancy@conn@#1@pinDef@aliasToName@#2\endcsname
+		\csname fancy@conn@#1@pinDef@aliasToName@#2\endcsname
+	\else
+		??%
+	\fi
+}
+
+% Print styalized text "Pin N" a pin in a given connector by alias
+% Connector: #1
+% Alias: #2
+\newcommand{\pinAliasRef}[2]{%
+	\edef\thispin{\pinAliasNum{#1}{#2}}%
+	% {\smaller\sig{\sloppy\sloppy\pinNumName{\thispin}} (\textbf{\textsc{\smaller{}Pin \thispin})}}}
+	{\pinNumName{#1}{\thispin} (\textbf{\textsc{\smaller{}Pin \thispin})}}}
+
+
+% Print styalized text "Pin N" a pin in a given connector by alias
+% Connector: #1
+% Alias: #2
+\newcommand{\pinNumRef}[2]{%
+	% {\smaller\sig{\sloppy\sloppy\pinNumName{\thispin}} (\textbf{\textsc{\smaller{}Pin \thispin})}}}
+	{\pinNumName{#1}{#2} (\textbf{\textsc{\smaller{}Pin #2})}}}
+
+
+\newcommand{\pinsig}[2]{%
+	\edef\thispin{\pinAliasNum{#1}{#2}}%
+	% {\smaller\sig{\pinNumName{\thispin}}}}
+	{\sig{\pinNumName{#1}{\thispin}}}}
+\newcommand{\state}[1]{\sloppy\fbox{\sig{#1}}\xspace}
+
+% ==============================================
+% Define colors
+% ==============================================
+\definecolor{lightgray}{gray}{0.8}
+\colorlet{lightblue}{blue!40!white}
+\colorlet{lightgreen}{green!40!white}
+\colorlet{lightyellow}{yellow!40!white}
+\colorlet{lightorange}{orange!40!white}
+\colorlet{lightpurple}{purple!40!white}
+
+\newcommand{\modcolor}{black}
+
 
 % Start framework definitions
-
+% Styles
 \tikzset{%
-	pinnode/.style = {inner sep = 2pt, minimum width=20pt, draw, circle},
-	typePower/.style = {fill = red!70!white, font=\bfseries},
+	pinnode/.style = {inner sep = 2pt, minimum width=18pt, draw, circle, font=\bfseries},
+	typePower/.style = {fill = red!70!white},
 	typeDiscreteIn/.style = {fill = yellow!60},
-	typeAnalogOut/.style = {fill = cyan!30},
+	typeAnalogOut/.style = {fill = orange!50},
+	typeAnalogIn/.style = {fill = yellow!80!gray},
 	% typeGround/.style = {fill = black, text=white, font=\bfseries},
-	typeGround/.style = {fill = green!50!white, text=black},
+	typeGround/.style = {fill = black, text=white},
+	% typeGround/.style = {fill = green!50!white, text=black},
 	typeDiffOutHi/.style = {fill = cyan!50!white},
 	typeDiffOutLo/.style = {fill = cyan!20!white},
-	typeDiffInHi/.style = {fill = orange!60},
-	typeDiffInLo/.style = {fill = orange!30},
+	typeDiffInHi/.style = {fill = green!90!black},
+	typeDiffInLo/.style = {fill = green!30},
 	typeIsoDiffGnd/.style = {fill = brown!20},
-	typeBreakwireEx/.style = {fill = orange!70},
+	typeBreakwireEx/.style = {fill = violet!40},
 	% typeBreakwireSense/.style = {fill = orange, pattern=dots,pattern color=yellow},
-	typeBreakwireSense/.style = {fill = brown!40},
+	typeBreakwireSense/.style = {fill = purple!80, text=white},
 	typeTestInput/.style = {fill = purple!30 },
 	typeReserved/.style = {fill = gray!10, font=\color{gray}},
 	typeUsed/.style = {fill = gray!30, font=\color{gray}}
 }
-% TODO - stream line above
-
-
+% TODO - stream line above with below
 
 \def\legendContents{
 	POWER/typePower,
@@ -81,12 +174,17 @@
 	% ISOLATED\/DIFFERENTIAL REF. (-)/typeIsoDiffGnd,
 	DISCRETE DIFFERENTIAL OUPUT (+)/typeDiffOutHi,
 	DISCRETE DIFFERENTIAL OUPUT (-)/typeDiffOutLo,
-	DISCRETE LOGIC INPUT/typeDiscreteIn,
-	% ANALOG OUTPUT SIGNAL/typeAnalogOut,
-	% BREAK WIRE LOOP/typeBreakwireEx,
-	NON-TACTICAL\slash TEST USE ONLY/typeTestInput,
+	% DISCRETE LOGIC INPUT/typeDiscreteIn,
+	ANALOG SINGLE ENDED OUTPUT SIGNAL/typeAnalogOut,
+	ANALOG SINGLE ENDED INPUT SIGNAL/typeAnalogIn,
+	BREAK WIRE LOOP/typeBreakwireEx,
+	% NON-TACTICAL\slash TEST USE ONLY/typeTestInput,
 	RESERVED\slash UNUSED/typeReserved}
 
+
+% ==============================================
+% Implementations
+% ==============================================
 \newcommand{\placeLegend}[1]{
 	% \vfill
 	% \resizebox{0.20\textwidth}{!}{
@@ -102,71 +200,13 @@
 	% \vfill
 }
 
-\newcommand{\modcolor}{black}
 
+% Development notes
 
-\newcommand{\pinNumName}[2]{%
-	\ifcsname fancy@conn@#1@pinDef@numToName@#2\endcsname
-		\csname fancy@conn@#1@pinDef@numToName@#2\endcsname
-	\else
-		? #1:#2 ?%
-	\fi
-}
-
-\newcommand{\pinNumType}[2]{%
-	\ifcsname fancy@conn@#1@pinDef@numToType@#2\endcsname
-		\csname fancy@conn@#1@pinDef@numToType@#2\endcsname
-	\else
-		red%
-	\fi
-}
-
-\newcommand{\pinAliasNum}[2]{%
-	\ifcsname fancy@conn@#1@pinDef@aliasToNum@#2\endcsname%
-		\csname fancy@conn@#1@pinDef@aliasToNum@#2\endcsname%
-	\else
-		??%
-	\fi
-}
-
-\newcommand{\pinAliasName}[2]{%
-	\ifcsname fancy@conn@#1@pinDef@aliasToName@#2\endcsname
-		\csname fancy@conn@#1@pinDef@aliasToName@#2\endcsname
-	\else
-		??%
-	\fi
-}
-
-\newcommand{\pinAliasRef}[2]{%
-	\edef\thispin{\pinAliasNum{#1}{#2}}%
-	% {\smaller\sig{\sloppy\sloppy\pinNumName{\thispin}} (\textbf{\textsc{\smaller{}Pin \thispin})}}}
-	{\pinNumName{#1}{\thispin} (\textbf{\textsc{\smaller{}Pin \thispin})}}}
-
-\newcommand{\pinsig}[2]{%
-	\edef\thispin{\pinAliasNum{#1}{#2}}%
-	% {\smaller\sig{\pinNumName{\thispin}}}}
-	{\sig{\pinNumName{#1}{\thispin}}}}
-\newcommand{\state}[1]{\sloppy\fbox{\sig{#1}}\xspace}
-
+% Should have a defined name for each type/shape/number pins of connector
+% Like an enum of types. And for each type there is an expected number of pins, and if that many pins have not been defined, there should be an error printed with the number of expected vs number defined shown.
 
 % TODO: refactor for arbitrary pin counts
-\newcommand{\labelPinsByList}[2]{ % #1 = connid, #2 tikz style for pin comma separated list
-	% Draw pins with fill color specified, draw label and pin
-	\foreach \q [count=\x] in #2 {
-			\node[pinnode, \q] at (#1 pin\x) (#1 pin\x){\x}; % Label pin number
-
-			% Normal pins written in black
-			\renewcommand{\modcolor}{black}
-
-			% TODO: update code for different connector types
-			\ifnum\x>13
-				\node[\q, fill=none,  anchor = east, minimum width=0cm, left = of #1 pin\x, xshift=0.5in] (#1 pinName\x) {\pinNumName{#1}{\x}};
-			\else
-				\node[\q, fill=none,anchor = west, minimum width = 0cm, right = of #1 pin\x, xshift=-0.5in] (#1 pinName\x){\pinNumName{#1}{\x}};
-			\fi
-			\draw[dashed,gray] (#1 pinName\x) -- (#1 pin\x);
-		}
-}
 
 
 \newcommand{\labelPins}[1]{
@@ -193,54 +233,180 @@
 		}
 }
 
+
+% Returns signal name of pin N
+% Pin Number: #1
 \newcommand{\labelPinsByReference}[1]{
-	\foreach \q [count=\x] in {1,...,25}{
-			\node[pinnode, \pinNumType{#1}{\q}] at (#1 pin\x) (#1 pin\x){\x};
-			\ifnum\x>13
-				\node[\pinNumType{#1}{\q}, fill=none, anchor = east, minimum width=0cm, left = of #1 pin\x, xshift=0.5in] (#1 pinName\x) {\pinNumName{#1}{\x}};
+	\foreach \q in {1,...,33}{
+			\node[pinnode, \pinNumType{#1}{\q}] at (#1 pin\q) (#1 pin\q){\q};
+			\ifnum\q>17
+				% uncomment to have middle row labels alternate left and right
+				% \ifodd\q
+				% 	\node[\pinNumType{#1}{\q}, black, fill=none, anchor = east, minimum width=0cm, left = 60pt of #1 pin\q] (#1 pinName\q) {\pinNumName{#1}{\q}};
+				% 	\draw[dashed,gray] (#1 pinName\q) -- (#1 pin\q);
+				% \else
+				\node[\pinNumType{#1}{\q}, black, fill=none, anchor = west, minimum width=0cm, right = 75pt of #1 pin\q] (#1 pinName\q) {\pinNumName{#1}{\q}};
+				\draw[dashed,gray] (#1 pinName\q) -- (#1 pin\q);
+				% \fi
 			\else
-				\node[\pinNumType{#1}{\q}, fill=none, anchor = west, minimum width = 0cm, right = of #1 pin\x, xshift=-0.5in] (#1 pinName\x) {\pinNumName{#1}{\x}};
+				\node[\pinNumType{#1}{\q}, black, fill=none, anchor = west, minimum width=0cm, right = 150pt of #1 pin\q] (#1 pinName\q) {\pinNumName{#1}{\q}};
+				\draw[dashed,gray] (#1 pinName\q) -- (#1 pin\q);
+			\fi
+		}
+
+	\foreach \q in {34,...,50}{
+			\node[pinnode, \pinNumType{#1}{\q}] at (#1 pin\q) (#1 pin\q){\q};
+			\node[\pinNumType{#1}{\q}, black, fill=none, anchor = east, minimum width=0cm, left = 50pt  of #1 pin\q] (#1 pinName\q) {\pinNumName{#1}{\q}};
+			\draw[dashed,gray] (#1 pinName\q) -- (#1 pin\q);
+		}
+}
+
+% 
+\newcommand{\pinspacing}{30pt}
+% 50 pin is 1-17, 18 - 33, 34 - 50
+
+\newcommand{\drawConnector@DsubFifty}[1]{
+
+	\newtoggle{malePins}
+	\newcommand{\direction}{above}
+	% TODO: make this less stupid
+	\newcommand{\directionleft}{above left}
+	\newcommand{\directionright}{above right}
+
+	\ifcsstring{fancy@conn@#1@connectorGender}{male}
+	{
+		\toggletrue{malePins}
+		\renewcommand{\direction}{below}
+		% TODO: make this less stupid
+		\renewcommand{\directionleft}{below left}
+		\renewcommand{\directionright}{below right}
+
+
+	} {
+		\ifcsstring{fancy@conn@#1@connectorGender}{female}
+		{
+			\togglefalse{malePins} % not strictly necessary, but readability yo
+		}{
+			\PackageError{fancy}{Attempt to render connector or invalid or unassigned gender: \getConnectorGender{#1}}{}
+		}
+	}
+
+	% \else
+	% 	\PackageError{fancyEICD}{Attempting to draw a connector with incorrect name or unassigned gender!}{}
+	% \fi
+
+	% Lay out pins of connector and draw boundary
+	\coordinate (#1 pin0); % Establish name of origin
+	\foreach \x [remember=\x as \lastx (initially 0)] in {1,...,17}{% draw top row. Backwards because female
+			\coordinate[\direction = \pinspacing of #1 pin\lastx] (#1 pin\x);
+		}
+	\coordinate (adjOff) at ($ (#1 pin1)!0.5!(#1 pin2) $);
+	\coordinate[left = \pinspacing of adjOff] (#1 pin18);
+	\foreach \x [remember=\x as \lastx (initially 18)] in {19,...,33}{% draw top row. Backwards because female
+
+			\coordinate[\direction = \pinspacing of #1 pin\lastx] (#1 pin\x);
+		}
+	% \coordinate (adjOff2) at ($ (#1 pin1)!0.5!(#1 pin2) $);
+	\coordinate[\directionleft = \pinspacing and  2*\pinspacing of #1 pin0)] (#1 pin34);
+
+	\foreach \x [remember=\x as \lastx (initially 34)] in {35,...,50}{% draw top row. Backwards because female
+			\coordinate[\direction = \pinspacing of #1 pin\lastx] (#1 pin\x);
+		}
+
+	% Draw connector shell and fill
+
+	% mark the four corners
+	\coordinate[\directionright = 60pt and 30pt of #1 pin17] (corn1);
+	\coordinate[\directionright = -60pt and 30pt of #1 pin1] (corn2);
+	\coordinate[\directionleft = -55pt and 30pt of #1 pin35] (corn3);
+	\coordinate[\directionleft = 55pt and 30pt of #1 pin49] (corn4);
+
+	\draw[ultra thick, rounded corners = 1cm, name path = shell, fill=brown!50!gray, fill opacity=0.2] (corn1) -- (corn2) -- (corn3) -- (corn4) -- cycle;
+	% \path[name path = cgnd] (corn3) ++(0cm, -0.75cm) ++(70:1cm) -- ++(-135:2cm);
+	% \draw[name intersections={of=shell and cgnd, name=i}] (i-1) coordinate (xmark);
+
+	% uncomment to draw earth symbol to connector shell
+	% \draw[line width = 0.75pt] (xmark) ++(0,-10pt) -- ++(325:0.5cm) -- ++(1.75cm,0cm) -- ++(0cm, -0.5cm) coordinate(tc);
+	% \draw[line width = 1.15pt] (tc)       -- +(-0.5cm,0cm) coordinate (t1) -- +(0.5cm,0cm) coordinate (t2);
+	% \draw[line width = 1.15pt] (t1) -- +(-75:0.5cm);
+	% \draw[line width = 1.15pt] (tc) -- +(-75:0.5cm);
+	% \draw[line width = 1.15pt] (t2) -- +(-75:0.5cm);
+}
+
+\newcommand{\labelPinsByList}[2]{ % #1 = connid, #2 tikz style for pin comma separated list
+
+
+	% align names on the left side of the connector
+	\draw[line width = 2.15pt] (t2) -- +(-75:0.5cm);
+	% Draw pins with fill color specified, draw label and pin
+	\foreach \q [count=\x] in #2 {
+			\node[pinnode, \q] at (#1 pin\x) (#1 pin\x){\x}; % Label pin number
+
+			% Normal pins written in black
+			\renewcommand{\modcolor}{black}
+
+			% TODO: update code for different connector types
+			\ifnum\x>13
+				\node[\q, fill=none,  anchor = east, minimum width=0cm, left = of #1 pin\x, xshift=0.5in] (#1 pinName\x) {\pinNumName{#1}{\x}};
+			\else
+				\node[\q, fill=none,anchor = west, minimum width = 0cm, right = of #1 pin\x, xshift=-0.5in] (#1 pinName\x){\pinNumName{#1}{\x}};
 			\fi
 			\draw[dashed,gray] (#1 pinName\x) -- (#1 pin\x);
 		}
 }
 
 \newcommand{\drawConnector}[1]{
-	% Lay out pins of connector and draw boundary
-	\coordinate (#1 pin0); % Establish name of origin
-	\foreach \x [remember=\x as \lastx (initially 0)] in {1,...,13}{% draw top row. Backwards because female
-			% \node[above  of = pin\lastx, yshift=-0.2cm] (pin\x) {\x};
-			\coordinate[above = 30pt of #1 pin\lastx] (#1 pin\x);
-		}
-	\coordinate (adjOff) at ($ (#1 pin1)!0.5!(#1 pin2) $);
-	\coordinate[left = 25pt of adjOff] (#1 pin14);
-	\foreach \x [remember=\x as \lastx (initially 14)] in {15,...,25}{% draw top row. Backwards because female
-			% \node[above of = pin\lastx, yshift=-0.2cm] (pin\x) {\x};
-			\coordinate[above = 30pt of #1 pin\lastx] (#1 pin\x);
-		}
 
-	% Draw connector shell and fill
 
-	% mark the four corners
-	\coordinate[above right = of #1 pin13, xshift=-10pt, yshift=2pt] (corn1);
-	\coordinate[below right = of #1 pin1, xshift=-10pt, yshift=-2pt] (corn2);
-	\coordinate[below left = of #1 pin15, xshift=10pt, yshift=-12pt] (corn3);
-	\coordinate[above left = of #1 pin24, xshift=10pt, yshift=12pt] (corn4);
+	% Call correct function to draw the connector type
+	\expandafter\csname \expanded{drawConnector@\getConnectorType{#1}\endcsname}{#1}
 
-	\draw[ultra thick, rounded corners = 1cm, name path = shell, fill=brown!50!gray, fill opacity=0.2] (corn1) -- (corn2) -- (corn3) -- (corn4) -- cycle;
-	\path[name path = cgnd] (corn3) ++(0cm, -0.75cm) ++(70:1cm) -- ++(-135:2cm);
-	\draw[name intersections={of=shell and cgnd, name=i}] (i-1) coordinate (xmark);
-	\draw[line width = 0.75pt] (xmark) -- ++(-145:0.5cm) -- ++(-1.75cm,0cm) -- ++(0cm, -0.5cm) coordinate(tc);
-	\draw[line width = 1.15pt] (tc)       -- +(-0.5cm,0cm) coordinate (t1) -- +(0.5cm,0cm) coordinate (t2);
-	\draw[line width = 1.15pt] (t1) -- +(-75:0.5cm);
-	\draw[line width = 1.15pt] (tc) -- +(-75:0.5cm);
-	\draw[line width = 1.15pt] (t2) -- +(-75:0.5cm);
+
+
+	% % Lay out pins of connector and draw boundary
+	% \coordinate (#1 pin0); % Establish name of origin
+	% \foreach \x [remember=\x as \lastx (initially 0)] in {1,...,17}{% draw top row. Backwards because female
+	% 		% \node[above  of = pin\lastx, yshift=-0.2cm] (pin\x) {\x};
+	% 		\coordinate[above = \pinspacing of #1 pin\lastx] (#1 pin\x);
+	% 	}
+	% \coordinate (adjOff) at ($ (#1 pin1)!0.5!(#1 pin2) $);
+	% \coordinate[left = \pinspacing of adjOff] (#1 pin18);
+	% \foreach \x [remember=\x as \lastx (initially 18)] in {19,...,33}{% draw top row. Backwards because female
+	% 		% \node[above of = pin\lastx, yshift=-0.2cm] (pin\x) {\x};
+	% 		\coordinate[above = \pinspacing  of #1 pin\lastx] (#1 pin\x);
+	% 	}
+	% % \coordinate (adjOff2) at ($ (#1 pin1)!0.5!(#1 pin2) $);
+	% \coordinate[above left = \pinspacing and  2*\pinspacing of #1 pin0)] (#1 pin34);
+	%
+	% \foreach \x [remember=\x as \lastx (initially 34)] in {35,...,50}{% draw top row. Backwards because female
+	% 		% \node[above of = pin\lastx, yshift=-0.2cm] (pin\x) {\x};
+	% 		\coordinate[above = \pinspacing of #1 pin\lastx] (#1 pin\x);
+	% 	}
+	%
+	% % Draw connector shell and fill
+	%
+	% % mark the four corners
+	% \coordinate[above right = of #1 pin17, xshift=-10pt, yshift=2pt] (corn1);
+	% \coordinate[below right = of #1 pin1, xshift=-10pt, yshift=-2pt] (corn2);
+	% \coordinate[below left = of #1 pin35, xshift=10pt, yshift=-12pt] (corn3);
+	% \coordinate[above left = of #1 pin49, xshift=10pt, yshift=12pt] (corn4);
+	%
+	% \draw[red,thick](corn4) -- (corn3);
+	%
+	% \draw[ultra thick, rounded corners = 1cm, name path = shell, fill=brown!50!gray, fill opacity=0.2] (corn1) -- (corn2) -- (corn3) -- (corn4) -- cycle;
+	% \path[name path = cgnd] (corn3) ++(0cm, -0.75cm) ++(70:1cm) -- ++(-135:2cm);
+	% \draw[name intersections={of=shell and cgnd, name=i}] (i-1) coordinate (xmark);
+	% \draw[line width = 0.75pt] (xmark) ++(0,-10pt) -- ++(325:0.5cm) -- ++(1.75cm,0cm) -- ++(0cm, -0.5cm) coordinate(tc);
+	% \draw[line width = 1.15pt] (tc)       -- +(-0.5cm,0cm) coordinate (t1) -- +(0.5cm,0cm) coordinate (t2);
+	% \draw[line width = 1.15pt] (t1) -- +(-75:0.5cm);
+	% \draw[line width = 1.15pt] (tc) -- +(-75:0.5cm);
+	% \draw[line width = 1.15pt] (t2) -- +(-75:0.5cm);
 }
 
 \newcommand{\renderConnector}[2]{
 	\begin{figure}[htb]
 		\centering
-		\resizebox{!}{0.5\textheight}{
+		\resizebox{!}{0.6\textheight}{
 			\begin{tikzpicture}% [every node/.style ={ minimum width = 0in}]
 				\drawConnector{#1}
 				\labelPinsByReference{#1}
@@ -337,25 +503,39 @@
 \providetoggle{printtable}
 \toggletrue{printtable}
 
-\newenvironment{pinout}[1]{
+
+% TODO - make it so using reference or alias lookups inside a pinout environment don't require the name of the environment
+
+% Define pinout environment. Like a list, but successive definition of pin
+% signals, type, alias Each pinout defines a connector of given name and type
+% it is possible to continue further defining pins in a previous pinout
+% environment if it is given the same name. This is mostly useful for breaking
+% the pin list across pages at will.
+\newenvironment{pinout}[3]{
 
 
+	% Are we adding on some more pins to this connector?
 	\newtoggle{continuing}
 
 	\ifdef{\thefancy@conn@#1@pincount}{ % True \addtocounter{table}{-1}
 		\toggletrue{continuing}
+		% Sanity checks
+		% TODO: test if the connector type is different than previously defined
 	}{ % False
 		\newcounter{fancy@conn@#1@pincount}
 		\setcounter{fancy@conn@#1@pincount}{1}
 		\togglefalse{continuing} % not strictly necessary, but readability yo
+
+		\immediate\write\fancyeicd@conndefs{%
+			\unexpanded{\global\@namedef}{fancy@conn@#1@connectorType}\unexpanded{{#2}}%
+		}
+
+		\immediate\write\fancyeicd@conndefs{%
+			\unexpanded{\global\@namedef}{fancy@conn@#1@connectorGender}\unexpanded{{#3}}%
+		}
 	}
 
 	\newcommand{\safecounter}{\csname thefancy@conn@#1@pincount\endcsname}
-	\newcommand{\safename}{#1}
-
-
-
-
 
 	\newcommand{\defPin}[4]{
 		%   Arguments should be {number/counterreference}
@@ -405,7 +585,8 @@
 		% \stepcounter{fancy@conn@#1@pincount}
 		% \label{##1desc}
 		{\textbf{\smaller\safecounter}}
-		& \sig{\smaller ##1} & % {\smaller##4} 
+		& \sig{\smaller ##1}
+		&  {\smaller##4}
 		& {\smaller ##5} \\
 		\stepcounter{fancy@conn@#1@pincount}%
 	}
@@ -454,10 +635,10 @@
 	\def\arraystretch{1.00}%  1 is the default, change whatever you need
 	\setlength{\tabcolsep}{0.5em} % for the horizontal padding
 	\noindent
-	\tabularx{\linewidth}{@{}r l p{0in} X}
+	\tabularx{\linewidth}{@{}r l l X}
 	\toprule
-	\textsc{\larger\bfseries{}Pin} & \textsc{\larger\bfseries{}Signal Name} & % \textsc{\larger\bfseries{}Details}
-	% & \textsc{\larger{}\bfseries{}Type}
+	\textsc{\larger\bfseries{}Pin} & \textsc{\larger\bfseries{}Signal Name} % &  \textsc{\larger\bfseries{}Details}
+	& \textsc{\larger{}\bfseries{}Type}
 	& \textsc{\larger\bfseries{}Description}
 	\\ \midrule
 }{ % End pinout start block, start pinout end block
