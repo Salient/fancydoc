@@ -16,7 +16,7 @@
 %\pdfobjcompresslevel=0
 
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{core/fancydoc}[2020/06/09 Make Overly Nice Technical Documents]
+\ProvidesClass{fancydoc/fancydoc}[2020/06/09 Make Overly Nice Technical Documents]
 
 % Setup conditional logic before processing Options
 \RequirePackage{etoolbox}
@@ -68,15 +68,15 @@
 \usepackage{pgfplots} \pgfplotsset{compat=newest}
 \RequirePackage{subfiles}
 \RequirePackage{framed}
-\RequirePackage{core/fancydoc} % has a lot of helper ....stuff? 
+\RequirePackage{fancydoc/fancydoc} % has a lot of helper ....stuff? 
 
 % add support for requirements document framework, if selected
-\iftoggle{reqspec}{\RequirePackage{core/fancyreqs}}{}
+\iftoggle{reqspec}{\RequirePackage{fancydoc/fancyreqs}}{}
 
 % TODO Fix this here.....V
 % \newcommand{\sharedmedia}{C:/Users/1117384/Documents/Work/Utilities/Latex}
 %\newcommand{\sharedmedia}{/Users/vanquish/Work/Utilities/Latex}
-\newcommand{\sharedmedia}{core}
+\newcommand{\sharedmedia}{fancydoc}
 
 \iftoggle{acrolist}{
 	\PackageInfo{fancydebug}{acrolist true. defining listacronyms}
@@ -225,7 +225,7 @@
 
 
 \catcode`_ 13
-\newcommand\allowsforunderscores
+\newcommand\allowsforunderscore
 {%
 	\bgroup
 	\ttfamily
@@ -240,7 +240,7 @@
 		\renewcommand{\@botlogo}{\centering\includegraphics[height=\maxlogoheight,width=0.5\linewidth,keepaspectratio]{#1}}
 	}{% Logo does *not* exist
 		\ClassWarning{fancydoc}{Bottom logo set to #1, but that file does not exist! Continuing with placeholder warning...}
-		\renewcommand{\@botlogo}{\color{red}{\small<\allowsforunderscores{#1} not found!>}}
+		\renewcommand{\@botlogo}{\color{red}{\small<\allowsforunderscore{#1} not found!>}}
 	}% endif
 }
 
@@ -279,7 +279,7 @@
 
 % Should be a better way to set these flags, and the marking definitions, from inside the main document.
 
-% Main file that markings should be defined in. May should be maybe part of core?
+% Main file that markings should be defined in. May should be maybe part of fancydoc?
 
 \newcommand{\markingfile}{\sharedmedia/Markings/mixed}
 \newcommand{\logMarking}{
@@ -291,7 +291,7 @@
 		\renewcommand{\logMarking}{\PackageWarning{fancydoc}{Markings file #1 found, reading...}}
 		\renewcommand{\markingfile}{#1}
 	}{
-		% File not found in current directory, or full path given is not valid. Just to be nice, check if they meant in the core/
+		% File not found in current directory, or full path given is not valid. Just to be nice, check if they meant in the fancydoc/
 		\IfFileExists{\sharedmedia/Markings/#1}{
 			\iftoggle{verbose}{
 				\renewcommand{\logMarking}{\PackageWarning{fancydoc}{Markings file #1 found, reading...}}
