@@ -61,6 +61,7 @@
 \RequirePackage[dvipsnames,table,xcdraw]{xcolor}
 \RequirePackage[printonlyused,smaller]{acronym}
 \RequirePackage{multicol}
+\RequirePackage{pageslts}
 \RequirePackage{hyperref}
 \RequirePackage{xspace}
 \RequirePackage[explicit]{titlesec}
@@ -69,6 +70,7 @@
 \RequirePackage{subfiles}
 \RequirePackage{framed}
 \RequirePackage{fancydoc/fancydoc} % has a lot of helper ....stuff? 
+\usepackage{fancydoc/digsig}
 
 % add support for requirements document framework, if selected
 \iftoggle{reqspec}{\RequirePackage{fancydoc/fancyreqs}}{}
@@ -182,6 +184,10 @@
 % ---------------------------------------------------------------------------------------
 % Configure logos for document header
 
+\newlength{\maxlogoheight}
+\setlength{\maxlogoheight}{2.5in}
+\iftoggle{hidebotlogo}{\setlength{\maxlogoheight}{3.5in}}{}
+
 % NOTE - FileExists must have correct file extension
 \newcommand{\logoSet}{\ClassError{fancydoc}{Invalid list of logos}{You should do something}}
 \newcommand{\setLogos}[1]{
@@ -189,15 +195,16 @@
 	}
 }
 
-\newlength{\maxlogoheight}
-\setlength{\maxlogoheight}{1in}
-\iftoggle{hidebotlogo}{\setlength{\maxlogoheight}{3.5in}}{}
 
-\newcommand{\@toplogo}{\ClassError{fancydoc}{Top logo never defined. You must call \string\settoplogo{path/to/logo}, or disable by using option `notoplogo' in class options.}}%{do something pee pow poog}}
+\newcommand{\@toplogo}{\ClassError{fancydoc}{Top logo never defined. You must call \string\settoplogo{path/to/logo}, or disable by using option `notoplogo' in class options.}{Perhaps you are drunk?}
+}%{do something pee pow poog}}
 
-\newcommand{\@botlogo}{\ClassError{fancydoc}{Bottom logo never defined. You must call \string\setbotlogo{path/to/logo}, or disable by using option `nobotlogo' in class options.}}%{do something pee pow poog}}
+\newcommand{\@botlogo}{
+  \ClassError{fancydoc}{Bottom logo never defined. You must call \string\setbotlogo{path/to/logo}, or disable by using option `nobotlogo' in class options}{Perhaps you are drunk?}
+}%{do something pee pow poog}}
 
-\newcommand{\@headerlogo}{\ClassError{fancydoc}{Header logo never defined. You must call \string\setheaderlogo{path/to/logo}, or disable by using option `noheadlogo' in class options.}}%{do something pee pow poog}}
+\newcommand{\@headerlogo}{\ClassError{fancydoc}{Header logo never defined. You must call \string\setheaderlogo{path/to/logo}, or disable by using option `noheadlogo' in class options}{Perhaps you are drunk?}
+}%{do something pee pow poog}}
 
 \newcommand{\setheaderlogo}[1]{
 	\IfFileExists{#1}{
@@ -215,13 +222,6 @@
 	}{\ClassWarning{fancydoc}{Header logo set to #1, but that file does not exist!}}
 }
 
-\newcommand{\settoplogo}[1]{
-	\IfFileExists{#1}{
-		\renewcommand{\@toplogo}{\centering\includegraphics[height=\maxlogoheight,width=\linewidth,keepaspectratio]{#1}}}
-	{
-		\renewcommand{\@toplogo}{\centering\includegraphics[height=\maxlogoheight,width=\linewidth,keepaspectratio]{example-image}}}
-
-	\ClassWarning{fancydoc}{Top logo set to #1, but that file does not exist!}}
 
 
 \catcode`_ 13
@@ -235,10 +235,31 @@
 }%
 \catcode`_ 8
 
+\newcommand{\settoplogo}[1]{
+	\IfFileExists{#1}{
+		\renewcommand{\@toplogo}{
+        \centering\includegraphics[height=\maxlogoheight,width=\linewidth,keepaspectratio]{#1}
+    }
+    \iftoggle{hidetoplogo}{
+    \ClassWarning{fancydoc}{Top logo set to #1, but package option 'notop' also set!}
+    }
+    {\ClassWarning{fancydoc}{Top logo set to #1}}
+  }{  % ELSE
+    \renewcommand{\@toplogo}{
+        \centering\includegraphics[height=\maxlogoheight,width=\linewidth,keepaspectratio]{example-image}
+    }
+    \ClassWarning{fancydoc}{Top logo set to #1, but that file does not exist! Using placeholder...}
+}
+  }
+
 \newcommand{\setbotlogo}[1]{
 	\IfFileExists{#1}{% logo does exist
-		\renewcommand{\@botlogo}{\centering\includegraphics[height=\maxlogoheight,width=0.5\linewidth,keepaspectratio]{#1}}
-	}{% Logo does *not* exist
+  %\renewcommand{\@botlogo}{\centering\includegraphics[height=\maxlogoheight,width=0.5\linewidth,keepaspectratio]{#1}}
+  \renewcommand{\@botlogo}{\centering\includegraphics[height=\maxlogoheight,width=\linewidth,keepaspectratio]{#1}}
+    \iftoggle{hidebotlogo}{
+    \ClassWarning{fancydoc}{Bot logo set to #1, but package option 'nobot' also set!}
+    }{\ClassWarning{fancydoc}{Bot logo set to #1}}
+	}{ % Logo does *not* exist
 		\ClassWarning{fancydoc}{Bottom logo set to #1, but that file does not exist! Continuing with placeholder warning...}
 		\renewcommand{\@botlogo}{\color{red}{\small<\allowsforunderscore{#1} not found!>}}
 	}% endif
@@ -1205,15 +1226,15 @@
 		%\end{center}
 		%   \vspace{1cm}
 
-		\begin{minipage}{0.45\linewidth}
+		\begin{minipage}{0.35\linewidth}
 			% Place top logo, unless disabled
 			%\nottoggle{hidetoplogo}{\includegraphics[width=\linewidth]
 			\begin{center}
-				{\placetoplogo} {\placebotlogo}
+				{\placetoplogo}\\{\placebotlogo}
 			\end{center}
-
 		\end{minipage}
-		\hfill
+    \vspace{1cm}
+		\begin{minipage}{0.55\linewidth}
 		% \begin{minipage}{0.49\linewidth}
 			\footnotesize
 			%   \centering
@@ -1229,7 +1250,7 @@
 			%       \small \vspace{0.5cm}
 			%       \vfill
 			\def\arraystretch{0.9}%  1 is the default, change whatever you need
-			\begin{tabular}{r @{ : } >{\raggedright\arraybackslash}p{1.5in}}
+      \begin{tabularx}{0.9\linewidth}{r @{ : } >{\raggedright\arraybackslash}X}
 				{\large \textsc{ Document }{\fontfamily{cmr}\selectfont\textnumero}}
                                                                                       & {\large\docnumber}  {\small\newline}                                                  \\
 				\textsc{{\newline}Current Revision}                   & \revision                                                                     \\
@@ -1244,8 +1265,32 @@
                                 \iftoggle{markingCUI}{\textsc{CUI Category} & \markingCUIcat\\\textsc{Controlled By} & \markingCUIcontrol \\}{}
 				\newline{\scshape\projectdesignation}                 & \contractname                                                                 \\
 				\textsc{Contract \#}                                  & \contract \\
-			\end{tabular}
+			\end{tabularx} 
+      \\[1cm]~
+      \begin{tabularx}{0.9\linewidth}{r >{\raggedright\arraybackslash}X}
+ Engineering Review & \TextField[borderstyle=U, bordercolor={0 0 0}, name=engreview, width=5cm, height=0.6cm]{\digsigfield{5cm}{1cm}{Engineer}}\\[0.5cm]
+ Systems Review & \TextField[borderstyle=U, bordercolor={0 0 0}, name=sysreview, width=5cm, height=0.6cm]{\digsigfield{5cm}{1cm}{Checker}}\\[0.5cm]
+ Configuration Management & \TextField[borderstyle=U, bordercolor={0 0 0}, name=configmgr, width=5cm, height=0.6cm]{\digsigfield{5cm}{1cm}{configmgr}}
+\end{tabularx}
+		\end{minipage}
 			\vfill
+		\hfill
+
+%
+%       \newtoggle{signaturepage}
+%       \toggletrue{signaturepage}
+%       \iftoggle{signaturepage}{
+%
+% \begin{flushright}
+%         {\Large\textbf Approved by:}
+%
+%
+%       }{}
+
+
+    
+% \end{flushright}
+
 			%\def\arraystretch{1.5}%  1 is the default, change whatever you need
 		% \end{minipage} % \vspace{0.25cm}
 		% ~                                                                  \\
