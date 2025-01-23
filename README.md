@@ -4,6 +4,10 @@ LaTeX class for creating overly nice formatted documents. Contains several handy
 
 Currently under development, not yet part of CTAN. Thus, add fancydoc to your document by
 
-git submodule add <git@github.com>:Salient/fancydoc.git
+`git submodule add <git@github.com>:Salient/fancydoc.git`
+
+followed by
+
+`git submodule update --init --recursive`
 
 wherever your main .tex is located

@@ -32,6 +32,7 @@
 \newtoggle{acrolist}
 \toggletrue{acrolist}
 \newtoggle{reqspec}
+\newtoggle{signatures}
 
 
 % ---------------------------------------------------------------------------------------
@@ -49,6 +50,7 @@
 \DeclareOption{verbose}{\toggletrue{verbose}}
 \DeclareOption{noacrolist}{\togglefalse{acrolist}}
 \DeclareOption{reqspec}{\toggletrue{reqspec}}
+\DeclareOption{signatures}{\toggletrue{signatures}}
 
 \DeclareOption*{\PassOptionsToClass{\CurrentOption}{article}}
 \ProcessOptions\relax
@@ -66,7 +68,11 @@
 \RequirePackage{xspace}
 \RequirePackage[explicit]{titlesec}
 \RequirePackage{tikz}
-\usepackage{pgfplots} \pgfplotsset{compat=newest}
+\usepackage{pgfplots} 
+\pgfplotsset{compat=newest}
+\pgfplotsset{compat=1.16}
+\pgfplotsset{grid style={dashed,gray}}
+
 \RequirePackage{subfiles}
 \RequirePackage{framed}
 \RequirePackage{fancydoc/fancydoc} % has a lot of helper ....stuff? 
@@ -554,7 +560,7 @@
 \RequirePackage[skip=5pt, textfont={footnotesize,sl},labelfont=footnotesize, labelsep=endash]{caption}
 \setlength{\abovecaptionskip}{0pt}
 
-\RequirePackage[left=1.25in,right=1.25in,top=1in, bottom=1in, marginparsep=7pt]{geometry}
+\RequirePackage[left=0.75in,right=0.75in,top=1in, bottom=1in, marginparsep=7pt]{geometry}
 % \RequirePackage[left=1in,right=1in,top=1in, bottom=1in, marginparsep=7pt]{geometry}
 \RequirePackage{pdflscape}
 
@@ -575,6 +581,8 @@
 
 \newcommand{\email}[1]{\href{mailto:#1}{\nolinkurl{#1}}}
 
+
+\RequirePackage{tabularx}
 
 % Making \cellwidth the width of the tabularx cell we are currently in
 \RequirePackage{array}
@@ -630,7 +638,7 @@
 
 \RequirePackage[page]{appendix}
 \RequirePackage{pageslts}
-% \RequirePackage{pdfpages}
+\RequirePackage{pdfpages}
 
 
 \newcounter{appage}
@@ -1103,6 +1111,65 @@
 %%%%        Font Configuration (Optional)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+\renewcommand{\figurename}{fig.}
+\setcounter{tocdepth}{2}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%  DOCUMENT LOOK AND FEEL
+
+% \titleformat*{\section}{\LARGE\sffamily} %\scshape}
+% \titleformat*{\subsection}{\Large\sffamily}
+% \titleformat*{\subsubsection}{\normalsize\bfseries\sffamily}
+% \titleformat*{\subsubsection}{\normalsize\bfseries\sffamily}
+% \titleformat*{\paragraph}{\bfseries\scshape}
+\titleformat{\paragraph}[runin]{\normalsize\bfseries}{\theparagraph}{2em}{\myuline{#1}}
+\titleformat{\subparagraph}[runin]{}{\thesubparagraph}{2em}{\myuline{#1}}
+% \titleformat{\subparagraph}{\small\bfseries}
+% \titleformat*{\paragraph}{}{\theparagraph}{0.33em}{\ul}
+
+% % % Table of Contents Entries
+% % Make Entries in the ToC in Small Caps
+% % Format Sec headers
+% \renewcommand{\cftsecfont}{\large\scshape\sffamily}
+% \renewcommand{\cftsecleader}{\hfill}
+% \renewcommand{\cftsecpagefont}{\LARGE\sffamily\mdseries\color{sectcolor}}
+% \renewcommand{\cftsecpresnum}{Section }
+% \renewcommand{\cftsecaftersnum}{\hspace*{0.2cm}}
+% \renewcommand{\cftsecaftersnumb}{}
+
+% % Table of Contents Entries
+% Make Entries in the ToC in Small Caps
+% \renewcommand{\cftsubsecaftersnumb}{\sffamily}
+
+% \renewcommand*\ttdefault{txtt}
+% \renewcommand*\familydefault{\ttdefault} %% Only if the base font of the document is to be typewriter style
+% \usepackage[sfmath]{kpfonts} %% sfmath option only to make math in sans serif. Probablye only for use when base font is sans serif.
+% \renewcommand*\familydefault{\sfdefault} %% Only if the base font of the document is to be sans serif
+% \usepackage[T1]{fontenc}
+% \usepackage{everysel}
+% \EverySelectfont{%
+% \fontdimen2\font=0.4em% interword space
+% \fontdimen3\font=0.2em% interword stretch
+% \fontdimen4\font=0.1em% interword shrink
+% \fontdimen7\font=0.1em% extra space
+% \hyphenchar\font=`\-% to allow hyphenation
+% }
+
+% % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
+% FONTS 
+%
+%
+% \usepackage[light]{montserrat}
+% \fontfamily{cmm}\selectfont
+% \renewcommand\rmdefault{cmr}
+% \renewcommand\sfdefault{cmss}
+% \renewcommand\ttfamily{cmtt}
+%
+%
+\fontfamily{cmtt}\selectfont
+
 % Nice balance between sans and serif. Good weight, full support
 \RequirePackage{fourier}
 \RequirePackage[T1]{fontenc}
@@ -1131,14 +1198,14 @@
 
 
 % Not terrible sans font.
-%\usepackage[T1]{fontenc}
-%\usepackage[default]{gillius}
+% \usepackage[T1]{fontenc}
+% \usepackage[default]{gillius}
 
 
 % Nice legal type font, no small caps support
 %\usepackage{venturis2}
 
-%\RequirePackage[T1]{fontenc}
+\RequirePackage[T1]{fontenc}
 \RequirePackage{microtype}
 
 
@@ -1205,96 +1272,80 @@
 %
 \renewcommand{\titlepage}{
 	\thispagestyle{firststyle}\vspace*{-0.65cm}
-	%\begin{center}
 
+  \begin{tabularx}{0.9\linewidth}{l X}
+        \Large{\textbf{\sffamily\scshape\doctype}} & \Large{\sffamily \titlelong} 
+  \end{tabularx}\hfill~
 
-		% % \medskip
-		%     \noindent\Large{\textbf{\sffamily\scshape\doctype}}
-		% \begin{minipage}{0.80\linewidth}
-		% \noindent\Large{\sffamily \titlelong}\medskip
-		% \end{minipage}
+  \vspace*{0.25cm}
+  \noindent\hrule
+  \vspace*{0.70cm}
 
-                \begin{tabularx}{0.9\linewidth}{l X}
-                    \Large{\textbf{\sffamily\scshape\doctype}} & \Large{\sffamily \titlelong} 
-                \end{tabularx}\hfill~
-		\vspace*{0.25cm}
-		\noindent\hrule
-		\vspace*{0.70cm}
-		% \vfill
-		%\small~\\[0.15cm]
-		%\normalsize
-		%\end{center}
-		%   \vspace{1cm}
+  \begin{minipage}{0.40\linewidth}
+    \begin{center}
+      {\placetoplogo}~\\{\placebotlogo}
+    \end{center}
+  \end{minipage}
+  \vspace{1cm}
+  \hfill
+  \begin{minipage}{0.50\linewidth}
+    \footnotesize
+    \def\arraystretch{0.9}%  1 is the default, change whatever you need
+    \hfill
+    \begin{tabularx}{0.64\linewidth}{r @{ : } >{\raggedright\arraybackslash}X}
+      {\large \textsc{ Document }{\fontfamily{cmr}\selectfont\textnumero}}
+                                                                                    & {\large\docnumber}  {\small\newline}                                                  \\
+      \textsc{{\newline}Current Revision}                   & \revision                                                                     \\
+      \textsc{Total Pages}                                  & \pageref{LastPage}                                                            \\
+      \textsc{Status}                                       & \documentstatus                                                               \\
+      \textsc{Last Revised}                                 & \released\newline                                                                     \\
+      \newline{\scshape\projectdesignation}                 & \contractname                                                                 \\
+      \textsc{Contract \#}                                  & \contract \\
+      \iftoggle{fancydoc@authors}{\textsc{Prepared By}      & \foreach \x in \fancydoc@authorlist { \x\newline }\\}{}
+      \fancydoc@originfacility%
+      \fancydoc@cagecode
+      \iftoggle{markingDistribution}{\textsc{Distribution}  & \distribution\\}{}
+      \textsc{Sensitivity}                                  & UNCLASSIFIED\iftoggle{markingCUI}{, CUI \\}{\\}
+      \iftoggle{markingCUI}{\textsc{CUI Category} & \markingCUIcat\\\textsc{Controlled By} & \markingCUIcontrol \\}{}
+    \end{tabularx} 
+    % \\[0.1cm]~
 
-		\begin{minipage}{0.35\linewidth}
-			% Place top logo, unless disabled
-			%\nottoggle{hidetoplogo}{\includegraphics[width=\linewidth]
-			\begin{center}
-				{\placetoplogo}\\{\placebotlogo}
-			\end{center}
 		\end{minipage}
-    \vspace{1cm}
-		\begin{minipage}{0.55\linewidth}
-		% \begin{minipage}{0.49\linewidth}
-			\footnotesize
-			%   \centering
-			%   \textsc{
-			%       \textbf{
-			%           {\large Record {\fontfamily{cmr}\selectfont\textnumero}:}
-			%           %               $\textnumero$
-			%           \LARGE
-			%           %           \underline{\docnumber}
-			%           \docnumber
-			%   }}
-			%                                                            \\ [0.25cm]
-			%       \small \vspace{0.5cm}
-			%       \vfill
-			\def\arraystretch{0.9}%  1 is the default, change whatever you need
-      \begin{tabularx}{0.9\linewidth}{r @{ : } >{\raggedright\arraybackslash}X}
-				{\large \textsc{ Document }{\fontfamily{cmr}\selectfont\textnumero}}
-                                                                                      & {\large\docnumber}  {\small\newline}                                                  \\
-				\textsc{{\newline}Current Revision}                   & \revision                                                                     \\
-				\textsc{Total Pages}                                  & \pageref{LastPage}                                                            \\
-				\textsc{Status}                                       & \documentstatus                                                               \\
-				\textsc{Last Revised}                                 & \released\newline                                                                     \\
-				\iftoggle{fancydoc@authors}{\textsc{Prepared By}      & \foreach \x in \fancydoc@authorlist { \x\newline }\\}{}
-				\fancydoc@originfacility%
-				\fancydoc@cagecode
-				\iftoggle{markingDistribution}{\textsc{Distribution}  & \distribution\\}{}
-				\textsc{Sensitivity}                                  & UNCLASSIFIED\iftoggle{markingCUI}{, CUI \\}{\\}
-                                \iftoggle{markingCUI}{\textsc{CUI Category} & \markingCUIcat\\\textsc{Controlled By} & \markingCUIcontrol \\}{}
-				\newline{\scshape\projectdesignation}                 & \contractname                                                                 \\
-				\textsc{Contract \#}                                  & \contract \\
-			\end{tabularx} 
-      \\[1cm]~
-      \begin{tabularx}{0.9\linewidth}{r >{\raggedright\arraybackslash}X}
- Engineering Review & \TextField[borderstyle=U, bordercolor={0 0 0}, name=engreview, width=5cm, height=0.6cm]{\digsigfield{5cm}{1cm}{Engineer}}\\[0.5cm]
- Systems Review & \TextField[borderstyle=U, bordercolor={0 0 0}, name=sysreview, width=5cm, height=0.6cm]{\digsigfield{5cm}{1cm}{Checker}}\\[0.5cm]
- Configuration Management & \TextField[borderstyle=U, bordercolor={0 0 0}, name=configmgr, width=5cm, height=0.6cm]{\digsigfield{5cm}{1cm}{configmgr}}
-\end{tabularx}
-		\end{minipage}
-			\vfill
-		\hfill
-
-%
-%       \newtoggle{signaturepage}
-%       \toggletrue{signaturepage}
-%       \iftoggle{signaturepage}{
-%
-% \begin{flushright}
-%         {\Large\textbf Approved by:}
-%
-%
-%       }{}
 
 
-    
-% \end{flushright}
+
+% \renewcommand\tabularxcolumn[1]{m{#1}}% for vertical centering text in X column
+
+      \iftoggle{signatures}{
+      \newcolumntype{V}{>{\raggedleft\arraybackslash} m{2.5cm} }
+
+      \begin{flushright}
+          \begin{tabularx}{1.0\linewidth}{V p{5cm} V  p{5cm}}
+            \fbox{Engineering Review} & \TextField[borderstyle=U, bordercolor={0 0 0}, name=engreview, width=5cm, height=0.2cm]{\digsigfield{5cm}{1cm}{Engineer}} & Systems Review & \TextField[borderstyle=U, bordercolor={0 0 0}, name=sysreview, width=5cm, height=0.6cm]{\digsigfield{5cm}{1cm}{Checker}}\\[0.5cm]
+              Configuration Management & \TextField[borderstyle=U, bordercolor={0 0 0}, name=configmgr, width=5cm, height=0.6cm]{\digsigfield{5cm}{1cm}{configmgr}} && \\
+      \end{tabularx}
+      {
+        \smaller\\[0.2cm]
+          This signed document certifies the above personnel or designated alternates have approved this revision. \\
+
+          Any technical revision to this document shall require a charge explanation in the Records of Revisions and
+          reapproval of the technical content. \\
+
+          All other revisions to the document shall require a change explanation in the Records of Revisions and will only
+          require approval by the original author.
+      }
+
+
+      \end{flushright}
+      }{}
 
 			%\def\arraystretch{1.5}%  1 is the default, change whatever you need
 		% \end{minipage} % \vspace{0.25cm}
 		% ~                                                                  \\
 		\vfill
+
+
+    %  MARKINGS
 		\footnotesize
 
 		{\noindent\iftoggle{markingDistribution}{\newline\distwarning}{}}
