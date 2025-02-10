@@ -68,6 +68,7 @@
 \RequirePackage{xspace}
 \RequirePackage[explicit]{titlesec}
 \RequirePackage{tikz}
+\RequirePackage{makecell}
 \usepackage{pgfplots} 
 \pgfplotsset{compat=newest}
 \pgfplotsset{compat=1.16}
@@ -87,15 +88,15 @@
 \newcommand{\sharedmedia}{fancydoc}
 
 \iftoggle{acrolist}{
-	\PackageInfo{fancydebug}{acrolist true. defining listacronyms}
+\PackageInfo{fancydebug}{acrolist true. defining listacronyms}
 
-	\newcommand{\listacronyms}{
-		\input{\sharedmedia/Acronyms/acronyms.tex}
-	}
+\newcommand{\listacronyms}{
+  \input{\sharedmedia/Acronyms/acronyms.tex}
+}
 }{
-	\PackageInfo{fancydebug}{acrolist false. reading in now listacronyms}
-	\providecommand{\listacronyms}{}
-	\input{\sharedmedia/Acronyms/acronyms.tex}
+\PackageInfo{fancydebug}{acrolist false. reading in now listacronyms}
+\providecommand{\listacronyms}{}
+\input{\sharedmedia/Acronyms/acronyms.tex}
 }
 
 
@@ -108,38 +109,38 @@
 % Handle conditionals
 
 \iftoggle{codesnips}{
-	\RequirePackage[outputdir=cruft]{minted}
-	\setminted[vhdl]{fontsize=\scriptsize, linenos}
-	\renewcommand{\listoflistingscaption}{Logic Code Excerpts}
-	\newcommand{\codesref}{Code Excerpt }
-	\renewcommand{\listingscaption}{\ac{CDL} \codesref}
-	\newcommand{\coderef}[1]{\hyperref[#1]{\codesref \ref*{#1}}}
-	\newcommand{\codereff}[1]{\hyperref[{#1}]{\codesref \ref*{#1}, page \pageref*{#1}}}
+\RequirePackage[outputdir=cruft]{minted}
+\setminted[vhdl]{fontsize=\scriptsize, linenos}
+\renewcommand{\listoflistingscaption}{Logic Code Excerpts}
+\newcommand{\codesref}{Code Excerpt }
+\renewcommand{\listingscaption}{\ac{CDL} \codesref}
+\newcommand{\coderef}[1]{\hyperref[#1]{\codesref \ref*{#1}}}
+\newcommand{\codereff}[1]{\hyperref[{#1}]{\codesref \ref*{#1}, page \pageref*{#1}}}
 }
 
 
 \newcommand{\formatting}{\color{black}}
 \iftoggle{stark}{
-	\renewcommand{\formatting}{\color{red}}
+\renewcommand{\formatting}{\color{red}}
 }{}
 
 % -----------
 \iftoggle{rough}{
 
 
-	% NOTE: Package below is obsolete
-	% \RequirePackage{everypage}
+% NOTE: Package below is obsolete
+% \RequirePackage{everypage}
 
-	\usetikzlibrary{math, positioning}
-	%\SetWatermarkText{BIO-HAZARD}
-	%\SetWatermarkScale{4}
-	%\SetWatermarkAngle{}
-	%\SetWatermarkColor{}
-	%\SetWatermarkFontSize{}
-	%\SetWatermarkScale{}
-	%\SetWatermarkHorCenter{}
-	%\SetWatermarkVerCenter{}
-	%\SetWatermarkLightness{0.96} % Higher is lighter
+\usetikzlibrary{math, positioning}
+%\SetWatermarkText{BIO-HAZARD}
+%\SetWatermarkScale{4}
+%\SetWatermarkAngle{}
+%\SetWatermarkColor{}
+%\SetWatermarkFontSize{}
+%\SetWatermarkScale{}
+%\SetWatermarkHorCenter{}
+%\SetWatermarkVerCenter{}
+%\SetWatermarkLightness{0.96} % Higher is lighter
 
 	%\newcommand{\roughtext}{WORK IN PROGRESS}
 
@@ -1317,12 +1318,18 @@
 % \renewcommand\tabularxcolumn[1]{m{#1}}% for vertical centering text in X column
 
       \iftoggle{signatures}{
-      \newcolumntype{V}{>{\raggedleft\arraybackslash} m{2.5cm} }
+        \renewcommand\theadalign{bc}
+\renewcommand\theadfont{\bfseries}
+\renewcommand\theadgape{\Gape[4pt]}
+\renewcommand\cellgape{\Gape[4pt]}
+      \newcolumntype{V}{>{\raggedleft\arraybackslash} m{3.0cm} }
+
+      \setlength\tabcolsep{0.21cm}
 
       \begin{flushright}
-          \begin{tabularx}{1.0\linewidth}{V p{5cm} V  p{5cm}}
-            \fbox{Engineering Review} & \TextField[borderstyle=U, bordercolor={0 0 0}, name=engreview, width=5cm, height=0.2cm]{\digsigfield{5cm}{1cm}{Engineer}} & Systems Review & \TextField[borderstyle=U, bordercolor={0 0 0}, name=sysreview, width=5cm, height=0.6cm]{\digsigfield{5cm}{1cm}{Checker}}\\[0.5cm]
-              Configuration Management & \TextField[borderstyle=U, bordercolor={0 0 0}, name=configmgr, width=5cm, height=0.6cm]{\digsigfield{5cm}{1cm}{configmgr}} && \\
+        \begin{tabularx}{1.0\linewidth}{r p{4.5cm} V  p{4.5cm}}
+          \fbox{Engineering\newline{}Preview} & {\digsigfield{4.5cm}{1cm}{Engineer}} {\TextField[borderstyle=U, bordercolor={0.5 0 0}, name=engreview, width=4.5cm, height=0.2cm]{\digsigfield{4.5cm}{1cm}{Engineer}}} & Systems Review & \TextField[borderstyle=U, bordercolor={0 0 0}, name=sysreview, width=4.5cm, height=0.6cm]{\digsigfield{4.5cm}{1cm}{Checker}}\\[0.5cm]
+              Configuration Management & \TextField[borderstyle=U, bordercolor={0 0 0}, name=configmgr, width=4.5cm, height=0.6cm]{\digsigfield{4.5cm}{1cm}{configmgr}} && \\
       \end{tabularx}
       {
         \smaller\\[0.2cm]
