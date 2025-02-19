@@ -50,6 +50,21 @@
 	\end{table}
 }
 
+\newcommand{\addresspar}[3]{
+  \smallskip
+
+    \def\arraystretch{0.9}%  1 is the default, change whatever you need
+  \begingroup
+  \fontfamily{lmtt}\selectfont    
+  
+  \hfill\begin{tabular}{l}
+      \textbf{#1}\\
+      \textbf{#2}\\
+      \textbf{#3}\\
+  \end{tabular}\hfill
+  \endgroup
+    }
+		
 
 
 % Slanted column headers for tables

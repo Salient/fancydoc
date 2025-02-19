@@ -223,7 +223,7 @@
 			\raggedleft\includegraphics[height=0.55cm,keepaspectratio]{#1}\hspace*{1px}\vskip-\headrulewidth
 		}
 
-		\ClassWarning{fancydoc}{Header logo set to #1}
+		\ClassInfo{fancydoc}{Header logo set to #1}
 		\renewcommand{\@headerlogo}{#1}
 	}{\ClassWarning{fancydoc}{Header logo set to #1, but that file does not exist!}}
 }
@@ -249,7 +249,7 @@
     \iftoggle{hidetoplogo}{
     \ClassWarning{fancydoc}{Top logo set to #1, but package option 'notop' also set!}
     }
-    {\ClassWarning{fancydoc}{Top logo set to #1}}
+    {\ClassInfo{fancydoc}{Top logo set to #1}}
   }{  % ELSE
     \renewcommand{\@toplogo}{
         \centering\includegraphics[height=\maxlogoheight,width=\linewidth,keepaspectratio]{example-image}
@@ -264,7 +264,7 @@
   \renewcommand{\@botlogo}{\centering\includegraphics[height=\maxlogoheight,width=\linewidth,keepaspectratio]{#1}}
     \iftoggle{hidebotlogo}{
     \ClassWarning{fancydoc}{Bot logo set to #1, but package option 'nobot' also set!}
-    }{\ClassWarning{fancydoc}{Bot logo set to #1}}
+    }{\ClassInfo{fancydoc}{Bot logo set to #1}}
 	}{ % Logo does *not* exist
 		\ClassWarning{fancydoc}{Bottom logo set to #1, but that file does not exist! Continuing with placeholder warning...}
 		\renewcommand{\@botlogo}{\color{red}{\small<\allowsforunderscore{#1} not found!>}}
@@ -315,13 +315,13 @@
 
 \newcommand{\setmarkings}[1]{
 	\IfFileExists{#1}{
-		\renewcommand{\logMarking}{\PackageWarning{fancydoc}{Markings file #1 found, reading...}}
+		\renewcommand{\logMarking}{\PackageInfo{fancydoc}{Markings file #1 found, reading...}}
 		\renewcommand{\markingfile}{#1}
 	}{
 		% File not found in current directory, or full path given is not valid. Just to be nice, check if they meant in the fancydoc/
 		\IfFileExists{\sharedmedia/Markings/#1}{
 			\iftoggle{verbose}{
-				\renewcommand{\logMarking}{\PackageWarning{fancydoc}{Markings file #1 found, reading...}}
+				\renewcommand{\logMarking}{\PackageInfo{fancydoc}{Markings file #1 found, reading...}}
 			}{\renewcommand{\logMarking}{}}
 			\renewcommand{\markingfile}{\sharedmedia/Markings/#1}
 		}{
@@ -694,7 +694,6 @@
 % Requires etoolbox package
 \RequirePackage{fancyhdr}
 \renewcommand{\headrulewidth}{1pt}
-
 % \newcommand{\topfooterleft}{\scriptsize{For \textbf{\contractname} \projectdesignation\xspace Only}}
 \newcommand{\topfooterleft}{\scriptsize{\projectdesignation: \textbf{\contractname}}}
 \newcommand{\cornermark}{
@@ -712,7 +711,7 @@
 	\fancyhead[L]{\unselectable{\cornermark}}
 
 	\fancyfoot[L]{\unselectable
-		\scriptsize\topfooterleft\vspace{0.1cm}\hrule\vspace{0.1cm}
+		\noindent\scriptsize\topfooterleft\vspace{0.1cm}\hrule\vspace{0.1cm}
 		\ifboolexpr{togl{markingITAR}}{\scriptsize{Export Controlled}}{}
 		\ifboolexpr{togl{markingDistribution} and togl{markingITAR}}{ \textbf{ // } }{}
 		\ifboolexpr{togl{markingDistribution}}{\scriptsize{Distribution} \distribution}{}
@@ -986,6 +985,7 @@
 \newcommand{\revisionblock}{
 	\def\arraystretch{1.5}
 	\vfill
+\renewcommand{\tabcolsep}{10pt}
 	\section*{Revision History}
 	\begin{center}
 		\begin{tabularx}{\linewidth}{ c | c | X }
@@ -1169,10 +1169,16 @@
 %
 %
 \fontfamily{cmtt}\selectfont
+\RequirePackage[T1]{fontenc}
 
 % Nice balance between sans and serif. Good weight, full support
 \RequirePackage{fourier}
-\RequirePackage[T1]{fontenc}
+
+% \RequirePackage[light]{CrimsonPro}
+%% The font package uses mweights.sty which has som issues with the
+%% \normalfont command. The following two lines fixes this issue.
+% \let\oldnormalfont\normalfont
+% \def\normalfont{\oldnormalfont\mdseries}
 
 % Blocky, clear, full support. One of the top three
 %\usepackage{txfonts}
@@ -1218,6 +1224,9 @@
 }
 
 \RequirePackage{relsize}
+
+
+% todo - move this to eicd style
 \newcommand{\signalfont}{\fontfamily{NotoSans-TLF}\selectfont\smaller\bfseries}
 %\newcommand{\sig}[1]{{\fontfamily{\signalfont}\selectfont #1}}
 \newcommand{\sig}[1]{{\signalfont\uppercase{#1}}}
@@ -1265,6 +1274,44 @@
 %       \relscale{0.95} % or whatever scaling is desired.
 \pagenumbering{arabic}
 
+        \newcommand{\sigentry}[2]{
+          % \fbox{
+            \parbox[c][0pt]{2.5cm}{ % this is a neat trick. make the vertical size 0 so when used in tabular environment, the row height is set by other cells. This is then aligned vertically to center off that height. 
+              \begin{flushright}
+                #1
+              \end{flushright}
+          }
+        % }
+                                       &
+          % \colorbox{lightgray!20}{
+          \colorbox{blue!10}{
+            \parbox[c][0.75cm]{4.0cm}{ 
+              \digsigfield{5.14cm}{0.75cm}{#2}
+            }
+          }
+
+        }
+
+
+        \newcommand{\sighere}[2]{
+          \fbox{
+          % \begin{minipage}{0.4\linewidth} 
+          \begin{tabularx}{0.4\linewidth}{ r l }
+            \parbox[c][0pt]{2.5cm}{
+              \begin{flushright}
+                #1
+              \end{flushright}
+            } &  
+          \colorbox{blue!10}{
+            \parbox[c][0.75cm]{4.0cm}{ 
+              \digsigfield{3.50cm}{0.75cm}{#2}~
+            }
+          } \\
+        \end{tabularx}
+      % \end{minipage}
+    }
+      }
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%        Title Page
@@ -1281,7 +1328,7 @@
   \noindent\hrule
   \vspace*{0.70cm}
 
-  \begin{minipage}{0.40\linewidth}
+  \hfill\begin{minipage}{0.30\linewidth}
     \begin{center}
       {\placetoplogo}~\\{\placebotlogo}
     \end{center}
@@ -1292,9 +1339,9 @@
     \footnotesize
     \def\arraystretch{0.9}%  1 is the default, change whatever you need
     \hfill
-    \begin{tabularx}{0.64\linewidth}{r @{ : } >{\raggedright\arraybackslash}X}
+    \begin{tabularx}{0.90\linewidth}{r @{ : } >{\raggedright\arraybackslash}X}
       {\large \textsc{ Document }{\fontfamily{cmr}\selectfont\textnumero}}
-                                                                                    & {\large\docnumber}  {\small\newline}                                                  \\
+       & {\large\docnumber}  {\small\newline}                                                  \\
       \textsc{{\newline}Current Revision}                   & \revision                                                                     \\
       \textsc{Total Pages}                                  & \pageref{LastPage}                                                            \\
       \textsc{Status}                                       & \documentstatus                                                               \\
@@ -1306,37 +1353,40 @@
       \fancydoc@cagecode
       \iftoggle{markingDistribution}{\textsc{Distribution}  & \distribution\\}{}
       \textsc{Sensitivity}                                  & UNCLASSIFIED\iftoggle{markingCUI}{, CUI \\}{\\}
-      \iftoggle{markingCUI}{\textsc{CUI Category} & \markingCUIcat\\\textsc{Controlled By} & \markingCUIcontrol \\}{}
+     
+      \iftoggle{markingCUI}{
+          \textsc{CUI Category} & \markingCUIcat\\
+          \textsc{Controlled By} & \foreach \x in \markingCUIcontrol { \x\newline }\\
+    }{}
     \end{tabularx} 
     % \\[0.1cm]~
-
 		\end{minipage}
 
 
 
-% \renewcommand\tabularxcolumn[1]{m{#1}}% for vertical centering text in X column
+  \iftoggle{signatures}{
 
-      \iftoggle{signatures}{
-      \newcolumntype{V}{>{\raggedleft\arraybackslash} m{2.5cm} }
+    \setlength\arrayrulewidth{1pt}
+    \renewcommand{\tabcolsep}{0pt}
+    \begin{center}
+        \begin{tabularx}{1.0\linewidth}{ m{3.0cm} p{5.5cm}  m{3.0cm} p{5.5cm}}
+          \sigentry{Responsible\\Engineer}{engineering} & \sigentry{Process\\Review}{systems} \\\cline{2-2}\cline{4-4}
+                                                        &&&\\
+          \sigentry{Test\\Engineer}{test}  & \sigentry{Program\\Management}{program}\\\cline{2-2}\cline{4-4}
+        \end{tabularx}
+      \end{center}
 
-      \begin{flushright}
-          \begin{tabularx}{1.0\linewidth}{V p{5cm} V  p{5cm}}
-            \fbox{Engineering Review} & \TextField[borderstyle=U, bordercolor={0 0 0}, name=engreview, width=5cm, height=0.2cm]{\digsigfield{5cm}{1cm}{Engineer}} & Systems Review & \TextField[borderstyle=U, bordercolor={0 0 0}, name=sysreview, width=5cm, height=0.6cm]{\digsigfield{5cm}{1cm}{Checker}}\\[0.5cm]
-              Configuration Management & \TextField[borderstyle=U, bordercolor={0 0 0}, name=configmgr, width=5cm, height=0.6cm]{\digsigfield{5cm}{1cm}{configmgr}} && \\
-      \end{tabularx}
-      {
-        \smaller\\[0.2cm]
-          This signed document certifies the above personnel or designated alternates have approved this revision. \\
-
-          Any technical revision to this document shall require a charge explanation in the Records of Revisions and
-          reapproval of the technical content. \\
-
-          All other revisions to the document shall require a change explanation in the Records of Revisions and will only
-          require approval by the original author.
-      }
-
-
-      \end{flushright}
+      %   \begin{flushleft}
+      %   \smaller
+      %   ~\\[0.2cm]
+      %     This signed document certifies the above personnel or designated alternates have approved this revision. \\
+      %
+      %     Any technical revision to this document shall require a charge explanation in the Records of Revisions and
+      %     reapproval of the technical content. \\
+      %
+      %     All other revisions to the document shall require a change explanation in the Records of Revisions and will only
+      %     require approval by the original author.
+      % \end{flushleft}
       }{}
 
 			%\def\arraystretch{1.5}%  1 is the default, change whatever you need
