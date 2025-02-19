@@ -68,6 +68,7 @@
 \RequirePackage{xspace}
 \RequirePackage[explicit]{titlesec}
 \RequirePackage{tikz}
+\RequirePackage{makecell}
 \usepackage{pgfplots} 
 \pgfplotsset{compat=newest}
 \pgfplotsset{compat=1.16}
@@ -1387,6 +1388,33 @@
       %     All other revisions to the document shall require a change explanation in the Records of Revisions and will only
       %     require approval by the original author.
       % \end{flushleft}
+      \iftoggle{signatures}{
+        \renewcommand\theadalign{bc}
+\renewcommand\theadfont{\bfseries}
+\renewcommand\theadgape{\Gape[4pt]}
+\renewcommand\cellgape{\Gape[4pt]}
+      \newcolumntype{V}{>{\raggedleft\arraybackslash} m{3.0cm} }
+
+      \setlength\tabcolsep{0.21cm}
+
+      \begin{flushright}
+        \begin{tabularx}{1.0\linewidth}{r p{4.5cm} V  p{4.5cm}}
+          \fbox{Engineering\newline{}Preview} & {\digsigfield{4.5cm}{1cm}{Engineer}} {\TextField[borderstyle=U, bordercolor={0.5 0 0}, name=engreview, width=4.5cm, height=0.2cm]{\digsigfield{4.5cm}{1cm}{Engineer}}} & Systems Review & \TextField[borderstyle=U, bordercolor={0 0 0}, name=sysreview, width=4.5cm, height=0.6cm]{\digsigfield{4.5cm}{1cm}{Checker}}\\[0.5cm]
+              Configuration Management & \TextField[borderstyle=U, bordercolor={0 0 0}, name=configmgr, width=4.5cm, height=0.6cm]{\digsigfield{4.5cm}{1cm}{configmgr}} && \\
+      \end{tabularx}
+      {
+        \smaller\\[0.2cm]
+          This signed document certifies the above personnel or designated alternates have approved this revision. \\
+
+          Any technical revision to this document shall require a charge explanation in the Records of Revisions and
+          reapproval of the technical content. \\
+
+          All other revisions to the document shall require a change explanation in the Records of Revisions and will only
+          require approval by the original author.
+      }
+
+
+      \end{flushright}
       }{}
 
 			%\def\arraystretch{1.5}%  1 is the default, change whatever you need
