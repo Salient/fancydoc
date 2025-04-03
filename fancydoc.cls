@@ -14,6 +14,16 @@
 
 %\pdfcompresslevel=0
 %\pdfobjcompresslevel=0
+%
+%
+% ROADMAP / PLAN / TODO
+
+% General clean up and organize
+
+% Conform setting flags in document, and how the changes are implemented. i.e., setting cui and cage code and stuff. 
+% right now we set toggles, but we could just call a command to set and have it set the toggle
+%
+% Make all internal flags and commands consistent naming scheme. toggles should all move to fancydoc@flag@<name> or something
 
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesClass{fancydoc/fancydoc}[2020/06/09 Make Overly Nice Technical Documents]
@@ -33,6 +43,7 @@
 \toggletrue{acrolist}
 \newtoggle{reqspec}
 \newtoggle{signatures}
+\newtoggle{showgit}
 
 
 % ---------------------------------------------------------------------------------------
@@ -51,6 +62,7 @@
 \DeclareOption{noacrolist}{\togglefalse{acrolist}}
 \DeclareOption{reqspec}{\toggletrue{reqspec}}
 \DeclareOption{signatures}{\toggletrue{signatures}}
+\DeclareOption{showgit}{\toggletrue{showgit}}
 
 \DeclareOption*{\PassOptionsToClass{\CurrentOption}{article}}
 \ProcessOptions\relax
@@ -61,7 +73,7 @@
 % Pull in packages we know we need
 
 \RequirePackage[dvipsnames,table,xcdraw]{xcolor}
-\RequirePackage[printonlyused,smaller]{acronym}
+\RequirePackage[printonlyused]{acronym}
 \RequirePackage{multicol}
 \RequirePackage{pageslts}
 \RequirePackage{hyperref}
@@ -69,7 +81,7 @@
 \RequirePackage[explicit]{titlesec}
 \RequirePackage{tikz}
 \RequirePackage{makecell}
-\usepackage{pgfplots} 
+\usepackage{pgfplots}
 \pgfplotsset{compat=newest}
 \pgfplotsset{compat=1.16}
 \pgfplotsset{grid style={dashed,gray}}
@@ -102,6 +114,18 @@
 
 \RequirePackage{multicol} % Required to list acronyms nicely
 
+% Git document markings
+\iftoggle{showgit}{
+	\RequirePackage[grumpy,dirty=(Modified)]{gitinfo2}
+	\newcommand{\gitinfo}{
+		\smaller \ttfamily \color{gray}
+		\begin{tblr}[expand=\gitHash\gitDirty\gitAuthorDate\gitAuthorName\gitAuthorEmail]{rl}
+			Document Control: & gitlab.corvidtec.com:suborbital/rival/doc/qual-report.git \\
+			Version:          & \gitHash{} \gitDirty{}                                    \\
+			Committed:        & \gitAuthorDate{} by \gitAuthorName{} <\gitAuthorEmail{}>  \\
+		\end{tblr}
+	}
+}{}
 
 
 
@@ -191,23 +215,12 @@
 % ---------------------------------------------------------------------------------------
 % Configure logos for document header
 
-\newlength{\maxlogoheight}
-\setlength{\maxlogoheight}{2.5in}
-\iftoggle{hidebotlogo}{\setlength{\maxlogoheight}{3.5in}}{}
-
-% NOTE - FileExists must have correct file extension
-\newcommand{\logoSet}{\ClassError{fancydoc}{Invalid list of logos}{You should do something}}
-\newcommand{\setLogos}[1]{
-	\IfFileExists{#1}{\renewcommand{\@botlogo}{\centering\includegraphics[height=\maxlogoheight,width=0.8\linewidth,keepaspectratio]{#1}}}{\ClassWarning{fancydoc}{oh noes!}
-	}
-}
-
 
 \newcommand{\@toplogo}{\ClassError{fancydoc}{Top logo never defined. You must call \string\settoplogo{path/to/logo}, or disable by using option `notoplogo' in class options.}{Perhaps you are drunk?}
 }%{do something pee pow poog}}
 
 \newcommand{\@botlogo}{
-  \ClassError{fancydoc}{Bottom logo never defined. You must call \string\setbotlogo{path/to/logo}, or disable by using option `nobotlogo' in class options}{Perhaps you are drunk?}
+	\ClassError{fancydoc}{Bottom logo never defined. You must call \string\setbotlogo{path/to/logo}, or disable by using option `nobotlogo' in class options}{Perhaps you are drunk?}
 }%{do something pee pow poog}}
 
 \newcommand{\@headerlogo}{\ClassError{fancydoc}{Header logo never defined. You must call \string\setheaderlogo{path/to/logo}, or disable by using option `noheadlogo' in class options}{Perhaps you are drunk?}
@@ -242,31 +255,48 @@
 }%
 \catcode`_ 8
 
+\newlength{\maxlogoheight}
+\setlength{\maxlogoheight}{2.5in}
+\iftoggle{hidebotlogo}{\setlength{\maxlogoheight}{3.5in}}{}
+
+% TODO make this smarter with optional command or something
+\newcommand{\toplogowidth}{1}
+\newcommand{\botlogowidth}{1}
+
+\newcommand{\settoplogoratio}[1]{\renewcommand{\toplogowidth}{#1}}
+\newcommand{\setbotlogoratio}[1]{\renewcommand{\botlogowidth}{#1}}
+
+% NOTE: - FileExists must have correct file extension
 \newcommand{\settoplogo}[1]{
 	\IfFileExists{#1}{
 		\renewcommand{\@toplogo}{
-        \centering\includegraphics[height=\maxlogoheight,width=\linewidth,keepaspectratio]{#1}
-    }
-    \iftoggle{hidetoplogo}{
-    \ClassWarning{fancydoc}{Top logo set to #1, but package option 'notop' also set!}
-    }
-    {\ClassInfo{fancydoc}{Top logo set to #1}}
-  }{  % ELSE
-    \renewcommand{\@toplogo}{
-        \centering\includegraphics[height=\maxlogoheight,width=\linewidth,keepaspectratio]{example-image}
-    }
-    \ClassWarning{fancydoc}{Top logo set to #1, but that file does not exist! Using placeholder...}
+			\centering\includegraphics[height=\maxlogoheight,width=\toplogowidth\linewidth,keepaspectratio]{#1}
+		}
+		\iftoggle{hidetoplogo}{
+			\ClassWarning{fancydoc}{Top logo set to #1, but package option 'notop' also set!}
+		} {
+			\ClassInfo{fancydoc}{Top logo set to #1}
+		}
+	}{  % ELSE
+		\renewcommand{\@toplogo}{
+			\centering\includegraphics[height=\maxlogoheight,width=\linewidth,keepaspectratio]{example-image}
+		}
+		\ClassWarning{fancydoc}{Top logo set to #1, but that file does not exist! Using placeholder...}
+	}
 }
-  }
 
 \newcommand{\setbotlogo}[1]{
 	\IfFileExists{#1}{% logo does exist
-  %\renewcommand{\@botlogo}{\centering\includegraphics[height=\maxlogoheight,width=0.5\linewidth,keepaspectratio]{#1}}
-  \renewcommand{\@botlogo}{\centering\includegraphics[height=\maxlogoheight,width=\linewidth,keepaspectratio]{#1}}
-    \iftoggle{hidebotlogo}{
-    \ClassWarning{fancydoc}{Bot logo set to #1, but package option 'nobot' also set!}
-    }{\ClassInfo{fancydoc}{Bot logo set to #1}}
-	}{ % Logo does *not* exist
+		%\renewcommand{\@botlogo}{\centering\includegraphics[height=\maxlogoheight,width=0.5\linewidth,keepaspectratio]{#1}}
+		\renewcommand{\@botlogo}{
+			\centering\includegraphics[height=\maxlogoheight,width=\botlogowidth\linewidth,keepaspectratio]{#1}
+		}
+		\iftoggle{hidebotlogo}{
+			\ClassWarning{fancydoc}{Bot logo set to #1, but package option 'nobot' also set!}
+		} {
+			\ClassInfo{fancydoc}{Bot logo set to #1}
+		}
+	} { % Logo does *not* exist
 		\ClassWarning{fancydoc}{Bottom logo set to #1, but that file does not exist! Continuing with placeholder warning...}
 		\renewcommand{\@botlogo}{\color{red}{\small<\allowsforunderscore{#1} not found!>}}
 	}% endif
@@ -495,7 +525,7 @@
 % % Table of Contents Entries
 % Make Entries in the ToC in Small Caps
 % Format Sec headers
-\renewcommand{\cftsecfont}{\sffamily}
+% \renewcommand{\cftsecfont}{\sffamily}
 \renewcommand{\cftsecleader}{\hfill}
 \renewcommand{\cftsecpagefont}{\bfseries\sffamily\color{sectcolor}}
 \renewcommand{\cftsecpresnum}{\large \bfseries Section }
@@ -583,7 +613,8 @@
 \newcommand{\email}[1]{\href{mailto:#1}{\nolinkurl{#1}}}
 
 
-\RequirePackage{tabularx}
+% \RequirePackage{tabularx}
+\RequirePackage{tabularray}
 
 % Making \cellwidth the width of the tabularx cell we are currently in
 \RequirePackage{array}
@@ -637,7 +668,7 @@
 %%%%        General Dynamic Referencing
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\RequirePackage[page]{appendix}
+\RequirePackage[title,titletoc,toc,page]{appendix}
 \RequirePackage{pageslts}
 \RequirePackage{pdfpages}
 
@@ -695,13 +726,54 @@
 % Requires etoolbox package
 \RequirePackage{fancyhdr}
 \renewcommand{\headrulewidth}{1pt}
-% \newcommand{\topfooterleft}{\scriptsize{For \textbf{\contractname} \projectdesignation\xspace Only}}
 \newcommand{\topfooterleft}{\scriptsize{\projectdesignation: \textbf{\contractname}}}
 \newcommand{\cornermark}{
-	\tikz[remember picture, overlay, anchor=west]\node at (current page.135)
-	[xshift=0.65cm, yshift=-2.75cm, rotate=90]{\scriptsize \docnumber, Rev. (\revision)};
-	%\marginnote{\rotatebox{90}{\raisebox{0.5in}{\qquad\scriptsize\textbf{\docnumber (\revision)}}}}
+
+	\tikz[remember picture, overlay, anchor=east, inner sep=0pt]
+	\node at (current page.135) (topleftver) [xshift=0.85cm, yshift=0.40cm, rotate=90]{
+		% \fbox{
+		\iftoggle{showgit}{
+			% \gitinfo 
+			{\smaller\ttfamily\color{gray}<  \gitAbbrevHash{} \gitDirty{}  >\hspace{0.3cm}}
+		}{\phantom{o}}
+		\scriptsize \textbf{\docnumber, Rev. (\revision)}
+		% }
+	};
+	% \tikz[remember picture, overlay]\draw[fill] (topleftver.east) circle (3pt);
+	\tikz[remember picture, overlay, anchor=west]\node at (current page.305) (botrightver)
+	[xshift=0.05cm, yshift=1.25cm, rotate=90]{\scriptsize \textbf{\docnumber, Rev. (\revision)}
+		\iftoggle{showgit}{
+			% \gitinfo 
+			{\hspace{0.3cm}\smaller\ttfamily\color{gray}<  \gitAbbrevHash{} \gitDirty{}  >}
+		}{\phantom{o}}
+	};
 }
+
+\newcommand{\gitmark}{
+	\tikz[remember picture, overlay, anchor=west]\node at (current page.235)
+	[xshift=0.00cm, yshift=0.000cm, rotate=00]{
+		><><><
+	};
+	%\marginnote{\rotatebox{90}{\raisebox{0.5in}{\qquad\scriptsize\textbf{\docnumber (\revision)}}}}
+	\tikz[remember picture, overlay, anchor=east]\node at (current page.305)
+	[xshift=0.05cm, yshift=5cm, rotate=90]{
+		<><><><
+	};
+}
+
+\newcommand{\gitmarkblock}{
+	\tikz[remember picture, overlay, anchor=west]\node at (current page.235)
+	[xshift=0.175in, yshift=0.50cm, rotate=00]{
+		\smaller \ttfamily \color{gray}
+		% \SetTblrInner{rowsep=2pt,colsep=2pt}
+		\begin{tblr}[expand=\gitHash\gitDirty\gitAuthorDate\gitAuthorName\gitAuthorEmail]{stretch=0, colspec={r l}, rows={ht=0.9\baselineskip}, abovesep=0pt, belowsep=0pt}
+			Document Control: & gitlab.corvidtec.com:suborbital/rival/doc/qual-report.git \\
+			Commit Hash:      & \gitHash{} \gitDirty{}                                    \\
+			                  & \gitAuthorDate{} by \gitAuthorName{} <\gitAuthorEmail{}>  \\
+		\end{tblr}
+	};
+}
+
 \newcommand{\floorbar}{\rule[-0.5\baselineskip]{1pt}{1.1\baselineskip}}
 
 \RequirePackage{rotating}
@@ -709,7 +781,12 @@
 
 \fancypagestyle{firststyle} {
 
-	\fancyhead[L]{\unselectable{\cornermark}}
+	\fancyhead[L]{\unselectable{\cornermark}
+		\iftoggle{showgit}{
+			% \gitinfo 
+			\gitmarkblock
+		}{\phantom{o}}
+	}
 
 	\fancyfoot[L]{\unselectable
 		\noindent\scriptsize\topfooterleft\vspace{0.1cm}\hrule\vspace{0.1cm}
@@ -728,6 +805,10 @@
 	}
 
 	\fancyfoot[R]{\unselectable{
+			% \iftoggle{showgit}{
+			% 	{\smaller \ttfamily \color{gray} Version: \gitHash{} \gitDirty{}\\
+			% 			Committed \gitAuthorDate{} by \gitAuthorName{} <\gitAuthorEmail{}>
+			% }{\phantom{o}}
 			\iftoggle{markingSafetyCritical}{\normalfont \formatting\scriptsize\textbf{\scriptsize{Safety Critical Item}}}{\phantom{o}}
 			\\\vspace*{0.2cm}
 			\scriptsize{UNCLASSIFIED}
@@ -749,6 +830,10 @@
 
 \fancyhead[L]{\unselectable\cornermark\raggedright\small\rightmark%
 	%\iftoggle{rough}{\roughmark}
+	% \iftoggle{showgit}{
+	% 	% \gitinfo 
+	% 	\gitmark
+	% }{\phantom{o}}
 }
 \fancyhead[C]{\unselectable{\scriptsize{\small\fancydoc@centerheading}}}
 %   \expandafter\fancyhead[R]{\includegraphics[scale=0.4]{\headerlogo}}
@@ -798,25 +883,25 @@
 \iftoggle{markingCUI}{\textbf{ // ~CUI}}}}}% 
 
 \fancypagestyle{appendices}{
-% \fancyhead[L]{\unselectable{\cornermark\raggedright\small\rightmark}}
-% \fancyfoot[R]{
-% \setcounter{appage}{\theCurrentPage-\arabic{sappage}+1}
-% % \unselectable{\scriptsize Page \arabic{appage}~of~~\textbf{Appendix \thesection}~~\vrule~~\thepage~of \pageref{LastPage} 
-% \unselectable{\scriptsize%
-% % \vspace{-0.2\baselineskip}%
-% \textbf{Appendix \thesection}~~\floorbar~~Page {\thepage~of \pageref{LastPage}~~}\floorbar~~
-% ~\vspace{0.1cm}\\
-% \scriptsize\textbf{UNCLASSIFIED}
-% \iftoggle{markingCUI}{\textbf{ // ~CUI}}}%
-% }
-% \fancyfoot[C]{
-% 	\unselectable{
-% 		\iftoggle{markingSafetyCritical}{\scriptsize\textbf{\formatting\scriptsize{Safety Critical Item}}}
-% 		~\vspace{0.1cm}\\
-% 		\iftoggle{markingProprietary}{\scriptsize\color{black}\scriptsize{Raytheon Proprietary}\\[0.2cm]}~
-% 		\iftoggle{markingHazOp}{ \small\color{red}\textbf{PROCEDURE CONTAINS HAZARDOUS OPERATIONS}}
-% 	}
-% }
+	% \fancyhead[L]{\unselectable{\cornermark\raggedright\small\rightmark}}
+	% \fancyfoot[R]{
+	% \setcounter{appage}{\theCurrentPage-\arabic{sappage}+1}
+	% % \unselectable{\scriptsize Page \arabic{appage}~of~~\textbf{Appendix \thesection}~~\vrule~~\thepage~of \pageref{LastPage} 
+	% \unselectable{\scriptsize%
+	% % \vspace{-0.2\baselineskip}%
+	% \textbf{Appendix \thesection}~~\floorbar~~Page {\thepage~of \pageref{LastPage}~~}\floorbar~~
+	% ~\vspace{0.1cm}\\
+	% \scriptsize\textbf{UNCLASSIFIED}
+	% \iftoggle{markingCUI}{\textbf{ // ~CUI}}}%
+	% }
+	% \fancyfoot[C]{
+	% 	\unselectable{
+	% 		\iftoggle{markingSafetyCritical}{\scriptsize\textbf{\formatting\scriptsize{Safety Critical Item}}}
+	% 		~\vspace{0.1cm}\\
+	% 		\iftoggle{markingProprietary}{\scriptsize\color{black}\scriptsize{Raytheon Proprietary}\\[0.2cm]}~
+	% 		\iftoggle{markingHazOp}{ \small\color{red}\textbf{PROCEDURE CONTAINS HAZARDOUS OPERATIONS}}
+	% 	}
+	% }
 	% \fancyhead[L]{\unselectable{\cornermark\raggedright\small\rightmark}}
 	% \fancyfoot[R]{
 	% \setcounter{appage}{\theCurrentPage-\arabic{sappage}+1}
@@ -986,15 +1071,15 @@
 \newcommand{\revisionblock}{
 	\def\arraystretch{1.5}
 	\vfill
-\renewcommand{\tabcolsep}{10pt}
+	\renewcommand{\tabcolsep}{10pt}
 	\section*{Revision History}
 	\begin{center}
-		\begin{tabularx}{\linewidth}{ c | c | X }
+		\begin{tblr}{c | c | X }
 			\textbf{Revision} & \textbf{Effective Date} & \textbf{Description of Change} \\ \hline
 			\ifnum\therevcount=0 % No revisions specified. Default to rev - with current date.
 			-                 & \today                  & Draft Review Copy              \\
 			\else\revisionlist\fi
-		\end{tabularx}
+		\end{tblr}
 	\end{center}
 	\newpage
 }
@@ -1182,7 +1267,7 @@
 % \def\normalfont{\oldnormalfont\mdseries}
 
 % Blocky, clear, full support. One of the top three
-%\usepackage{txfonts}
+% \usepackage{txfonts}
 % Almost exactly the same as txfonts, except in certain places?
 %\usepackage{mathptmx}
 
@@ -1239,201 +1324,269 @@
 %\newcommand{\ittysig}[1]{{\signalfont{\scriptsize #1}}}5
 %=================== End Font Configuration =======================================
 
-% Initialize some fields to default or messages 
 
-% \newcommand{\fancy@cagecode}{\ClassError{fancydoc}{Header logo never defined. You must call \string\setheaderlogo{path/to/logo}, or disable by using option `noheadlogo' in class options.}{do something pee pow poog}}
-
-\newcommand{\fancydoc@cagecode}{}
-\newcommand{\fancydoc@originfacility}{}
-
-\newtoggle{fancydoc@authors}
-
-\newcommand{\cagecode}[1]{
-	\ClassInfo{fancydoc}{Setting CAGE code to ##1}{}
-	\renewcommand{\fancydoc@cagecode}{CAGE Code&#1\newline\\}
-}
-
-\newcommand{\originfacility}[1]{\renewcommand{\fancydoc@originfacility}{\textsc{Originating Facility}&#1\\ }}
-
-\newcommand{\authors}[1]{
-	\newcommand{\fancydoc@authorlist}{#1}
-	\toggletrue{fancydoc@authors}
-	% this could be interesting
-	\renewcommand{\authors}{#1}
-}
-
-% \ifdef{@cagecode}{\textsc{CAGE Code} & 15090 \\}{}
-\newcommand{\fancydoc@authors}[1]{}
-% \foreach \x in \fancydoc@authorlist {
-%     \x\newline
-% }
-% }
-
-% \ClassWarning{fancydoc}{CAGE Code has not been defined, removing from title page. Use \string\cagecode\{<code> to define one.\}}
-
-%   \ifx\traceon\undefined \tracingall \else \traceon \fi
-%       \relscale{0.95} % or whatever scaling is desired.
 \pagenumbering{arabic}
 
-        \newcommand{\sigentry}[2]{
-          % \fbox{
-            \parbox[c][0pt]{2.5cm}{ % this is a neat trick. make the vertical size 0 so when used in tabular environment, the row height is set by other cells. This is then aligned vertically to center off that height. 
-              \begin{flushright}
-                #1
-              \end{flushright}
-          }
-        % }
-                                       &
-          % \colorbox{lightgray!20}{
-          \colorbox{blue!10}{
-            \parbox[c][0.75cm]{4.0cm}{ 
-              \digsigfield{5.14cm}{0.75cm}{#2}
-            }
-          }
+\newcommand{\sigentry}[2]{
+	% \fbox{
+	\parbox[c][0pt]{2.5cm}{ % this is a neat trick. make the vertical size 0 so when used in tabular environment, the row height is set by other cells. This is then aligned vertically to center off that height. 
+		\begin{flushright}
+			#1
+		\end{flushright}
+	}
+	% }
+	&
+	% \colorbox{lightgray!20}{
+	\colorbox{blue!10}{
+		\parbox[c][0.75cm]{4.0cm}{
+			\digsigfield{5.14cm}{0.75cm}{#2}
+		}
+	}
 
-        }
+}
+
+\newcommand{\signature}[1]{
+	#1 & \raisebox{-12pt}{\colorbox{blue!10}{\digsigfield{5.20cm}{0.75cm}{#1}}}
+}
 
 
-        \newcommand{\sighere}[2]{
-          \fbox{
-          % \begin{minipage}{0.4\linewidth} 
-          \begin{tabularx}{0.4\linewidth}{ r l }
-            \parbox[c][0pt]{2.5cm}{
-              \begin{flushright}
-                #1
-              \end{flushright}
-            } &  
-          \colorbox{blue!10}{
-            \parbox[c][0.75cm]{4.0cm}{ 
-              \digsigfield{3.50cm}{0.75cm}{#2}~
-            }
-          } \\
-        \end{tabularx}
-      % \end{minipage}
-    }
-      }
+\newcommand{\lessoldsighere}[1]{
+	% \begin{tblr}{hspan=minimal, width=0.8\linewidth, colspec={Q[r,m] Q[c,m]}}
+	\begin{tblr}{Q[r,m] Q[c,m]}
+		\fbox{
+			\parbox[c][0pt]{2.2cm}{
+				\begin{flushright}
+					{#1}
+				\end{flushright}
+			}}
+		 & \colorbox{blue!10}{\digsigfield{5.00cm}{0.75cm}{#1}} \\\cline{2}
+	\end{tblr}
+}
+
+\newcommand{\oldsighere}[2]{
+	\fbox{
+		% \begin{minipage}{0.4\linewidth} 
+		\begin{tblr}{width=0.4\linewidth, colspec={ r l} }
+			\parbox[c][0pt]{2.5cm}{
+				\begin{flushright}
+					#1
+				\end{flushright}
+			} &
+			\colorbox{blue!10}{
+				\parbox[c][0.75cm]{4.0cm}{
+					\digsigfield{3.50cm}{0.75cm}{#2}~
+				}
+			}   \\
+		\end{tblr}
+		% \end{minipage}
+	}
+}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%        Title Page
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
+% Initialize some fields to default or messages 
+
+% \newcommand{\fancy@cagecode}{\ClassError{fancydoc}{Header logo never defined. You must call \string\setheaderlogo{path/to/logo}, or disable by using option `noheadlogo' in class options.}{do something pee pow poog}}
+
+
+% Some of these fields are optional. 
+\newtoggle{fancydoc@flag@cagecode set}
+\newtoggle{fancydoc@flag@originfac set}
+\newtoggle{fancydoc@flag@authors set}
+\newtoggle{fancydoc@flag@cui set}
+
+
+% define ways to set these fields
+\newcommand{\authors}[1]{
+	\newcommand{\fancydoc@authorlist}{#1}
+	\toggletrue{fancydoc@flag@authors set}
+	\renewcommand{\authors}{\ClassInfo{fancydoc}{Error, authors have already been set to '\fancydoc@authorlist'. Setting to #1 is weird and not allowed.}}
+}
+
+\newcommand{\cagecode}[1]{
+	\newcommand{\fancydoc@cagecode}{#1}
+	\toggletrue{fancydoc@flag@cagecode set}
+	\renewcommand{\cagecode}{\ClassInfo{fancydoc}{Error, cage code has already been set to '\fancydoc@cagecode'. Setting to #1 is weird and not allowed.}}
+}
+
+\newcommand{\originfacility}[1]{
+	\newcommand{\fancydoc@originfacility}{#1}
+	\toggletrue{fancydoc@flag@originfac set}
+	\renewcommand{\originfacility}{\ClassInfo{fancydoc}{Error, origin facility has already been set to '\fancydoc@originfacility'. Setting to #1 is weird and not allowed.}}
+}
+
+
+\newcommand{\cuimarkings}[2]{
+	\newcommand{\fancydoc@cuicat}{#1}
+	\newcommand{\fancydoc@cuicon}{#2}
+
+	% Required for legacy support
+	\toggletrue{markingCUI}
+	\renewcommand{\markingCUIcat}{#1}
+	\renewcommand{\markingCUIcontrol}{#2}
+
+	\toggletrue{fancydoc@flag@cui set}
+	\renewcommand{\cuimarkings}{\ClassInfo{fancydoc}{Error, CUI markings have already been set.}}
+}
+
+% Ergonomics
+\newcommand{\splitup}[1]{{\foreach \x in #1 {\x\\}}}
+
+% List of optional fields
+\newcommand*\show@authors{}
+\newcommand*\show@originfac{}
+\newcommand*\show@cagecode{}
+\newcommand*\show@cui{}
+\newcommand*\show@dist{}
+
+% Define and format selected fields in cover page 
+\newcommand{\configurecovertable}{
+
+
+	% Expand/format fields
+	\iftoggle{fancydoc@flag@originfac set}{
+		\renewcommand*\show@originfac{
+			Originating Facility & { \fancydoc@originfacility } \\
+		}
+	}{
+		\ClassInfo{fancydoc}{Document origin facility not defined, removing from title page. Use \string\originfacility\{<facility>\} to set.}
+	}
+
+	\iftoggle{fancydoc@flag@authors set}{
+		\renewcommand*\show@authors{
+			Prepared By &  {\splitup\fancydoc@authorlist} \\
+		}
+	}{
+		\ClassInfo{fancydoc}{Document authors not defined, removing from title page. Use \string\authors\{<names>\} to set.}
+	}
+
+	\iftoggle{fancydoc@flag@cagecode set}{
+		\renewcommand*\show@cagecode{
+			CAGE Code & {\splitup\fancydoc@cagecode} \\
+		}
+	}{
+		\ClassInfo{fancydoc}{Document CAGE code not defined, removing from title page. Use \string\cagecode\{<code>\} to set.}
+	}
+
+	\iftoggle{fancydoc@flag@cui set}{
+		\renewcommand*{\show@cui}{
+			Sensitivity & UNCLASSIFIED // CUI \\
+			CUI Category & \fancydoc@cuicat \\
+			Controlled By & \splitup\fancydoc@cuicon \\
+		}
+	}{
+		\renewcommand*{\show@cui}{
+			Sensitivity & UNCLASSIFIED \\
+		}
+	}
+
+	\iftoggle{markingDistribution}{
+		\renewcommand*{\show@dist}{
+			Distribution  &  \distribution \\
+		}
+		{}
+	}
+}
+
+%%%% MAIN Cover Page Content
 \renewcommand{\titlepage}{
-	\thispagestyle{firststyle}\vspace*{-0.65cm}
 
-  \begin{tabularx}{0.9\linewidth}{l X}
-        \Large{\textbf{\sffamily\scshape\doctype}} & \Large{\sffamily \titlelong} 
-  \end{tabularx}\hfill~
+	\thispagestyle{firststyle}
+	\vspace*{-0.65cm}
 
-  \vspace*{0.25cm}
-  \noindent\hrule
-  \vspace*{0.70cm}
-
-  \hfill\begin{minipage}{0.30\linewidth}
-    \begin{center}
-      {\placetoplogo}~\\{\placebotlogo}
-    \end{center}
-  \end{minipage}
-  \vspace{1cm}
-  \hfill
-  \begin{minipage}{0.50\linewidth}
-    \footnotesize
-    \def\arraystretch{0.9}%  1 is the default, change whatever you need
-    \hfill
-    \begin{tabularx}{0.90\linewidth}{r @{ : } >{\raggedright\arraybackslash}X}
-      {\large \textsc{ Document }{\fontfamily{cmr}\selectfont\textnumero}}
-       & {\large\docnumber}  {\small\newline}                                                  \\
-      \textsc{{\newline}Current Revision}                   & \revision                                                                     \\
-      \textsc{Total Pages}                                  & \pageref{LastPage}                                                            \\
-      \textsc{Status}                                       & \documentstatus                                                               \\
-      \textsc{Last Revised}                                 & \released\newline                                                                     \\
-      \newline{\scshape\projectdesignation}                 & \contractname                                                                 \\
-      \textsc{Contract \#}                                  & \contract \\
-      \iftoggle{fancydoc@authors}{\textsc{Prepared By}      & \foreach \x in \fancydoc@authorlist { \x\newline }\\}{}
-      \fancydoc@originfacility%
-      \fancydoc@cagecode
-      \iftoggle{markingDistribution}{\textsc{Distribution}  & \distribution\\}{}
-      \textsc{Sensitivity}                                  & UNCLASSIFIED\iftoggle{markingCUI}{, CUI \\}{\\}
-     
-      \iftoggle{markingCUI}{
-          \textsc{CUI Category} & \markingCUIcat\\
-          \textsc{Controlled By} & \foreach \x in \markingCUIcontrol { \x\newline }\\
-    }{}
-    \end{tabularx} 
-    % \\[0.1cm]~
-		\end{minipage}
-
-
-
-  \iftoggle{signatures}{
-
-    \setlength\arrayrulewidth{1pt}
-    \renewcommand{\tabcolsep}{0pt}
-    \begin{center}
-        \begin{tabularx}{1.0\linewidth}{ m{3.0cm} p{5.5cm}  m{3.0cm} p{5.5cm}}
-          \sigentry{Responsible\\Engineer}{engineering} & \sigentry{Process\\Review}{systems} \\\cline{2-2}\cline{4-4}
-                                                        &&&\\
-          \sigentry{Test\\Engineer}{test}  & \sigentry{Program\\Management}{program}\\\cline{2-2}\cline{4-4}
-        \end{tabularx}
-      \end{center}
-
-      %   \begin{flushleft}
-      %   \smaller
-      %   ~\\[0.2cm]
-      %     This signed document certifies the above personnel or designated alternates have approved this revision. \\
-      %
-      %     Any technical revision to this document shall require a charge explanation in the Records of Revisions and
-      %     reapproval of the technical content. \\
-      %
-      %     All other revisions to the document shall require a change explanation in the Records of Revisions and will only
-      %     require approval by the original author.
-      % \end{flushleft}
-      \iftoggle{signatures}{
-        \renewcommand\theadalign{bc}
-\renewcommand\theadfont{\bfseries}
-\renewcommand\theadgape{\Gape[4pt]}
-\renewcommand\cellgape{\Gape[4pt]}
-      \newcolumntype{V}{>{\raggedleft\arraybackslash} m{3.0cm} }
-
-      \setlength\tabcolsep{0.21cm}
-
-      \begin{flushright}
-        \begin{tabularx}{1.0\linewidth}{r p{4.5cm} V  p{4.5cm}}
-          \fbox{Engineering\newline{}Preview} & {\digsigfield{4.5cm}{1cm}{Engineer}} {\TextField[borderstyle=U, bordercolor={0.5 0 0}, name=engreview, width=4.5cm, height=0.2cm]{\digsigfield{4.5cm}{1cm}{Engineer}}} & Systems Review & \TextField[borderstyle=U, bordercolor={0 0 0}, name=sysreview, width=4.5cm, height=0.6cm]{\digsigfield{4.5cm}{1cm}{Checker}}\\[0.5cm]
-              Configuration Management & \TextField[borderstyle=U, bordercolor={0 0 0}, name=configmgr, width=4.5cm, height=0.6cm]{\digsigfield{4.5cm}{1cm}{configmgr}} && \\
-      \end{tabularx}
-      {
-        \smaller\\[0.2cm]
-          This signed document certifies the above personnel or designated alternates have approved this revision. \\
-
-          Any technical revision to this document shall require a charge explanation in the Records of Revisions and
-          reapproval of the technical content. \\
-
-          All other revisions to the document shall require a change explanation in the Records of Revisions and will only
-          require approval by the original author.
-      }
-
-
-      \end{flushright}
-      }{}
-
-			%\def\arraystretch{1.5}%  1 is the default, change whatever you need
-		% \end{minipage} % \vspace{0.25cm}
-		% ~                                                                  \\
-		\vfill
-
-
-    %  MARKINGS
+	\begin{tblr}{width=0.9\linewidth, colspec={l X}}
+		\Large{\textbf{\sffamily\scshape\doctype}} & \Large{\sffamily \titlelong}
+	\end{tblr}
+	\hfill~
+	%
+	\vspace*{0.21cm}
+	\noindent\hrule
+	\vspace*{0.70cm}
+	% \hfill
+	% TODO: Accept optional scaling/dimensions for these 
+	\hfill\begin{minipage}{0.35\linewidth}
+		\centering
+		{\placetoplogo}\\{\placebotlogo}
+	\end{minipage}
+	\vspace{1cm}\hfill
+	\begin{minipage}{0.50\linewidth}
 		\footnotesize
+		\def\arraystretch{0.9}%  1 is the default, change whatever you need
+		\configurecovertable
+		\hfill
+		% \SetTblrOuter{expand=\fancydoc@cagecode\show@originfac\show@authors\show@cagecode\show@dist\show@cui}
+		% \SetTblrInner{rowsep=10pt}
+		\begin{tblr}
+			[expand=\fancydoc@cagecode\show@originfac\show@authors\show@cagecode\show@dist\show@cui]
+			% []
+			{
+				width=0.90\linewidth,
+				% vline{2} = {1}{text=\clap{:}},
+				colspec={r l},
+				rowsep=3pt,
+				column{1} = {cmd=\textsc},
+				stretch=0.5
+			}
+			{\large { Document }{\fontfamily{cmr}\selectfont\textnumero}} & { {\large\textbf{\docnumber}}  {\small \\} } \\
+			Document Revision                                             & \revision                                                          \\
+			Last Revised                                                  & \released                                                          \\
+			Total Pages                                                   & \pageref{LastPage}                                                 \\
+			\show@authors
+			Status                                                        & \splitup\documentstatus
+			\iftoggle{showgit}{Controlled Document}{}                                                                                          \\
+			                                                              &                                                                    \\
+			\show@dist
+			\show@cui
+			                                                              &                                                                    \\
+			\projectdesignation                                           & \contractname                                                      \\
+			Contract \#                                                   & \contract                                                          \\
+			\show@originfac
+			\show@cagecode
+		\end{tblr}\hfill
+		% \\[0.1cm]~
+	\end{minipage}
 
-		{\noindent\iftoggle{markingDistribution}{\newline\distwarning}{}}
-		{\noindent\iftoggle{markingITAR}{\newline\itarwarning}{}}
-		{\noindent\iftoggle{markingProprietary}{\newline\proprietarywarning}{}}
-		{\noindent\iftoggle{markingCUI}{\newline\cuiwarning}{}}
-		{\noindent\iftoggle{markingDestroy}{\newline\destructwarning}{}}
-		{\noindent\iftoggle{programWarning}{\newline\programwarning}{}}
-		{\noindent\iftoggle{markingCopyright}{\newline\copywarning}{}}
-		\newpage
+	% \hfill
+
+	\vfill
+	\NewTblrColumnType{n}{Q[r,1.1]}
+	\NewTblrColumnType{s}{Q[3,b,c]}
+	\iftoggle{signatures}{
+		% \begin{center}
+		\noindent
+		\begin{tblr}[expand=\signature]{width=0.94\textwidth,colspec={nsns},abovesep=20pt}
+			\signature{Responsible Engineer} & \signature{Process Review}     \\\cline{2,4}
+			\signature{Test Engineer}        & \signature{Program Management} \\\cline{2,4}
+		\end{tblr}
+		\hfill
+		% \end{center}
+	}{}
+
+	%\def\arraystretch{1.5}%  1 is the default, change whatever you need
+	% \begin{tblr}[expand=\sigentry]{ X[r] X[l] X[r] X[l]}
+	% 	\sigentry{Responsible \\Engineer}{engineering} & \sigentry{Process\\Review}{systems} \\\cline{2-2}\cline{4-4}
+	% 	 &  &  &              \\
+	% 	\sigentry{Test        \\Engineer}{test}  & \sigentry{Program\\Management}{program}\\\cline{2-2}\cline{4-4}
+	% \end{tblr}
+	% \end{minipage} % \vspace{0.25cm}
+	% ~                                                                  \\
+	\vfill
+
+
+	%  MARKINGS
+	\footnotesize
+
+	{\noindent\iftoggle{markingDistribution}{\newline\distwarning}{}}
+	{\noindent\iftoggle{markingITAR}{\newline\itarwarning}{}}
+	{\noindent\iftoggle{markingProprietary}{\newline\proprietarywarning}{}}
+	{\noindent\iftoggle{markingCUI}{\newline\cuiwarning}{}}
+	{\noindent\iftoggle{markingDestroy}{\newline\destructwarning}{}}
+	{\noindent\iftoggle{programWarning}{\newline\programwarning}{}}
+	{\noindent\iftoggle{markingCopyright}{\newline\copywarning}{}}
+	\newpage
 }
 
 \providecommand{\codelistings}{}
