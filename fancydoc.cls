@@ -685,11 +685,11 @@
 \AtBeginEnvironment{appendices}{
 	% \newpage
 	% \cleardoublepage
-	% \pagestyle{appendices}
+	\pagestyle{appendices}
 	\crefalias{section}{appendix}
 
 	% Put a correctly formatted title in for the Appendices (if present)
-	\addtocontents{toc}{\protecting{\vspace*{1cm}{\Large\bfseries Appendices}}}
+	\addtocontents{toc}{\protecting{\vspace*{1cm}{\Large\bfseries Appendix}}}
 	\addtocontents{toc}{~\hfill Page\par}
 	% Need this to remove any extra words added for the other sections.
 	% Has to be done like this, because it would be expanded during typesetting of ToC
@@ -819,15 +819,15 @@
 	%   FOR U.S./JAPAN SM-3 BLK IIA PROJECT ONLY
 }
 
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%% Default header/footer
 \fancypagestyle{default}{
 \renewcommand{\headrulewidth}{1pt}
-%
-%\fancyfoot[C]{\vspace{0.1cm}\HRule \\[0.1cm] \scriptsize
-%   FOR U.S./JAPAN SM-3 BLK IIA PROJECT ONLY\\
-%   UNCLASSIFIED // FOR OFFICIAL USE ONLY\\
-%   {\color{red}\colorbox{yellow}{\textbf{NOT RELEASABLE TO JAPAN}}}}
 
 
+%%%%%%  Headers
 \fancyhead[L]{\unselectable\cornermark\raggedright\small\rightmark%
 	%\iftoggle{rough}{\roughmark}
 	% \iftoggle{showgit}{
@@ -838,7 +838,10 @@
 \fancyhead[C]{\unselectable{\scriptsize{\small\fancydoc@centerheading}}}
 %   \expandafter\fancyhead[R]{\includegraphics[scale=0.4]{\headerlogo}}
 \fancyhead[R]{}
+
+
 %
+%%%%%%  Footers
 \fancyfoot[L]{
 	\unselectable{\scriptsize\topfooterleft
 		\vspace{0.5\baselineskip}\hrule\vspace*{0.5\baselineskip}
@@ -854,11 +857,6 @@
 	\unselectable{
 		\scriptsize{
 			\iftoggle{markingSafetyCritical}{\formatting\scriptsize\textbf{\scriptsize{Safety Critical Item}}}{}
-			% \\[0.08cm] %~\vspace*{0.2cm}
-			% \\\vspace*{0.15cm}
-			% ~\vspace{0.1cm}\\
-			% \\~\vspace{1.5\baselineskip}
-			% \vspace{0.2cm}% \hrule\vspace{0.1cm}
 			\iftoggle{markingProprietary}{\scriptsize\color{black}\scriptsize{Corvid Technologies Proprietary}{}\\[0.2cm]}~
 			\iftoggle{markingHazOp}{ \small\color{red}\textbf{PROCEDURE CONTAINS HAZARDOUS OPERATIONS}}{}
 		}
@@ -867,31 +865,16 @@
 %
 
 \fancyfoot[R]{
-\unselectable{
-\scriptsize
-% \floorbar
-\vspace{-0.2\baselineskip}
-% \rule[.3\baselineskip]{0pt}{0.3\baselineskip}
-% \raisebox{0.3\baselineskip}
-\floorbar~~Page {\thepage\ of \pageref{LastPage}~~}\floorbar%
-% \\ \vspace{0.1cm}
-% ~\vspace{0.1cm}\\
-\\\vspace*{0.15cm}
-\scriptsize{UNCLASSIFIED}
+\unselectable{\scriptsize
+\vspace{-0.2\baselineskip} \floorbar~~Page {\thepage\ of \pageref{LastPage}~~}\floorbar%
+\\\vspace*{0.15cm}\scriptsize{UNCLASSIFIED}
 \iftoggle{markingCUI}{\textbf{ // ~CUI}}}}}% 
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%% Appendix header/footer
 \fancypagestyle{appendices}{
-\fancyhead[L]{\unselectable{\cornermark\raggedright\small\rightmark}}
-\fancyfoot[R]{
-\setcounter{appage}{\theCurrentPage-\arabic{sappage}+1}
-% \unselectable{\scriptsize Page \arabic{appage}~of~~\textbf{Appendix \thesection}~~\vrule~~\thepage~of \pageref{LastPage} 
-\unselectable{\scriptsize%
-% \vspace{-0.2\baselineskip}%
-\textbf{Appendix \thesection}~~\floorbar~~Page {\thepage~of \pageref{LastPage}~~}\floorbar~~
-~\vspace{0.1cm}\\
-\scriptsize\textbf{UNCLASSIFIED}
-\iftoggle{markingCUI}{\textbf{ // ~CUI}}}%
-}
+
+%%%%%%  Footers
 \fancyfoot[C]{
 	\unselectable{
 		\iftoggle{markingSafetyCritical}{\scriptsize\textbf{\formatting\scriptsize{Safety Critical Item}}}
@@ -900,25 +883,14 @@
 		\iftoggle{markingHazOp}{ \small\color{red}\textbf{PROCEDURE CONTAINS HAZARDOUS OPERATIONS}}
 	}
 }
-\fancyhead[L]{\unselectable{\cornermark\raggedright\small\rightmark}}
-\fancyfoot[R]{
-\setcounter{appage}{\theCurrentPage-\arabic{sappage}+1}
-% \unselectable{\scriptsize Page \arabic{appage}~of~~\textbf{Appendix \thesection}~~\vrule~~\thepage~of \pageref{LastPage} 
-\unselectable{\scriptsize%
-% \vspace{-0.2\baselineskip}%
-\textbf{Appendix \thesection}~~\floorbar~~Page {\thepage~of \pageref{LastPage}~~}\floorbar~~
-~\vspace{0.1cm}\\
-\scriptsize\textbf{UNCLASSIFIED}
+
+\fancyfoot[R]{ \setcounter{appage}{\theCurrentPage-\arabic{sappage}+1}
+\unselectable{\scriptsize
+\vspace{-0.2\baselineskip} \textbf{Appendix \thesection}~~\floorbar~~Page {\thepage~of \pageref{LastPage}~~}\floorbar
+\\\vspace*{0.15cm}\scriptsize{UNCLASSIFIED}
 \iftoggle{markingCUI}{\textbf{ // ~CUI}}}%
 }
-\fancyfoot[C]{
-	\unselectable{
-		\iftoggle{markingSafetyCritical}{\scriptsize\textbf{\formatting\scriptsize{Safety Critical Item}}}
-		~\vspace{0.1cm}\\
-		\iftoggle{markingProprietary}{\scriptsize\color{black}\scriptsize{Raytheon Proprietary}\\[0.2cm]}~
-		\iftoggle{markingHazOp}{ \small\color{red}\textbf{PROCEDURE CONTAINS HAZARDOUS OPERATIONS}}
-	}
-}
+
 
 }
 %=================== End Header and Footer Styling ================================
