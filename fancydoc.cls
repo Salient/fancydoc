@@ -591,7 +591,7 @@
 \RequirePackage[skip=5pt, textfont={footnotesize,sl},labelfont=footnotesize, labelsep=endash]{caption}
 \setlength{\abovecaptionskip}{0pt}
 
-\RequirePackage[left=0.75in,right=0.75in,top=1in, bottom=1in, marginparsep=7pt]{geometry}
+\RequirePackage[left=0.75in,right=0.75in,top=1in, bottom=1in, marginparsep=7pt, marginparwidth=0.6in]{geometry}
 % \RequirePackage[left=1in,right=1in,top=1in, bottom=1in, marginparsep=7pt]{geometry}
 \RequirePackage{pdflscape}
 
@@ -682,31 +682,31 @@
 	\renewcommand{\thepage}{\thesection-\arabic{page}}
 }
 
-% \AtBeginEnvironment{appendices}{
-% 	% \newpage
-% 	% \cleardoublepage
-% 	% \pagestyle{appendices}
-% 	\crefalias{section}{appendix}
-%
-% 	% Put a correctly formatted title in for the Appendices (if present)
-% 	\addtocontents{toc}{\protecting{\vspace*{1cm}{\Large\bfseries Appendices}}}
-% 	\addtocontents{toc}{~\hfill Page\par}
-% 	% Need this to remove any extra words added for the other sections.
-% 	% Has to be done like this, because it would be expanded during typesetting of ToC
-% 	% TODO - take advantage of this to list stuff in appendices correctly.
-% 	\addtocontents{toc}{\protecting{\renewcommand{\cftsecpresnum}{}}}
-% 	\addtocontents{toc}{\protecting{\addtolength{\cftsecnumwidth}{-\secheadlen}}}
-%
-% 	\preto{\section}{
-% 		\clearpage
-% 		\setcounter{sappage}{\theCurrentPage}
-% 	}
-% 	\label{LastMainPage}
-% }
-%
-% \AtEndEnvironment{appendices}{
-% 	\setcounter{sappage}{\theCurrentPage}
-% }
+\AtBeginEnvironment{appendices}{
+	% \newpage
+	% \cleardoublepage
+	% \pagestyle{appendices}
+	\crefalias{section}{appendix}
+
+	% Put a correctly formatted title in for the Appendices (if present)
+	\addtocontents{toc}{\protecting{\vspace*{1cm}{\Large\bfseries Appendices}}}
+	\addtocontents{toc}{~\hfill Page\par}
+	% Need this to remove any extra words added for the other sections.
+	% Has to be done like this, because it would be expanded during typesetting of ToC
+	% TODO - take advantage of this to list stuff in appendices correctly.
+	\addtocontents{toc}{\protecting{\renewcommand{\cftsecpresnum}{}}}
+	\addtocontents{toc}{\protecting{\addtolength{\cftsecnumwidth}{-\secheadlen}}}
+
+	\preto{\section}{
+		\clearpage
+		\setcounter{sappage}{\theCurrentPage}
+	}
+	\label{LastMainPage}
+}
+
+\AtEndEnvironment{appendices}{
+	\setcounter{sappage}{\theCurrentPage}
+}
 
 %=================== End General Dynaimc Referencing ==============================
 
@@ -840,10 +840,8 @@
 \fancyhead[R]{}
 %
 \fancyfoot[L]{
-	\unselectable{
-		\scriptsize
-		\topfooterleft
-		\vspace{0.1cm}\hrule\vspace*{0.15cm}
+	\unselectable{\scriptsize\topfooterleft
+		\vspace{0.5\baselineskip}\hrule\vspace*{0.5\baselineskip}
 		\ifboolexpr{togl{markingITAR}}{\scriptsize{Export Controlled}}{}
 		\ifboolexpr{ togl{markingDistribution} and togl{markingITAR}}{ \textbf{ // } }{}
 		\ifboolexpr{togl{markingDistribution}}{\scriptsize{Distribution} \distribution}{}
@@ -872,7 +870,7 @@
 \unselectable{
 \scriptsize
 % \floorbar
-% \vspace{-0.2\baselineskip}
+\vspace{-0.2\baselineskip}
 % \rule[.3\baselineskip]{0pt}{0.3\baselineskip}
 % \raisebox{0.3\baselineskip}
 \floorbar~~Page {\thepage\ of \pageref{LastPage}~~}\floorbar%
@@ -883,44 +881,44 @@
 \iftoggle{markingCUI}{\textbf{ // ~CUI}}}}}% 
 
 \fancypagestyle{appendices}{
-	% \fancyhead[L]{\unselectable{\cornermark\raggedright\small\rightmark}}
-	% \fancyfoot[R]{
-	% \setcounter{appage}{\theCurrentPage-\arabic{sappage}+1}
-	% % \unselectable{\scriptsize Page \arabic{appage}~of~~\textbf{Appendix \thesection}~~\vrule~~\thepage~of \pageref{LastPage} 
-	% \unselectable{\scriptsize%
-	% % \vspace{-0.2\baselineskip}%
-	% \textbf{Appendix \thesection}~~\floorbar~~Page {\thepage~of \pageref{LastPage}~~}\floorbar~~
-	% ~\vspace{0.1cm}\\
-	% \scriptsize\textbf{UNCLASSIFIED}
-	% \iftoggle{markingCUI}{\textbf{ // ~CUI}}}%
-	% }
-	% \fancyfoot[C]{
-	% 	\unselectable{
-	% 		\iftoggle{markingSafetyCritical}{\scriptsize\textbf{\formatting\scriptsize{Safety Critical Item}}}
-	% 		~\vspace{0.1cm}\\
-	% 		\iftoggle{markingProprietary}{\scriptsize\color{black}\scriptsize{Raytheon Proprietary}\\[0.2cm]}~
-	% 		\iftoggle{markingHazOp}{ \small\color{red}\textbf{PROCEDURE CONTAINS HAZARDOUS OPERATIONS}}
-	% 	}
-	% }
-	% \fancyhead[L]{\unselectable{\cornermark\raggedright\small\rightmark}}
-	% \fancyfoot[R]{
-	% \setcounter{appage}{\theCurrentPage-\arabic{sappage}+1}
-	% % \unselectable{\scriptsize Page \arabic{appage}~of~~\textbf{Appendix \thesection}~~\vrule~~\thepage~of \pageref{LastPage} 
-	% \unselectable{\scriptsize%
-	% % \vspace{-0.2\baselineskip}%
-	% \textbf{Appendix \thesection}~~\floorbar~~Page {\thepage~of \pageref{LastPage}~~}\floorbar~~
-	% ~\vspace{0.1cm}\\
-	% \scriptsize\textbf{UNCLASSIFIED}
-	% \iftoggle{markingCUI}{\textbf{ // ~CUI}}}%
-	% }
-	% \fancyfoot[C]{
-	% 	\unselectable{
-	% 		\iftoggle{markingSafetyCritical}{\scriptsize\textbf{\formatting\scriptsize{Safety Critical Item}}}
-	% 		~\vspace{0.1cm}\\
-	% 		\iftoggle{markingProprietary}{\scriptsize\color{black}\scriptsize{Raytheon Proprietary}\\[0.2cm]}~
-	% 		\iftoggle{markingHazOp}{ \small\color{red}\textbf{PROCEDURE CONTAINS HAZARDOUS OPERATIONS}}
-	% 	}
-	% }
+\fancyhead[L]{\unselectable{\cornermark\raggedright\small\rightmark}}
+\fancyfoot[R]{
+\setcounter{appage}{\theCurrentPage-\arabic{sappage}+1}
+% \unselectable{\scriptsize Page \arabic{appage}~of~~\textbf{Appendix \thesection}~~\vrule~~\thepage~of \pageref{LastPage} 
+\unselectable{\scriptsize%
+% \vspace{-0.2\baselineskip}%
+\textbf{Appendix \thesection}~~\floorbar~~Page {\thepage~of \pageref{LastPage}~~}\floorbar~~
+~\vspace{0.1cm}\\
+\scriptsize\textbf{UNCLASSIFIED}
+\iftoggle{markingCUI}{\textbf{ // ~CUI}}}%
+}
+\fancyfoot[C]{
+	\unselectable{
+		\iftoggle{markingSafetyCritical}{\scriptsize\textbf{\formatting\scriptsize{Safety Critical Item}}}
+		~\vspace{0.1cm}\\
+		\iftoggle{markingProprietary}{\scriptsize\color{black}\scriptsize{Raytheon Proprietary}\\[0.2cm]}~
+		\iftoggle{markingHazOp}{ \small\color{red}\textbf{PROCEDURE CONTAINS HAZARDOUS OPERATIONS}}
+	}
+}
+\fancyhead[L]{\unselectable{\cornermark\raggedright\small\rightmark}}
+\fancyfoot[R]{
+\setcounter{appage}{\theCurrentPage-\arabic{sappage}+1}
+% \unselectable{\scriptsize Page \arabic{appage}~of~~\textbf{Appendix \thesection}~~\vrule~~\thepage~of \pageref{LastPage} 
+\unselectable{\scriptsize%
+% \vspace{-0.2\baselineskip}%
+\textbf{Appendix \thesection}~~\floorbar~~Page {\thepage~of \pageref{LastPage}~~}\floorbar~~
+~\vspace{0.1cm}\\
+\scriptsize\textbf{UNCLASSIFIED}
+\iftoggle{markingCUI}{\textbf{ // ~CUI}}}%
+}
+\fancyfoot[C]{
+	\unselectable{
+		\iftoggle{markingSafetyCritical}{\scriptsize\textbf{\formatting\scriptsize{Safety Critical Item}}}
+		~\vspace{0.1cm}\\
+		\iftoggle{markingProprietary}{\scriptsize\color{black}\scriptsize{Raytheon Proprietary}\\[0.2cm]}~
+		\iftoggle{markingHazOp}{ \small\color{red}\textbf{PROCEDURE CONTAINS HAZARDOUS OPERATIONS}}
+	}
+}
 
 }
 %=================== End Header and Footer Styling ================================
@@ -1553,11 +1551,11 @@
 
 	\vfill
 	\NewTblrColumnType{n}{Q[r,1.1]}
-	\NewTblrColumnType{s}{Q[3,b,c]}
+	\NewTblrColumnType{g}{Q[3,b,c]}
 	\iftoggle{signatures}{
 		% \begin{center}
 		\noindent
-		\begin{tblr}[expand=\signature]{width=0.94\textwidth,colspec={nsns},abovesep=20pt}
+		\begin{tblr}[expand=\signature]{width=0.94\textwidth,colspec={ngng},abovesep=20pt}
 			\signature{Responsible Engineer} & \signature{Process Review}     \\\cline{2,4}
 			\signature{Test Engineer}        & \signature{Program Management} \\\cline{2,4}
 		\end{tblr}
