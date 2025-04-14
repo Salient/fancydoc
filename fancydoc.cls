@@ -73,6 +73,7 @@
 % Pull in packages we know we need
 
 \RequirePackage[dvipsnames,table,xcdraw]{xcolor}
+\RequirePackage{ragged2e}
 \RequirePackage[printonlyused]{acronym}
 \RequirePackage{multicol}
 \RequirePackage{pageslts}
@@ -116,10 +117,14 @@
 
 % Git document markings
 \iftoggle{showgit}{
-	\RequirePackage[grumpy,dirty=(Modified)]{gitinfo2}
-	\newcommand{\gitinfo}{
-		\smaller \ttfamily \color{gray}
-		\begin{tblr}[expand=\gitHash\gitDirty\gitAuthorDate\gitAuthorName\gitAuthorEmail]{rl}
+	\RequirePackage[grumpy,dirty={(dirty)}]{gitinfo2}
+	\newcommand{\gitinfoblock}{
+		\scriptsize\ttfamily\color{gray}
+		\begin{tblr}[expand=\gitHash\gitDirty\gitAuthorDate\gitAuthorName\gitAuthorEmail]{
+				colspec={rl}, rowsep=0pt, hspan=minimal,
+				column{1}={leftsep=0pt},
+				column{2}={rightsep=0pt}
+			}
 			Document Control: & gitlab.corvidtec.com:suborbital/rival/doc/qual-report.git \\
 			Version:          & \gitHash{} \gitDirty{}                                    \\
 			Committed:        & \gitAuthorDate{} by \gitAuthorName{} <\gitAuthorEmail{}>  \\
@@ -256,7 +261,7 @@
 \catcode`_ 8
 
 \newlength{\maxlogoheight}
-\setlength{\maxlogoheight}{2.5in}
+\setlength{\maxlogoheight}{2.25in}
 \iftoggle{hidebotlogo}{\setlength{\maxlogoheight}{3.5in}}{}
 
 % TODO make this smarter with optional command or something
@@ -723,100 +728,147 @@
 
 \DeclareRobustCommand{\unselectable}[1]{\BeginAccSupp{method=plain,ActualText={}}#1\EndAccSupp{}}
 
+
+\newcommand{\documentnamerev}{\scriptsize{\sffamily\docnumber, Rev. (\revision)}}
+\newcommand{\gitinfoshort}{\hspace{0.3cm}\smaller\ttfamily\color{gray}<  \gitAbbrevHash{} \gitDirty{}  >}
+\newcommand{\gitinfomedium}{\hspace{0.3cm}\smaller\ttfamily\color{gray}<
+	~~~Document Control:~~~gitlab.corvidtec.com:suborbital/rival/doc/qual-report.git ~~~
+	Commit Hash:~~~\gitHash{} \gitDirty{}                                         }
+
+
+\newcommand{\gitinforepo}{
+	\tikz[remember picture, overlay, anchor=east]
+	\node at (current page.220) [xshift=0.05cm, yshift=5cm, rotate=90]{
+		Document Control:~~~gitlab.corvidtec.com:suborbital/rival/doc/qual-report.git
+	};
+}
+
+\newcommand{\gitsidebar}{
+	\tikz[remember picture, overlay,  inner sep=0pt]
+	\node at (current page.227) [xshift=1\baselineskip, rotate=90, anchor=north west]{
+		\smaller \ttfamily \color{gray!30}
+		% \SetTblrInner{rowsep=2pt,colsep=2pt}
+		\begin{tblr}[expand=\gitHash\gitDirty]{
+				stretch=0.45,
+				colspec={rl},
+				% abovesep=1pt,
+				% belowsep=0pt,
+				column{1}={rightsep=10pt}
+			}
+			% Document Control: 
+			 & gitlab.corvidtec.com:suborbital/rival/doc/qual-report.git \\
+			% Commit Hash:      
+			 & {\gitHash{}~~~\gitDirty{}}                                \\
+			% Submitted:   \gitAuthorDate{} by \gitAuthorName{} <\gitAuthorEmail{}>           \\
+		\end{tblr}
+	};
+}
+
+
+\newcommand{\documentmarking}{\documentnamerev}
+
+% \iftoggle{showgit}{\renewcommand{\documentmarking}{\documentnamerev}}{}
+
+
+% \newcommand{\gitmark}{
+% 	\tikz[remember picture, overlay, anchor=west]\node at (current page.235)
+% 	[xshift=0.00cm, yshift=0.000cm, rotate=00]{
+% 		><><><
+% 	};
+% 	%\marginnote{\rotatebox{90}{\raisebox{0.5in}{\qquad\scriptsize\textbf{\docnumber (\revision)}}}}
+% 	\tikz[remember picture, overlay, anchor=east]\node at (current page.305)
+% 	[xshift=0.05cm, yshift=5cm, rotate=90]{
+% 		<><><><
+% 	};
+% }
+
+
+\newcommand{\topleftcornermark}{
+	\tikz[remember picture, overlay, anchor=north east, inner sep=0pt]
+	\node at (current page.135) (topleftver) [xshift=1.5\baselineskip, rotate=90]{\documentmarking{}};
+
+	% \tikz[remember picture, overlay]\draw[fill] (topleftver.east) circle (3pt);
+}
+\newcommand{\lowerleftcornermark}{
+	\tikz[remember picture, overlay, anchor=west, inner sep=0pt]
+	\node at (current page.225) (lowerleftmark) [xshift=0.85cm, rotate=90]{\documentmarking{}};
+	% \tikz[remember picture, overlay]\draw[fill] (topleftver.east) circle (3pt);
+}
+
+\newcommand{\bottomrightcornermark}{
+	\tikz[remember picture, overlay, anchor=west]\node at (current page.305) (botrightver)
+	[xshift=0.05cm, yshift=1.25cm, rotate=90]{\documentmarking{}};
+	\tikz[remember picture, overlay]\draw[fill] (topleftver.east) circle (3pt);
+}
+
+
+\newcommand{\cornermark}{\topleftcornermark}
+
+
 % Requires etoolbox package
 \RequirePackage{fancyhdr}
 \renewcommand{\headrulewidth}{1pt}
 \newcommand{\topfooterleft}{\scriptsize{\projectdesignation: \textbf{\contractname}}}
-\newcommand{\cornermark}{
-
-	\tikz[remember picture, overlay, anchor=east, inner sep=0pt]
-	\node at (current page.135) (topleftver) [xshift=0.85cm, yshift=0.40cm, rotate=90]{
-		% \fbox{
-		\iftoggle{showgit}{
-			% \gitinfo 
-			{\smaller\ttfamily\color{gray}<  \gitAbbrevHash{} \gitDirty{}  >\hspace{0.3cm}}
-		}{\phantom{o}}
-		\scriptsize \textbf{\docnumber, Rev. (\revision)}
-		% }
-	};
-	% \tikz[remember picture, overlay]\draw[fill] (topleftver.east) circle (3pt);
-	\tikz[remember picture, overlay, anchor=west]\node at (current page.305) (botrightver)
-	[xshift=0.05cm, yshift=1.25cm, rotate=90]{\scriptsize \textbf{\docnumber, Rev. (\revision)}
-		\iftoggle{showgit}{
-			% \gitinfo 
-			{\hspace{0.3cm}\smaller\ttfamily\color{gray}<  \gitAbbrevHash{} \gitDirty{}  >}
-		}{\phantom{o}}
-	};
-}
-
-\newcommand{\gitmark}{
-	\tikz[remember picture, overlay, anchor=west]\node at (current page.235)
-	[xshift=0.00cm, yshift=0.000cm, rotate=00]{
-		><><><
-	};
-	%\marginnote{\rotatebox{90}{\raisebox{0.5in}{\qquad\scriptsize\textbf{\docnumber (\revision)}}}}
-	\tikz[remember picture, overlay, anchor=east]\node at (current page.305)
-	[xshift=0.05cm, yshift=5cm, rotate=90]{
-		<><><><
-	};
-}
 
 \newcommand{\gitmarkblock}{
-	\tikz[remember picture, overlay, anchor=west]\node at (current page.235)
-	[xshift=0.175in, yshift=0.50cm, rotate=00]{
+	% \tikz[remember picture, overlay, inner sep=0pt]
+	% % \node at (current page.252) [xshift=-0.5in, yshift=0.50cm, rotate=00]{
+	% \node[at=(current page.180)]{
+	% 	\smaller \ttfamily \color{gray}
+	% 	% \SetTblrInner{rowsep=2pt,colsep=2pt}
+	% 	\begin{tblr}[expand=\gitHash\gitDirty\gitAuthorDate\gitAuthorName\gitAuthorEmail]{stretch=0, colspec={r l}, rows={ht=0.9\baselineskip}, abovesep=0pt, belowsep=0pt}
+	% 		Document Control: & gitlab.corvidtec.com:suborbital/rival/doc/qual-report.git \\
+	% 		Commit Hash:      & \gitHash{} \gitDirty{}                                    \\
+	% 		                  & \gitAuthorDate{} by \gitAuthorName{} <\gitAuthorEmail{}>  \\
+	% 	\end{tblr}
+	% };
+	\tikz[remember picture, overlay, inner sep=0pt]
+	% \node at (current page.252) [xshift=-0.5in, yshift=0.50cm, rotate=00]{
+	\node[at=(current page.180), rotate=90, anchor = east]{
 		\smaller \ttfamily \color{gray}
 		% \SetTblrInner{rowsep=2pt,colsep=2pt}
-		\begin{tblr}[expand=\gitHash\gitDirty\gitAuthorDate\gitAuthorName\gitAuthorEmail]{stretch=0, colspec={r l}, rows={ht=0.9\baselineskip}, abovesep=0pt, belowsep=0pt}
-			Document Control: & gitlab.corvidtec.com:suborbital/rival/doc/qual-report.git \\
-			Commit Hash:      & \gitHash{} \gitDirty{}                                    \\
-			                  & \gitAuthorDate{} by \gitAuthorName{} <\gitAuthorEmail{}>  \\
+		\begin{tblr}[expand=\gitHash\gitDirty\gitAuthorDate\gitAuthorName\gitAuthorEmail]{
+				stretch=0,
+				colspec={cc},
+				abovesep=0pt,
+				belowsep=0pt,
+				wdth=8in,
+				vlines}
+			Document Control:~~~gitlab.corvidtec.com:suborbital/rival/doc/qual-report.git & \\
+			Commit Hash:~~~\gitHash{} \gitDirty{}                                         &
+			Submitted:   \gitAuthorDate{} by \gitAuthorName{} <\gitAuthorEmail{}>           \\
 		\end{tblr}
 	};
 }
 
 \newcommand{\floorbar}{\rule[-0.5\baselineskip]{1pt}{1.1\baselineskip}}
+% \newcommand\mybar{\kern1pt\rule[-\dp\strutbox]{1pt}{\baselineskip}\kern1pt} ORIGINAL
+\newcommand\mybar{\rule[-0.5\baselineskip]{1pt}{1.2\baselineskip}}
+\newcommand\mynotbar{\rule[-0.5\baselineskip]{0pt}{1.2\baselineskip}}
+
 
 \RequirePackage{rotating}
 
 
 \fancypagestyle{firststyle} {
+	\fancyhead[L]{\unselectable{\cornermark}}
 
-	\fancyhead[L]{\unselectable{\cornermark}
-		\iftoggle{showgit}{
-			% \gitinfo 
-			\gitmarkblock
-		}{\phantom{o}}
+	\fancyfoot[L]{\unselectable{\noindent\scriptsize\topfooterleft\vspace*{0.5\baselineskip}\hrule\vspace*{0.5\baselineskip}
+			\strut
+			\ifboolexpr{togl{markingITAR}}{Export Controlled}{}
+			\ifboolexpr{togl{markingDistribution} and togl{markingITAR}}{ \textbf{ // } }{}
+			\ifboolexpr{togl{markingDistribution}}{Distribution \distribution}{\strut}}
 	}
 
-	\fancyfoot[L]{\unselectable
-		\noindent\scriptsize\topfooterleft\vspace{0.1cm}\hrule\vspace{0.1cm}
-		\ifboolexpr{togl{markingITAR}}{\scriptsize{Export Controlled}}{}
-		\ifboolexpr{togl{markingDistribution} and togl{markingITAR}}{ \textbf{ // } }{}
-		\ifboolexpr{togl{markingDistribution}}{\scriptsize{Distribution} \distribution}{}
+	\fancyfoot[C]{\unselectable{\scriptsize \iftoggle{markingProprietary}{\scriptsize\scriptsize{Corvid Technologies Proprietary}{}\\[0.2cm]}~
+			\iftoggle{markingHazOp}{ \small\color{red}\textbf{PROCEDURE CONTAINS HAZARDOUS OPERATIONS}}{}}
 	}
 
-	\fancyfoot[C]{\unselectable
-		\scriptsize{
-			\vspace{0.5cm}
-			\iftoggle{markingProprietary}{\scriptsize\scriptsize{Corvid Technologies Proprietary}{}%
-				\\[0.2cm]}~
-			\iftoggle{markingHazOp}{ \small\color{red}\textbf{PROCEDURE CONTAINS HAZARDOUS OPERATIONS}}{}%
-		}
-	}
-
-	\fancyfoot[R]{\unselectable{
-			% \iftoggle{showgit}{
-			% 	{\smaller \ttfamily \color{gray} Version: \gitHash{} \gitDirty{}\\
-			% 			Committed \gitAuthorDate{} by \gitAuthorName{} <\gitAuthorEmail{}>
-			% }{\phantom{o}}
+	\fancyfoot[R]{
+		\unselectable{\scriptsize\mynotbar
 			\iftoggle{markingSafetyCritical}{\normalfont \formatting\scriptsize\textbf{\scriptsize{Safety Critical Item}}}{\phantom{o}}
-			\\\vspace*{0.2cm}
-			\scriptsize{UNCLASSIFIED}
+			\\\vspace*{0.5\baselineskip}{UNCLASSIFIED}
 			\iftoggle{markingCUI}{\textbf{ // ~CUI}}}}% 
-
-	%   \fancyhead[C]{\iftoggle{markingHazOp}{ \small\color{red}\textbf{HAZARDOUS OPERATIONS PROCEDURE}} }
-	%   \fancyfoot[C]{\vspace{0.1cm}\HRule \\[0.1cm] \scriptsize
-	%   FOR U.S./JAPAN SM-3 BLK IIA PROJECT ONLY
 }
 
 
@@ -829,46 +881,41 @@
 
 %%%%%%  Headers
 \fancyhead[L]{\unselectable\cornermark\raggedright\small\rightmark%
-	%\iftoggle{rough}{\roughmark}
-	% \iftoggle{showgit}{
-	% 	% \gitinfo 
-	% 	\gitmark
-	% }{\phantom{o}}
+	\iftoggle{showgit}{\gitsidebar}{}
 }
+
 \fancyhead[C]{\unselectable{\scriptsize{\small\fancydoc@centerheading}}}
 %   \expandafter\fancyhead[R]{\includegraphics[scale=0.4]{\headerlogo}}
 \fancyhead[R]{}
 
 
-%
+
 %%%%%%  Footers
-\fancyfoot[L]{
-	\unselectable{\scriptsize\topfooterleft
-		\vspace{0.5\baselineskip}\hrule\vspace*{0.5\baselineskip}
-		\ifboolexpr{togl{markingITAR}}{\scriptsize{Export Controlled}}{}
-		\ifboolexpr{ togl{markingDistribution} and togl{markingITAR}}{ \textbf{ // } }{}
-		\ifboolexpr{togl{markingDistribution}}{\scriptsize{Distribution} \distribution}{}
-		\ifboolexpr{ togl{markingDistribution} or togl{markingITAR}}{{\newline}\scriptsize{{See Cover Page}}}{}
-	}
+\fancyfoot[L]{\unselectable{\noindent\scriptsize\topfooterleft\vspace*{0.5\baselineskip}\hrule\vspace*{0.5\baselineskip}
+\strut
+\ifboolexpr{togl{markingITAR}}{Export Controlled}{}
+\ifboolexpr{togl{markingDistribution} and togl{markingITAR}}{ \textbf{ // } }{}
+\ifboolexpr{togl{markingDistribution}}{Distribution \distribution}{}
+\ifboolexpr{togl{markingDistribution} or togl{markingITAR}}{\\{See Cover Page}}{\strut}}
 }
 
 
-\fancyfoot[C]{
-	\unselectable{
-		\scriptsize{
-			\iftoggle{markingSafetyCritical}{\formatting\scriptsize\textbf{\scriptsize{Safety Critical Item}}}{}
-			\iftoggle{markingProprietary}{\scriptsize\color{black}\scriptsize{Corvid Technologies Proprietary}{}\\[0.2cm]}~
-			\iftoggle{markingHazOp}{ \small\color{red}\textbf{PROCEDURE CONTAINS HAZARDOUS OPERATIONS}}{}
-		}
+\fancyfoot[C]{\unselectable{\scriptsize
+		\iftoggle{markingSafetyCritical}{\formatting\scriptsize\textbf{\scriptsize{Safety Critical Item}}}{}
+		\iftoggle{markingProprietary}{\scriptsize\color{black}\scriptsize{Corvid Technologies Proprietary}{}\\[0.2cm]}~
+		\iftoggle{markingHazOp}{ \small\color{red}\textbf{PROCEDURE CONTAINS HAZARDOUS OPERATIONS}}{}
 	}
 }
-%
+
 
 \fancyfoot[R]{
 \unselectable{\scriptsize
-\vspace{-0.2\baselineskip} \floorbar~~Page {\thepage\ of \pageref{LastPage}~~}\floorbar%
-\\\vspace*{0.15cm}\scriptsize{UNCLASSIFIED}
-\iftoggle{markingCUI}{\textbf{ // ~CUI}}}}}% 
+\mybar~~Page {\thepage\ of \pageref{LastPage}~~}\mybar%
+% \floorbar~~Page {\thepage\ of \pageref{LastPage}~~}\floorbar%
+% $\vert$~~Page {\thepage\ of \pageref{LastPage}~~}$\vert$%
+\\\vspace*{0.5\baselineskip}{UNCLASSIFIED}
+\iftoggle{markingCUI}{\textbf{ // ~CUI}}{}}}
+}% 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%% Appendix header/footer
@@ -1297,59 +1344,10 @@
 
 \pagenumbering{arabic}
 
-\newcommand{\sigentry}[2]{
-	% \fbox{
-	\parbox[c][0pt]{2.5cm}{ % this is a neat trick. make the vertical size 0 so when used in tabular environment, the row height is set by other cells. This is then aligned vertically to center off that height. 
-		\begin{flushright}
-			#1
-		\end{flushright}
-	}
-	% }
-	&
-	% \colorbox{lightgray!20}{
-	\colorbox{blue!10}{
-		\parbox[c][0.75cm]{4.0cm}{
-			\digsigfield{5.14cm}{0.75cm}{#2}
-		}
-	}
-
-}
 
 \newcommand{\signature}[1]{
-	#1 & \raisebox{-12pt}{\colorbox{blue!10}{\digsigfield{5.20cm}{0.75cm}{#1}}}
-}
-
-
-\newcommand{\lessoldsighere}[1]{
-	% \begin{tblr}{hspan=minimal, width=0.8\linewidth, colspec={Q[r,m] Q[c,m]}}
-	\begin{tblr}{Q[r,m] Q[c,m]}
-		\fbox{
-			\parbox[c][0pt]{2.2cm}{
-				\begin{flushright}
-					{#1}
-				\end{flushright}
-			}}
-		 & \colorbox{blue!10}{\digsigfield{5.00cm}{0.75cm}{#1}} \\\cline{2}
-	\end{tblr}
-}
-
-\newcommand{\oldsighere}[2]{
-	\fbox{
-		% \begin{minipage}{0.4\linewidth} 
-		\begin{tblr}{width=0.4\linewidth, colspec={ r l} }
-			\parbox[c][0pt]{2.5cm}{
-				\begin{flushright}
-					#1
-				\end{flushright}
-			} &
-			\colorbox{blue!10}{
-				\parbox[c][0.75cm]{4.0cm}{
-					\digsigfield{3.50cm}{0.75cm}{#2}~
-				}
-			}   \\
-		\end{tblr}
-		% \end{minipage}
-	}
+	% #1 & {\raisebox{-12pt}{\colorbox{blue!10}{\digsigfield{5.20cm}{0.75cm}{#1}}}}
+	\SetCell[c=1]{2.5cm}	#1 & \colorbox{blue!10}{\digsigfield{5.20cm}{0.75cm}{#1}}
 }
 
 
@@ -1481,24 +1479,26 @@
 		\centering
 		{\placetoplogo}\\{\placebotlogo}
 	\end{minipage}
-	\vspace{1cm}\hfill
-	\begin{minipage}{0.50\linewidth}
+	% \vspace{1cm}\hfill
+	\hfill
+	% \fbox{
+	\begin{minipage}{0.42\linewidth}
 		\footnotesize
-		\def\arraystretch{0.9}%  1 is the default, change whatever you need
+		% \def\arraystretch{0.9}%  1 is the default, change whatever you need
 		\configurecovertable
 		\hfill
 		% \SetTblrOuter{expand=\fancydoc@cagecode\show@originfac\show@authors\show@cagecode\show@dist\show@cui}
 		% \SetTblrInner{rowsep=10pt}
 		\begin{tblr}
 			[expand=\fancydoc@cagecode\show@originfac\show@authors\show@cagecode\show@dist\show@cui]
-			% []
 			{
 				width=0.90\linewidth,
+				hspan=minimal,
 				% vline{2} = {1}{text=\clap{:}},
 				colspec={r l},
-				rowsep=3pt,
+				rowsep=0pt,
 				column{1} = {cmd=\textsc},
-				stretch=0.5
+				stretch=1.25
 			}
 			{\large { Document }{\fontfamily{cmr}\selectfont\textnumero}} & { {\large\textbf{\docnumber}}  {\small \\} } \\
 			Document Revision                                             & \revision                                                          \\
@@ -1517,37 +1517,38 @@
 			\show@cagecode
 		\end{tblr}\hfill
 		% \\[0.1cm]~
-	\end{minipage}
-
-	% \hfill
-
+	\end{minipage}\hfill~
+	% }
+	~\\[0.5cm]
 	\vfill
-	\NewTblrColumnType{n}{Q[r,1.1]}
-	\NewTblrColumnType{g}{Q[3,b,c]}
+	\NewTblrColumnType{n}{Q[r,b]}
+	\NewTblrColumnType{g}{Q[m,c]}
 	\iftoggle{signatures}{
 		% \begin{center}
-		\noindent
-		\begin{tblr}[expand=\signature]{width=0.94\textwidth,colspec={ngng},abovesep=20pt}
-			\signature{Responsible Engineer} & \signature{Process Review}     \\\cline{2,4}
-			\signature{Test Engineer}        & \signature{Program Management} \\\cline{2,4}
+		\noindent\begin{tblr}[expand=\signature]{
+			width=0.98\textwidth,
+			hspan=minimal,
+			colspec={ngXng},
+			rows={ht=1cm,belowsep=0pt,abovesep=0pt},
+			columns={leftsep=0pt,rightsep=0pt},
+			column{1,4}={rightsep=10pt, wd=2.5cm}
+					% hborder{2,5}={abovespace=0pt},
+					% hborder{1,4}={belowspace=0pt},
+					% abovesep={15pt},
+				}
+			\signature{Responsible Engineer} &  & \signature{Process Review}     \\\SetHline{2,5}{solid}
+			                                 &  &                                \\
+			\signature{Test Engineer}        &  & \signature{Program Management} \\\SetHline{2,5}{solid}
 		\end{tblr}
 		\hfill
 		% \end{center}
+		~\vspace{0.75cm}
 	}{}
 
-	%\def\arraystretch{1.5}%  1 is the default, change whatever you need
-	% \begin{tblr}[expand=\sigentry]{ X[r] X[l] X[r] X[l]}
-	% 	\sigentry{Responsible \\Engineer}{engineering} & \sigentry{Process\\Review}{systems} \\\cline{2-2}\cline{4-4}
-	% 	 &  &  &              \\
-	% 	\sigentry{Test        \\Engineer}{test}  & \sigentry{Program\\Management}{program}\\\cline{2-2}\cline{4-4}
-	% \end{tblr}
-	% \end{minipage} % \vspace{0.25cm}
-	% ~                                                                  \\
-	\vfill
 
 
 	%  MARKINGS
-	\footnotesize
+	\footnotesize\justifying
 
 	{\noindent\iftoggle{markingDistribution}{\newline\distwarning}{}}
 	{\noindent\iftoggle{markingITAR}{\newline\itarwarning}{}}
@@ -1556,6 +1557,13 @@
 	{\noindent\iftoggle{markingDestroy}{\newline\destructwarning}{}}
 	{\noindent\iftoggle{programWarning}{\newline\programwarning}{}}
 	{\noindent\iftoggle{markingCopyright}{\newline\copywarning}{}}
+
+	\vfill
+	\iftoggle{showgit}{
+		\centering\fbox{\gitinfoblock}
+	}{}
+	\vfill
+
 	\newpage
 }
 
