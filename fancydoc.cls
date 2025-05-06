@@ -594,7 +594,8 @@
 
 % Select look and feel of captions
 \RequirePackage[skip=5pt, textfont={footnotesize,sl},labelfont=footnotesize, labelsep=endash]{caption}
-\setlength{\abovecaptionskip}{0pt}
+\setlength{\abovecaptionskip}{10pt plus 4pt minus 5pt}
+% \setlength{\belowcaptionskip}{5pt plus 5pt minus 3pt}
 
 \RequirePackage[left=0.75in,right=0.75in,top=1in, bottom=1in, marginparsep=7pt, marginparwidth=0.6in]{geometry}
 % \RequirePackage[left=1in,right=1in,top=1in, bottom=1in, marginparsep=7pt]{geometry}
@@ -746,7 +747,7 @@
 \newcommand{\gitsidebar}{
 	\tikz[remember picture, overlay,  inner sep=0pt]
 	\node at (current page.227) [xshift=1\baselineskip, rotate=90, anchor=north west]{
-		\smaller \ttfamily \color{gray!30}
+		\smaller\smaller \ttfamily \color{gray!30}
 		% \SetTblrInner{rowsep=2pt,colsep=2pt}
 		\begin{tblr}[expand=\gitHash\gitDirty]{
 				stretch=0.45,
@@ -1557,13 +1558,10 @@
 	{\noindent\iftoggle{markingDestroy}{\newline\destructwarning}{}}
 	{\noindent\iftoggle{programWarning}{\newline\programwarning}{}}
 	{\noindent\iftoggle{markingCopyright}{\newline\copywarning}{}}
-
 	\vfill
 	\iftoggle{showgit}{
 		\centering\fbox{\gitinfoblock}
 	}{}
-	\vfill
-
 	\newpage
 }
 
