@@ -126,7 +126,8 @@
 				column{2}={rightsep=0pt}
 			}
 			Document Control: & gitlab.corvidtec.com:suborbital/rival/doc/qual-report.git \\
-			Version:          & \gitHash{} \gitDirty{}                                    \\
+			% Version:          & \gitHash{} \gitDirty{}                                    \\
+			Version:          & \gitHash{}                                     \\
 			Committed:        & \gitAuthorDate{} by \gitAuthorName{} <\gitAuthorEmail{}>  \\
 		\end{tblr}
 	}
@@ -731,10 +732,12 @@
 
 
 \newcommand{\documentnamerev}{\scriptsize{\sffamily\docnumber, Rev. (\revision)}}
-\newcommand{\gitinfoshort}{\hspace{0.3cm}\smaller\ttfamily\color{gray}<  \gitAbbrevHash{} \gitDirty{}  >}
+% \newcommand{\gitinfoshort}{\hspace{0.3cm}\smaller\ttfamily\color{gray}<  \gitAbbrevHash{} \gitDirty{}  >}
+\newcommand{\gitinfoshort}{\hspace{0.3cm}\smaller\ttfamily\color{gray}<  \gitAbbrevHash{}  >}
 \newcommand{\gitinfomedium}{\hspace{0.3cm}\smaller\ttfamily\color{gray}<
 	~~~Document Control:~~~gitlab.corvidtec.com:suborbital/rival/doc/qual-report.git ~~~
-	Commit Hash:~~~\gitHash{} \gitDirty{}                                         }
+	% Commit Hash:~~~\gitHash{} \gitDirty{}                                         }
+	Commit Hash:~~~\gitHash{}                                          }
 
 
 \newcommand{\gitinforepo}{
@@ -748,7 +751,7 @@
 	\tikz[remember picture, overlay,  inner sep=0pt]
 	\node at (current page.227) [xshift=1\baselineskip, rotate=90, anchor=north west]{
 		\smaller\smaller \ttfamily \color{gray!30}
-		% \SetTblrInner{rowsep=2pt,colsep=2pt}
+		\SetTblrInner{rowsep=2pt,colsep=2pt}
 		\begin{tblr}[expand=\gitHash\gitDirty]{
 				stretch=0.45,
 				colspec={rl},
@@ -759,7 +762,8 @@
 			% Document Control: 
 			 & gitlab.corvidtec.com:suborbital/rival/doc/qual-report.git \\
 			% Commit Hash:      
-			 & {\gitHash{}~~~\gitDirty{}}                                \\
+			 % & {\gitHash{}~~~\gitDirty{}}                                \\
+			 & {\gitHash{}}                                \\
 			% Submitted:   \gitAuthorDate{} by \gitAuthorName{} <\gitAuthorEmail{}>           \\
 		\end{tblr}
 	};
@@ -836,7 +840,8 @@
 				wdth=8in,
 				vlines}
 			Document Control:~~~gitlab.corvidtec.com:suborbital/rival/doc/qual-report.git & \\
-			Commit Hash:~~~\gitHash{} \gitDirty{}                                         &
+			% Commit Hash:~~~\gitHash{} \gitDirty{}                                         &
+			Commit Hash:~~~\gitHash{}                                          &
 			Submitted:   \gitAuthorDate{} by \gitAuthorName{} <\gitAuthorEmail{}>           \\
 		\end{tblr}
 	};
@@ -1035,7 +1040,7 @@
 
 \newcommand{\cui}{{\marginnote{\textbf{\small\formatting(CUI)}}}}
 
-\newcommand{\note}[1]{\reversemarginpar\medskip\par\marginnote{\textbf{NOTE:}}\noindent{{#1}}\par\medskip}
+\newcommand{\note}[1]{\reversemarginpar\medskip\par\marginnote{\textbf{NOTE:}}\vspace{-0.5\baselineskip}\noindent{{#1}}\par\medskip}
 % \newcommand{\warning}[1]{\reversemarginpar\medskip\par\marginnote{\color{red}\textbf{WARNING:}}\noindent{{#1}}\par\medskip}
 
 \newcommand{\marku}{~\\\marginnote{(U)\\}}
