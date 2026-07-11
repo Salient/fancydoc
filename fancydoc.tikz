@@ -21,6 +21,7 @@
 \usetikzlibrary{shapes}
 \usetikzlibrary{tikzmark}
 \usetikzlibrary{trees}
+\usetikzlibrary{bending}
 
 % shapes.symbols
 
@@ -47,7 +48,7 @@
 %          mark=at position 1 with {\arrow[scale=7,black]{latex}};
 %      }},
 arrow/.style = {%
--{Latex[length=3.5mm]}
+-{Latex[length=4.0mm, bend]}
 },
 every node/.style = {%
 		node distance =2cm, minimum width = 1.5in, inner sep = 5pt,align=center, auto
@@ -87,13 +88,13 @@ endstate/.style = {%
 		circle, double, draw, align=center,  minimum width=0in
 	},
 failsafe/.style= {%
-		state, draw=violet, name path = fail, font = \bfseries\scshape
+		state, draw=violet, name path = failpath, font = \bfseries\scshape
 	},
 every circle/.style={%
 		radius=1cm
 	},
 note/.style = {%
-		gray, text width = 3.5in, shorten >=2pt, opacity=0.9, dashed, draw, Circle-, inner sep=5pt
+  darkgray, text width = 2.0in, shorten >=2pt, opacity=0.9,  {Circle[length=3mm,gray]}-, inner sep=0pt
 	},
 rem/.style = {%
 		draw=red!40,text=red!70, shadow opacity=0
@@ -130,7 +131,11 @@ nonenvleader/.style = {
 	},
 nonenvbrace/.style = {
 		draw=magenta!50!black,very thick, arrow, -
-	}
+	},
+% yestext/.style = {ForestGreen},
+% notext/.style = {DarkRed}
+yestext/.style = {},
+notext/.style = {}
 }
 
 
@@ -174,10 +179,10 @@ nonenvbrace/.style = {
 \newcommand{\putalooponit}[3]{%
 	%   \tikzset{overlay,remember picture}
 	\path[name path = l1] (#1.east) coordinate (c3) circle (1cm);
-	\path[name intersections={of=#1 and l1, total = \tot, by={c1,c2}}];
+\path[name intersections={of=#1path and l1, total = \tot, by={c1,c2}}];
 	\pgfextractangle{\myanglea}{c3}{c1}
 	\pgfextractangle{\myangleb}{c3}{c2}
-	\draw[flow]    (c2) arc[start angle = \myangleb, delta angle = 360 - ( \myangleb - \myanglea), radius=1cm] node[above right, very near start, flow, #2] {#3};
+	\draw[flow]    (c2) arc[start angle = \myangleb, delta angle = 360 - ( \myangleb - \myanglea), radius=1cm] node[below right, very near start, flow, #2] {#3};
 }
 
 \newcommand{\putaleftlooponit}[3]{%
@@ -187,6 +192,7 @@ nonenvbrace/.style = {
 	\pgfextractangle{\myangleb}{c3}{c2}
 	\draw[flow]    (i-2) arc[start angle = \myangleb, delta angle = ( \myanglea - \myangleb), radius=1cm] node[  above left, very near start, flow, #2] {#3};
 }
+
 
 \newcommand{\drawbounding}{\draw [brown] (current bounding box.south west) rectangle (current bounding box.north east);}
 
