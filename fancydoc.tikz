@@ -51,17 +51,17 @@ arrow/.style = {%
 -{Latex[length=4.0mm, bend]}
 },
 every node/.style = {%
-		node distance =2cm, minimum width = 1.5in, inner sep = 5pt,align=center, auto
-	},
+  node distance =2cm, minimum width = 1.5in, inner sep = 5pt,align=center, auto
+},
 every shadow/.style={%
-		shadow opacity=60, shadow blur steps=10, shadow blur extra rounding, shadow blur radius = 0.5ex
-	},
+  shadow opacity=60, shadow blur steps=10, shadow blur extra rounding, shadow blur radius = 0.5ex
+},
 flow/.style = {%
-		line width=1.5pt, minimum width=0in, very near start, arrow, font=\bfseries
-	},
+  line width=1.5pt, minimum width=0in, very near start, arrow, font=\bfseries
+},
 mainflow/.style = {%
-		line width=3pt, minimum width=0in, very near start, arrow, font=\bfseries
-	},
+  line width=3pt, minimum width=0in, very near start, arrow, font=\bfseries
+},
 %   every draw/.style = {flow},
 state/.style  = {%
 		draw, line width=3pt,inner sep=6pt,fill=white, align=center,
@@ -88,7 +88,7 @@ endstate/.style = {%
 		circle, double, draw, align=center,  minimum width=0in
 	},
 failsafe/.style= {%
-		state, draw=violet, name path = failpath, font = \bfseries\scshape
+		state, draw=violet, name path = failsafe, font = \bfseries\scshape
 	},
 every circle/.style={%
 		radius=1cm
@@ -179,7 +179,7 @@ notext/.style = {}
 \newcommand{\putalooponit}[3]{%
 	%   \tikzset{overlay,remember picture}
 	\path[name path = l1] (#1.east) coordinate (c3) circle (1cm);
-\path[name intersections={of=#1path and l1, total = \tot, by={c1,c2}}];
+\path[name intersections={of=#1 and l1, total = \tot, by={c1,c2}}];
 	\pgfextractangle{\myanglea}{c3}{c1}
 	\pgfextractangle{\myangleb}{c3}{c2}
 	\draw[flow]    (c2) arc[start angle = \myangleb, delta angle = 360 - ( \myangleb - \myanglea), radius=1cm] node[below right, very near start, flow, #2] {#3};
