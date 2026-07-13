@@ -36,7 +36,8 @@
 % \pdfmapfile{+sansmathaccent.map}
 \DeclareMathAlphabet{\mathpzc}{OT1}{pzc}{m}{it}
 \pgfdeclarelayer{background}    % declare background layer
-\pgfsetlayers{background,main}  % set the order of the layers (main is the standard layer)
+\pgfdeclarelayer{foreground}    % declare background layer
+\pgfsetlayers{background,main,foreground}  % set the order of the layers (main is the standard layer)
 
 %*********************%
 %* Node Types/Styles *%
