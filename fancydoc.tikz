@@ -182,7 +182,7 @@ notext/.style = {}
 \path[name intersections={of=#1 and l1, total = \tot, by={c1,c2}}];
 	\pgfextractangle{\myanglea}{c3}{c1}
 	\pgfextractangle{\myangleb}{c3}{c2}
-	\draw[flow]    (c2) arc[start angle = \myangleb, delta angle = 360 - ( \myangleb - \myanglea), radius=1cm] node[below right, very near start, flow, #2] {#3};
+	\draw[flow]    (c2) arc[start angle = \myangleb, delta angle = 360 - ( \myangleb - \myanglea), radius=1cm] node[above right, very near start, flow, #2] {#3};
 }
 
 \newcommand{\putaleftlooponit}[3]{%
@@ -193,6 +193,19 @@ notext/.style = {}
 	\draw[flow]    (i-2) arc[start angle = \myangleb, delta angle = ( \myanglea - \myangleb), radius=1cm] node[  above left, very near start, flow, #2] {#3};
 }
 
+\newcommand{\putatoplooponit}[3]{%
+	%   \tikzset{overlay,remember picture}
+	\path[name path = l1] (#1.north) coordinate (c3) circle (1cm);
+\path[name intersections={of=#1 and l1, total = \tot, by={c1,c2}}];
+	\pgfextractangle{\myanglea}{c3}{c1}
+	\pgfextractangle{\myangleb}{c3}{c2}
+	% Sweep from c2 up over the top (through north) and back down to c1, so the
+	% arrowhead stops where the arc re-enters the node. The circle sits on the
+	% node's .north apex, so both crossings are below centre (c2 upper-left, c1
+	% upper-right); the arc that passes through 90deg is the clockwise one,
+	% delta = (anglea - angleb) - 360.
+	\draw[flow]    (c2) arc[start angle = \myangleb, delta angle = \myanglea - \myangleb - 360, radius=1cm] node[above right, very near start, flow, #2] {#3};
+}
 
 \newcommand{\drawbounding}{\draw [brown] (current bounding box.south west) rectangle (current bounding box.north east);}
 
